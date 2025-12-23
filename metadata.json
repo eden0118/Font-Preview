@@ -1,0 +1,5 @@
+{
+  "name": "FontFlow Preview",
+  "description": "A rapid font preview tool with automatic Traditional/Simplified Chinese detection and AI-powered sample text generation.",
+  "requestFramePermissions": []
+}
