@@ -26,15 +26,15 @@ export const detectLanguage = (text: string): DetectedLanguage => {
   // Priority Logic
   if (koScore > 0 && koScore > jaScore && koScore > tcScore) return DetectedLanguage.KO;
   if (jaScore > 0 && jaScore > tcScore) return DetectedLanguage.JA; // Japanese often mixes Kanji, so prioritize Kana presence
-  
+
   if (tcScore > scScore) return DetectedLanguage.TC;
   if (scScore > tcScore) return DetectedLanguage.SC;
-  
-  if (enScore > (tcScore + scScore + jaScore + koScore)) return DetectedLanguage.EN;
+
+  if (enScore > tcScore + scScore + jaScore + koScore) return DetectedLanguage.EN;
 
   // Default fallback if ambiguous but contains Chinese characters
   if (/[\u4e00-\u9fa5]/.test(text)) {
-    return DetectedLanguage.UNKNOWN; 
+    return DetectedLanguage.UNKNOWN;
   }
 
   return DetectedLanguage.UNKNOWN;

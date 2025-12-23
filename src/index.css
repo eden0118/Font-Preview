@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: #ea580c;
+  --color-primary-light: #fef3e2;
+  --color-stone-50: #fafaf9;
+  --color-stone-900: #1c1917;
+}
+
+@layer base {
+  body {
+    @apply bg-stone-50 text-stone-900;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded bg-stone-300;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-stone-400;
+  }
+}
