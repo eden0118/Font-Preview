@@ -5,13 +5,11 @@ export interface FontDefinition {
   tags: ('tc' | 'sc' | 'en' | 'ja' | 'ko')[];
   description?: string;
   isCustom?: boolean;
-}
-
-export enum DetectedLanguage {
-  TC = 'Traditional Chinese',
-  SC = 'Simplified Chinese',
-  JA = 'Japanese',
-  KO = 'Korean',
-  EN = 'English',
-  UNKNOWN = 'Unknown/Mixed',
+  glyphCount?: number;
+  // 適用性分數 (0-100)
+  coverage?: {
+    tc: number; // 繁體中文適用性
+    sc: number; // 簡體中文適用性
+    ja: number; // 日文適用性
+  };
 }

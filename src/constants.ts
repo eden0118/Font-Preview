@@ -81,9 +81,5 @@ export const FONT_LIST: FontDefinition[] = [
 ];
 
 export const SAMPLE_TEXTS = {
-  tc: '天地玄黃，宇宙洪荒。日月盈昃，辰宿列張。',
-  sc: '天地玄黄，宇宙洪荒。日月盈昃，辰宿列张。',
-  ja: 'いろはにほへと ちりぬるを わかよたれそ つねならむ',
-  ko: '나랏말싸미 듕귁에 달아 문자와로 서르 사맛디 아니할쎄',
-  en: 'The quick brown fox jumps over the lazy dog.',
+  tc: '信念、想法、思想很強的人，即使心情很糟、內心受傷，也還是會朝著目的奔跑。',
 };

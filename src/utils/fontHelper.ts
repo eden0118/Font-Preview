@@ -2,82 +2,96 @@ import { parse } from 'opentype.js';
 import { FontDefinition } from '../types';
 
 // ============================================================================
-// DIAGNOSTIC CHARACTER SETS (The "CMAP" Check)
+// 1. 測試字符集 - 用於判斷「適用性」而非「語系分類」
 // ============================================================================
 
-// Traditional Chinese Distinctive Characters
-// Characters that look different or don't exist in Simplified
-const TC_SIGNATURE = [
+// 繁體中文常用字測試集 (50字)
+// 包含：高頻常用字 + 繁體特有寫法字
+// 目標：測試這個字體能否滿足「繁體中文文案」的需求
+const TC_TEST_CHARS = [
+  // 繁體特有字（與簡體寫法不同）
   '國',
+  '體',
+  '話',
+  '寶',
   '門',
+  '經',
+  '號',
+  '葉',
+  '說',
+  '邊',
+  '實',
+  '這',
+  '會',
+  '後',
+  '學',
+  '機',
+  '關',
+  '開',
+  '電',
+  '車',
+  // 高頻常用字（繁簡同形但必須存在）
+  '的',
+  '是',
+  '在',
+  '有',
+  '我',
+  '你',
+  '他',
+  '她',
+  '們',
+  '個',
+  '來',
+  '去',
+  '好',
+  '看',
+  '想',
+  '要',
+  '能',
+  '不',
+  '了',
+  '也',
+  // 繁體文案常見字
   '臺',
   '灣',
-  '飛',
-  '書',
-  '邊',
-  '無',
-  '愛',
-  '葉',
-  '陽',
-  '專',
-  '開',
-  '園',
-  '導',
-  '鳥',
-  '島',
-  '畫',
-  '農',
-  '豐',
-  '隸',
-  '頭',
-  '長',
-  '樂',
-  '氣',
-  '電',
-  '買',
-  '賣',
-  '鹽',
-  '塵',
+  '網',
+  '路',
+  '資',
+  '訊',
+  '設',
+  '計',
+  '產',
+  '品',
 ];
 
-// Simplified Chinese Distinctive Characters
-const SC_SIGNATURE = [
+// 簡體中文特有字測試集 (20字)
+// 目標：快速判斷是否為簡體字型
+const SC_TEST_CHARS = [
   '国',
+  '体',
+  '话',
+  '宝',
   '门',
-  '台',
-  '湾',
-  '飞',
-  '书',
-  '边',
-  '无',
-  '爱',
+  '经',
+  '号',
   '叶',
-  '阳',
-  '专',
+  '说',
+  '边',
+  '实',
+  '这',
+  '会',
+  '后',
+  '学',
+  '机',
+  '关',
   '开',
-  '园',
-  '导',
-  '鸟',
-  '岛',
-  '画',
-  '农',
-  '丰',
-  '隶',
-  '头',
-  '长',
-  '乐',
-  '气',
   '电',
-  '买',
-  '卖',
-  '盐',
-  '尘',
+  '车',
 ];
 
-// Japanese Signature (Hiragana)
-// We check a broader range to ensure it's not just a symbol subset.
-// Japanese fonts must have full Hiragana support.
-const JA_SIGNATURE = [
+// 日文假名測試集 (20字)
+// 平假名 + 片假名混合
+const JA_TEST_CHARS = [
   'あ',
   'い',
   'う',
@@ -88,294 +102,178 @@ const JA_SIGNATURE = [
   'く',
   'け',
   'こ',
-  'さ',
-  'し',
-  'す',
-  'せ',
-  'そ',
-  'た',
-  'ち',
-  'つ',
-  'て',
-  'と',
-  'な',
-  'に',
-  'ぬ',
-  'ね',
-  'の',
-  'は',
-  'ひ',
-  'ふ',
-  'へ',
-  'ほ',
-  'ま',
-  'み',
-  'む',
-  'め',
-  'も',
-  'や',
-  'ゆ',
-  'よ',
-  'ら',
-  'り',
-  'る',
-  'れ',
-  'ろ',
-  'わ',
-  'を',
-  'ん',
-  'が',
-  'ぎ',
-  'ぐ',
-  'げ',
-  'ご',
-  'ざ',
-  'じ',
-  'ず',
-  'ぜ',
-  'ぞ',
-  'だ',
-  'ぢ',
-  'づ',
-  'で',
-  'ど',
-  'ば',
-  'び',
-  'ぶ',
-  'べ',
-  'ぼ',
-  'ぱ',
-  'ぴ',
-  'ぷ',
-  'ぺ',
-  'ぽ',
-  'っ',
-  'ゃ',
-  'ゅ',
-  'ょ',
-];
-
-// Korean Signature (Common Hangul Syllables)
-const KO_SIGNATURE = [
-  '가',
-  '나',
-  '다',
-  '라',
-  '마',
-  '바',
-  '사',
-  '아',
-  '자',
-  '차',
-  '카',
-  '타',
-  '파',
-  '하',
-  '한',
-  '글',
-  '안',
-  '녕',
-  '무',
-  '궁',
-  '서',
-  '울',
-  '대',
-  '韓',
-  '國',
-  '사',
-  '람',
-  '오',
-  '늘',
-  '날',
-];
-
-// English/Latin Signature
-const EN_SIGNATURE = [
-  'A',
-  'B',
-  'C',
-  'D',
-  'E',
-  'F',
-  'G',
-  'H',
-  'I',
-  'J',
-  'K',
-  'L',
-  'M',
-  'a',
-  'b',
-  'c',
-  'd',
-  'e',
-  'f',
-  'g',
-  'h',
-  'i',
-  'j',
-  'k',
-  'l',
-  'm',
+  'ア',
+  'イ',
+  'ウ',
+  'エ',
+  'オ',
+  'カ',
+  'キ',
+  'ク',
+  'ケ',
+  'コ',
 ];
 
 // ============================================================================
-// METADATA PATTERNS (The "Name Table" Check)
+// 2. HELPER FUNCTIONS
 // ============================================================================
-const METADATA_RULES = [
-  { tag: 'tc', pattern: /(TC|TW|HK|Traditional|Hant|Ming|Kai|Bopomofo)/i },
-  { tag: 'sc', pattern: /(SC|CN|GB|Simplified|Hans|Song|Hei)/i },
-  { tag: 'ja', pattern: /(JP|JA|Jp|Ja|Mincho|Gothic|Kaku|Maru|Hiragana)/i },
-  { tag: 'ko', pattern: /(KR|KO|Kr|Ko|Hangul|Batang|Dotum|Gulim|Malgun)/i },
-];
 
-/**
- * Checks if a specific character exists in the font's cmap table.
- */
 const hasGlyph = (font: any, char: string): boolean => {
-  // charToGlyphIndex returns 0 (notdef) if the character is missing
-  return font.charToGlyphIndex(char) > 0;
+  try {
+    const glyphIndex = font.charToGlyphIndex(char);
+    return glyphIndex > 0;
+  } catch (e) {
+    return false;
+  }
 };
 
 /**
- * Calculates the coverage percentage of a signature set in the font.
+ * 計算字符集的覆蓋數量和百分比
  */
-const calculateCoverage = (font: any, signatureSet: string[]): number => {
-  let hits = 0;
-  signatureSet.forEach((char) => {
-    if (hasGlyph(font, char)) hits++;
-  });
-  return hits / signatureSet.length;
+const getCoverage = (
+  font: any,
+  chars: string[]
+): { count: number; total: number; percent: number } => {
+  if (chars.length === 0) return { count: 0, total: 0, percent: 0 };
+  const count = chars.reduce((acc, char) => acc + (hasGlyph(font, char) ? 1 : 0), 0);
+  return {
+    count,
+    total: chars.length,
+    percent: Math.round((count / chars.length) * 100),
+  };
 };
+
+/**
+ * 計算字體中的字符總數
+ */
+const countGlyphs = (font: any): number => {
+  try {
+    return Math.max(0, (font.glyphs?.length || 0) - 1);
+  } catch (e) {
+    return 0;
+  }
+};
+
+// ============================================================================
+// 3. 適用性分析邏輯
+// ============================================================================
+
+interface AnalysisResult {
+  tags: string[];
+  description: string;
+  coverage: {
+    tc: number;
+    sc: number;
+    ja: number;
+  };
+}
+
+const analyzeCompatibility = (font: any, fileName: string): AnalysisResult => {
+  // 計算各語言的覆蓋率
+  const tcCoverage = getCoverage(font, TC_TEST_CHARS);
+  const scCoverage = getCoverage(font, SC_TEST_CHARS);
+  const jaCoverage = getCoverage(font, JA_TEST_CHARS);
+
+  const tags = new Set<string>();
+  const descriptions: string[] = [];
+
+  // === 繁體中文適用性判斷 ===
+  // 90%+ : 完全適用
+  // 70-89%: 大致適用（可能缺少少數字）
+  // 50-69%: 部分適用（建議謹慎使用）
+  // <50%: 不建議用於繁體
+  if (tcCoverage.percent >= 70) {
+    tags.add('tc');
+  }
+
+  // === 簡體中文適用性判斷 ===
+  if (scCoverage.percent >= 70) {
+    tags.add('sc');
+  }
+
+  // === 日文適用性判斷 ===
+  // 假名是日文獨有，只要有就代表支援日文
+  if (jaCoverage.percent >= 50) {
+    tags.add('ja');
+  }
+
+  // === 生成描述 ===
+  // 以繁體中文為主要關注點
+  if (tcCoverage.percent >= 90) {
+    descriptions.push('✅ 完全適用繁體中文');
+  } else if (tcCoverage.percent >= 70) {
+    descriptions.push('⚠️ 大致適用繁體（可能缺少少數字）');
+  } else if (tcCoverage.percent >= 50) {
+    descriptions.push('⚠️ 部分支援繁體（建議謹慎使用）');
+  } else if (tcCoverage.percent > 0) {
+    descriptions.push('❌ 繁體支援不足');
+  }
+
+  if (jaCoverage.percent >= 50) {
+    descriptions.push('🇯🇵 包含日文假名');
+  }
+
+  if (scCoverage.percent >= 70 && tcCoverage.percent < 50) {
+    descriptions.push('🇨🇳 簡體中文字型');
+  }
+
+  // 兜底
+  if (tags.size === 0) {
+    if (hasGlyph(font, 'A') && hasGlyph(font, 'z')) {
+      tags.add('en');
+      descriptions.push('🔤 英文/拉丁字型');
+    } else {
+      descriptions.push('❓ 符號或特殊字型');
+    }
+  }
+
+  return {
+    tags: Array.from(tags),
+    description: descriptions.join(' | '),
+    coverage: {
+      tc: tcCoverage.percent,
+      sc: scCoverage.percent,
+      ja: jaCoverage.percent,
+    },
+  };
+};
+
+// ============================================================================
+// 4. EXPORT
+// ============================================================================
 
 export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const buffer = e.target?.result as ArrayBuffer;
-      if (!buffer) {
-        reject(new Error('Failed to read file'));
-        return;
-      }
+      if (!buffer) return reject(new Error('Failed to read file'));
 
       try {
         // @ts-ignore
         const font = parse ? parse(buffer) : window.opentype.parse(buffer);
 
-        // 1. Get Font Names
         let fontName = file.name.split('.')[0];
-        const names = font.names;
+        if (font.names.fontFamily?.en) fontName = font.names.fontFamily.en;
 
-        const familyName =
-          names.fontFamily?.en || names.fontFamily?.['zh-TW'] || names.fontFamily?.['zh-CN'] || '';
-        const fullName = names.fullName?.en || '';
-        const postScriptName = names.postScriptName?.en || '';
+        // 分析適用性
+        const { tags, description, coverage } = analyzeCompatibility(font, file.name);
 
-        if (familyName) fontName = familyName;
-        else if (fullName) fontName = fullName;
-
-        const allNameString =
-          `${familyName} ${fullName} ${postScriptName} ${file.name}`.toLowerCase();
-
-        // 2. Identify "Intended" Language from Metadata
-        // This is our Strong Signal.
-        let intendedLang: 'tc' | 'sc' | 'ja' | 'ko' | null = null;
-
-        if (METADATA_RULES[0].pattern.test(allNameString)) intendedLang = 'tc';
-        else if (METADATA_RULES[1].pattern.test(allNameString)) intendedLang = 'sc';
-        else if (METADATA_RULES[2].pattern.test(allNameString)) intendedLang = 'ja';
-        else if (METADATA_RULES[3].pattern.test(allNameString)) intendedLang = 'ko';
-
-        // 3. Calculate Scores
-        const tcScore = calculateCoverage(font, TC_SIGNATURE);
-        const scScore = calculateCoverage(font, SC_SIGNATURE);
-        const jaScore = calculateCoverage(font, JA_SIGNATURE);
-        const koScore = calculateCoverage(font, KO_SIGNATURE);
-        const enScore = calculateCoverage(font, EN_SIGNATURE);
-
-        const finalTags = new Set<'tc' | 'sc' | 'en' | 'ja' | 'ko'>();
-        const detectedDescriptions: string[] = [];
-
-        // 4. Logic: Metadata Dominance with Strict Fallbacks
-
-        // Thresholds
-        const STRICT_THRESHOLD = 0.9; // Needs 90% coverage to be added if not primary
-        const BASE_THRESHOLD = 0.6; // Needs 60% coverage to be considered generally
-
-        if (intendedLang === 'tc') {
-          finalTags.add('tc');
-          // Only add others if they are nearly perfect (Pan-CJK font)
-          if (scScore > STRICT_THRESHOLD) finalTags.add('sc');
-          if (jaScore > STRICT_THRESHOLD) finalTags.add('ja');
-          if (koScore > STRICT_THRESHOLD) finalTags.add('ko');
-        } else if (intendedLang === 'sc') {
-          finalTags.add('sc');
-          if (tcScore > STRICT_THRESHOLD) finalTags.add('tc');
-          if (jaScore > STRICT_THRESHOLD) finalTags.add('ja');
-          if (koScore > STRICT_THRESHOLD) finalTags.add('ko');
-        } else if (intendedLang === 'ja') {
-          finalTags.add('ja');
-          // Japanese fonts often have Kanji, so we check which Chinese set matches best
-          if (tcScore > STRICT_THRESHOLD) finalTags.add('tc');
-          if (scScore > STRICT_THRESHOLD) finalTags.add('sc');
-        } else if (intendedLang === 'ko') {
-          finalTags.add('ko');
-          if (tcScore > STRICT_THRESHOLD) finalTags.add('tc');
-        } else {
-          // No metadata signal. Rely on scores.
-          // This handles cases where filename is generic like "MyFont.ttf"
-
-          // Korean Unique Check
-          if (koScore > BASE_THRESHOLD) finalTags.add('ko');
-
-          // Japanese Unique Check (Hiragana is very specific)
-          if (jaScore > BASE_THRESHOLD) finalTags.add('ja');
-
-          // Chinese Disambiguation
-          // If neither is present, checking CJK
-          if (tcScore > BASE_THRESHOLD || scScore > BASE_THRESHOLD) {
-            if (tcScore > scScore) finalTags.add('tc');
-            else if (scScore > tcScore) finalTags.add('sc');
-            else {
-              // Equal score? Likely Pan-CJK or symbol font.
-              finalTags.add('tc');
-              finalTags.add('sc');
-            }
-          }
-        }
-
-        // Always check English
-        if (enScore > 0.9) {
-          // Only add 'en' tag if it's the ONLY thing detected, or if we want to explicitly say it supports English.
-          // Usually for CJK fonts, English is implied. We might want to omit the tag to reduce clutter
-          // UNLESS it's an English-only font.
-          if (finalTags.size === 0) finalTags.add('en');
-        }
-
-        // Description Builder
-        if (finalTags.has('tc')) detectedDescriptions.push('Traditional Chinese');
-        if (finalTags.has('sc')) detectedDescriptions.push('Simplified Chinese');
-        if (finalTags.has('ja')) detectedDescriptions.push('Japanese');
-        if (finalTags.has('ko')) detectedDescriptions.push('Korean');
-        if (finalTags.has('en') && finalTags.size === 1) detectedDescriptions.push('English');
-
-        let description =
-          detectedDescriptions.length > 0
-            ? `Detected: ${detectedDescriptions.join(', ')}`
-            : 'Symbol or Limited Font';
+        // 計算字符數
+        const glyphCount = countGlyphs(font);
 
         const fontDef: FontDefinition = {
           name: fontName,
           family: fontName,
           category: 'display',
-          tags: Array.from(finalTags),
+          tags: tags as ('tc' | 'sc' | 'en' | 'ja' | 'ko')[],
           description: description,
+          glyphCount: glyphCount,
+          coverage: coverage,
           isCustom: true,
         };
-
         resolve(fontDef);
       } catch (err) {
-        console.error('Font analysis error:', err);
         reject(err);
       }
     };
