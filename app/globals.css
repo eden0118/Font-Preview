@@ -42,7 +42,7 @@
 @layer components {
   /* button */
   .btn {
-    @apply flex items-center justify-center gap-1 rounded-xl px-8 py-3 text-base font-medium shadow-xl transition-colors;
+    @apply flex items-center justify-center gap-1 rounded-lg px-6 py-2.5 text-sm font-medium transition-colors;
   }
 
   .small-btn {
@@ -50,11 +50,15 @@
   }
 
   .ghost-btn {
-    @apply from-primary to-accent hover:from-accent hover:to-primary bg-gradient-to-r text-white;
+    @apply from-primary to-accent hover:from-accent hover:to-primary bg-linear-to-r text-white;
   }
 
   .primary-btn {
     @apply bg-primary hover:bg-primary/90 text-white;
+  }
+
+  .secondary-btn {
+    @apply text-secondaryText bg-stone-100 hover:bg-stone-200;
   }
 
   .icon-btn {
@@ -64,46 +68,5 @@
   /* input */
   .input {
     @apply focus:border-primary w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:outline-none;
-  }
-
-  /* Color utilities */
-  .text-primary {
-    @apply text-[var(--color-primary)];
-  }
-
-  .bg-primary {
-    @apply bg-[var(--color-primary)];
-  }
-
-  .border-primary {
-    @apply border-[var(--color-primary)];
-  }
-
-  .bg-primary-light {
-    @apply bg-[rgb(12,82,234,0.1)];
-  }
-
-  .border-primary-light {
-    @apply border-[rgb(12,82,234,0.3)];
-  }
-
-  .text-accent {
-    @apply text-[var(--color-accent)];
-  }
-
-  .bg-accent {
-    @apply bg-[var(--color-accent)];
-  }
-
-  .border-accent {
-    @apply border-[var(--color-accent)];
-  }
-
-  .bg-accent-light {
-    @apply bg-[rgb(245,165,36,0.1)];
-  }
-
-  .border-accent-light {
-    @apply border-[rgb(245,165,36,0.3)];
   }
 }

@@ -287,3 +287,23 @@ export const loadFontFace = async (fontName: string, data: ArrayBuffer): Promise
   await fontFace.load();
   document.fonts.add(fontFace);
 };
+
+/**
+ * 從 document.fonts 中移除指定名稱的字體
+ * 用於防止內存洩漏，當切換字體時清理舊字體
+ */
+export const removeFontFace = (fontName: string): void => {
+  try {
+    const fontsToDelete: FontFace[] = [];
+    document.fonts.forEach((font) => {
+      if (font.family === fontName) {
+        fontsToDelete.push(font);
+      }
+    });
+    fontsToDelete.forEach((font) => {
+      document.fonts.delete(font);
+    });
+  } catch (e) {
+    console.warn('Failed to remove font:', fontName, e);
+  }
+};

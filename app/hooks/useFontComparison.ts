@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { analyzeFontFile, loadFontFace } from '@/lib/fontHelper';
+import { analyzeFontFile, loadFontFace, removeFontFace } from '@/lib/fontHelper';
 import { FontDefinition } from '@/lib/types';
 
 interface ComparisonSlot {
@@ -37,20 +37,35 @@ export const useFontComparison = (initialSlots: ComparisonSlot[] = []) => {
       });
     } catch (err) {
       console.error(err);
-      setUploadError('Failed to parse font file. Please try another TTF/OTF/WOFF file.');
+      const errorMessage =
+        err instanceof Error ? err.message : '字型檔案解析失敗。請嘗試其他 TTF/OTF/WOFF 檔案。';
+      setUploadError(errorMessage);
     } finally {
       setAnalysingId(null);
     }
   }, []);
 
   const removeFont = useCallback((slotId: string) => {
-    setComparisonSlots((prev) =>
-      prev.map((item) => (item.id === slotId ? { ...item, font: null } : item))
-    );
+    setComparisonSlots((prev) => {
+      const fontToRemove = prev.find((item) => item.id === slotId)?.font;
+      // 清理字體資源
+      if (fontToRemove) {
+        removeFontFace(fontToRemove.family);
+      }
+      return prev.map((item) => (item.id === slotId ? { ...item, font: null } : item));
+    });
   }, []);
 
   const clearAll = useCallback(() => {
-    setComparisonSlots((prev) => prev.map((item) => ({ ...item, font: null })));
+    // 清理所有字體資源
+    setComparisonSlots((prev) => {
+      prev.forEach((slot) => {
+        if (slot.font) {
+          removeFontFace(slot.font.family);
+        }
+      });
+      return prev.map((item) => ({ ...item, font: null }));
+    });
   }, []);
 
   return {

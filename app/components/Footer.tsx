@@ -15,7 +15,7 @@ export const Footer: React.FC = () => {
 
         {/* 中間：功能說明 */}
         <div className="space-y-1 text-center">
-          <p className="text-infoText flex items-center justify-center gap-2 text-xs">
+          <p className="text-infoText flex items-center justify-center gap-1 text-xs">
             <Shield size={14} className="text-stone-400" />
             所有處理均在本地完成，不上傳任何資料到伺服器
           </p>
@@ -36,7 +36,7 @@ export const Footer: React.FC = () => {
               <Github size={14} strokeWidth={2.5} />
             </a>
             <a
-              href="Sendto:k307849@gmail.com"
+              href="mailto:k307849@gmail.com"
               target="_blank"
               className="icon-btn"
               rel="noopener noreferrer"

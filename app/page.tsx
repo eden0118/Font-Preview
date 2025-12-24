@@ -8,7 +8,7 @@ import { Footer } from './components/Footer';
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-stone-50">
-      <main className="flex flex-1 items-center justify-center bg-gradient-to-br from-stone-50 via-stone-100 to-stone-200 p-4">
+      <main className="flex flex-1 items-center justify-center bg-linear-to-br from-stone-50 via-stone-100 to-stone-200 p-4">
         <div className="w-full max-w-2xl">
           {/* Header */}
           <div className="mb-12 text-center">
@@ -21,7 +21,7 @@ export default function Home() {
             {/* Analysis Card */}
             <Link href="/analysis">
               <div className="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-stone-200 bg-white p-8 transition-all duration-300 hover:border-stone-400 hover:shadow-lg">
-                <div className="absolute inset-0 bg-gradient-to-br from-[rgb(12,82,234,0.05)] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-linear-to-br from-[rgb(12,82,234,0.05)] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <div className="relative">
                   <div className="bg-primary-light text-primary mb-6 inline-block rounded-full p-3">
                     <BarChart3 size={32} />
@@ -40,7 +40,7 @@ export default function Home() {
             {/* Comparison Card */}
             <Link href="/comparison">
               <div className="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-stone-200 bg-white p-8 transition-all duration-300 hover:border-stone-400 hover:shadow-lg">
-                <div className="absolute inset-0 bg-gradient-to-br from-[rgb(245,165,36,0.05)] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-linear-to-br from-[rgb(245,165,36,0.05)] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <div className="relative">
                   <div className="bg-accent-light text-accent mb-6 inline-block rounded-full p-3">
                     <Zap size={32} />
