@@ -136,9 +136,7 @@ export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
         const fontDef: FontDefinition = {
           name: fontName,
           family: fontName,
-          category: 'display',
           tags: Array.from(tags) as any,
-          description: descriptions.join(' | ') || '未知格式',
           // 這裡確保回傳所有數值，無論 Tag 是什麼
           coverage: {
             en: Math.round(statsEN.rate * 100), // 這裡現在會有數值了！
