@@ -1,3 +1,19 @@
+/**
+ * usePreviewText Hook - 預覽文字初始化
+ *
+ * 功能：
+ * - 監聽字型載入狀態
+ * - 自動初始化預覽文字
+ * - 避免預覽區域為空的情況
+ *
+ * 使用場景：
+ * - 當使用者上傳字型後，自動填入預設文字
+ * - 支援單一字型和多字型模式
+ *
+ * 依賴：
+ * - usePreviewSettings 提供預設文字庫
+ */
+
 import { useEffect } from 'react';
 import { FontDefinition } from '@/lib/types';
 import { usePreviewSettings } from './usePreviewSettings';

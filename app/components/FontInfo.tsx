@@ -1,3 +1,18 @@
+/**
+ * FontInfo 元件 - 字型資訊卡片
+ *
+ * 功能：
+ * - 顯示字型基本資訊（字符數、名稱）
+ * - 多維度覆蓋率視覺化（繁體、簡體、日文、英文）
+ * - 語言支援標籤
+ * - 缺字警告和詳細缺字列表
+ *
+ * 設計特色：
+ * - 響應式進度條顯示覆蓋率
+ * - 顏色編碼表示覆蓋程度（綠 > 黃 > 紅）
+ * - 基本字缺字會觸發警告符號
+ */
+
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { FontDefinition } from '@/lib/types';
@@ -7,6 +22,9 @@ interface FontInfoProps {
   font: FontDefinition;
 }
 
+/**
+ * 字型資訊卡片元件
+ */
 export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
   return (
     <div className="card p-4 sm:p-6">
@@ -104,7 +122,7 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
               <div className="mb-2 flex gap-2">
                 <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 text-red-800" />
                 <p className="text-xs font-semibold text-red-800">
-                  缺失生存關鍵字 {font.missingEssentialChars.length} 個：
+                  缺失基本關鍵字 {font.missingEssentialChars.length} 個：
                 </p>
               </div>
               <p className="ml-6 font-mono text-xs break-words text-red-700">

@@ -1,31 +1,58 @@
+/**
+ * 字型分析引擎 - FontFlow 核心模組
+ *
+ * 功能：
+ * - 解析 TTF/OTF/WOFF 字型檔案
+ * - 執行多層級字符覆蓋率分析
+ * - 計算繁體/簡體/日文/英文支援度
+ * - 生成精準的缺字列表和評分
+ *
+ * 核心演算法：
+ * - 基本字評分系統（Essential Filter）
+ * - 分層字符測試（Tier-based Testing）
+ * - 懲罰機制（Kill Switch）應對嚴重缺字
+ */
+
 import { parse } from 'opentype.js';
 import { FontDefinition } from './types';
 import { GLYPH_BASE, GLYPH_CANTONESE, GLYPH_TAIWAN, GLYPH_NAMING, GLYPH_JAPAN } from './glyphLists';
 
 // ============================================================================
-// 1. DATASETS
+// 1. 字符集定義 (Character Set Definitions)
 // ============================================================================
 //
-// 📋 字符集說明：
-// 以下字符集是基於繁體中文使用頻率統計和實務應用需求建立
-// 粵語、台灣、人名用字等擴展集由 glyphLists.ts 注入（來源：JetBrains Font v0.9）
+// 組織方式：
+// - TIER_TC_ESSENTIAL: 基本關鍵字（日文字型最常缺的字）
+// - TIER_CORE_TC: 繁體核心字集（JF7000 標準）
+// - 擴展集: 粵語、台灣、人名用字（由 glyphLists.ts 提供）
+// - TIER_PUNCTUATION: 排版標點符號
 //
 
 // [English]
 const TIER_EN_BASIC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-// [Tier Survival] 繁體中文「生存關鍵字」 (~90 字)
-// 日常溝通最常用字。只要缺了這些字，評分會被大幅降低。
-// 包括：常用動詞、代詞、量詞、基礎名詞、時間詞等
+/**
+ * 基本關鍵字 (Essential Characters) - 35 字
+ * 這些是繁體中文日常溝通最常用的字。
+ * 日文字型通常會缺少其中的一些字。
+ * 缺字超過 20%（即 7+ 字）會觸發懲罰機制，分數被鎖至 60% 以下。
+ */
 const TIER_TC_ESSENTIAL =
   '的一是不了人在有我他這中大來上個到說就要也你們會很那都能沒為吧嗎呢好著出對和時地要去看給還多小麼什麼之沒下天再沒想知道得真像把還讓被做用著樣只呢嗎啊啦喔把因為所以如果怎麼自己沒有可以應該已經然後讓覺得可能非常但是不是就是一起誰哪裡那裡東西現在今天明天昨天大家我們你們他們她們讓畫';
 
-// [Tier 0] 繁體核心 (基於 JetBrains Font v0.9 - 6373 字)
-// 這是完整的 JF7000 核心字集，涵蓋常見的繁體中文字符
+/**
+ * 繁體中文核心字集 (Core Traditional Chinese) - 6373 字
+ * 來源：JetBrains Font v0.9
+ * 涵蓋日常通讀、商務寫作和出版用途所需的所有繁體字符。
+ */
 const TIER_CORE_TC = GLYPH_BASE;
 
-// [Tier 1-3] 粵語、台灣、人名用字 (由 glyphLists.ts 注入)
-// 來源：JetBrains Font v0.9 官方 glyph 清單
+/**
+ * 擴展字集（由 glyphLists.ts 提供）
+ * - CANTONESE: 粵語特有字 (137 字)
+ * - TAIWAN: 台灣特有字 (930 字)
+ * - NAMING: 人名用字 (625 字)
+ */
 const TIER_CANTONESE = GLYPH_CANTONESE;
 const TIER_TAIWAN = GLYPH_TAIWAN;
 const TIER_NAMING = GLYPH_NAMING;
@@ -33,7 +60,10 @@ const TIER_NAMING = GLYPH_NAMING;
 // [Tier Punctuation] 標點符號
 const TIER_PUNCTUATION = '，。、：；？！「」『』（）—…';
 
-// [Japanese] 日文平假名與片假名（輔助判定日文字型的記號系統）
+/**
+ * 日文平假名與片假名 (Japanese Kana)
+ * 用於初步檢測日文字型（平假名覆蓋率應達 80%）
+ */
 const TIER_JA_KANA =
   'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん' +
   'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン' +
@@ -53,6 +83,10 @@ const TIER_JA_KANJI =
 // 而非只看平假名片假名（這樣會誤導，因為平假名片假名容易達到 100%）
 
 // [Simplified] 簡體特徵（只包含簡體獨有字、簡化字等，排除繁體已有的字）
+/**
+ * 簡體獨有字集 (Simplified Chinese Unique Characters)
+ * 用於識別簡體字型，與繁體區分
+ */
 const TIER_SC_UNIQUE =
   '国体话门经号叶爱龟转导层边实职结样机关电彻头业见龙办务运义独复厂万历书乡云亏亚亲亿仅从仑仓仪们价众优' +
   '伙会伟传伤伦伟伪伫体余佣侧侨侦偶偷伪儿允元兄充兆光兔入内全两八公六共关兴兵其具典养兼兽冁内冈册再冒' +
@@ -77,7 +111,10 @@ const ALL_TC_CHARS_SET = new Set(
 const TC_CHARS_FOR_SCAN =
   TIER_TC_ESSENTIAL + TIER_CORE_TC + TIER_CANTONESE + TIER_TAIWAN + TIER_NAMING;
 
-// 各層級字符集（用於層級檢測）
+/**
+ * 各層級字符集 (Set 格式，用於高效查詢)
+ * 預先計算以提升字符檢測效能
+ */
 const TIER_CORE_TC_SET = new Set(TIER_CORE_TC.split(''));
 const TIER_ESSENTIAL_SET = new Set(TIER_TC_ESSENTIAL.split(''));
 const TIER_CANTONESE_SET = new Set(TIER_CANTONESE.split(''));
@@ -92,18 +129,33 @@ const JA_KANA_SET = new Set(TIER_JA_KANA.split(''));
 const JA_KANJI_SET = new Set(TIER_JA_KANJI.split(''));
 
 // ============================================================================
-// 3. HELPER FUNCTIONS
+// 3. 輔助函數 (Helper Functions)
 // ============================================================================
 
 // 文件大小驗證（防止超大檔案卡頓）
 const MAX_FONT_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
+/**
+ * 驗證字型檔案大小
+ * @throws Error 如果檔案超過限制
+ */
 const validateFileSize = (file: File): void => {
   if (file.size > MAX_FONT_FILE_SIZE) {
     throw new Error(`字型檔案超過 ${MAX_FONT_FILE_SIZE / 1024 / 1024}MB，請選擇更小的檔案`);
   }
 };
 
+/**
+ * 檢查 OpenType 字型中是否存在某個字符的 Glyph
+ * 會檢查：
+ * 1. Glyph Index (charToGlyphIndex)
+ * 2. Glyph 路徑（path.commands）或輪廓（numberOfContours）
+ * 3. 複合字形（compound glyph）
+ *
+ * @param font - OpenType 字型物件
+ * @param char - 要檢查的字符
+ * @returns 是否存在有效的 glyph
+ */
 const hasGlyph = (font: any, char: string): boolean => {
   try {
     const glyphIndex = font.charToGlyphIndex(char);
@@ -116,18 +168,25 @@ const hasGlyph = (font: any, char: string): boolean => {
     const glyph = font.glyphs.get(glyphIndex);
     if (!glyph) return false;
 
-    // 檢查 glyph 是否有路徑命令（實際可渲染的內容）
-    // 空的 glyph 通常沒有 path 或 path.commands 為空
+    /**
+     * 檢查 glyph 是否有路徑命令（實際可渲染的內容）
+     * 空的 glyph 通常沒有 path 或 path.commands 為空
+     */
     if (glyph.path && glyph.path.commands && glyph.path.commands.length > 0) {
       return true;
     }
 
-    // 某些字體使用 numberOfContours 來表示輪廓數量
+    /**
+     * 某些字體使用 numberOfContours 來表示輪廓數量
+     */
     if (glyph.numberOfContours && glyph.numberOfContours > 0) {
       return true;
     }
 
-    // 複合字形（compound glyph）也算有內容
+    /**
+     * 複合字形（compound glyph）也算有內容
+     * 例如：é = e + 組合符號
+     */
     if (glyph.isComposite || (glyph.components && glyph.components.length > 0)) {
       return true;
     }
@@ -138,12 +197,20 @@ const hasGlyph = (font: any, char: string): boolean => {
   }
 };
 
+/**
+ * 檢查字符塊的覆蓋率
+ * @param font - OpenType 字型物件
+ * @param charString - 要檢查的字符串
+ * @returns 覆蓋率統計 { count, total, rate }
+ */
 const checkBlock = (font: any, charString: string) => {
   const chars = charString.split('');
   const total = chars.length;
   let count = 0;
 
-  // 使用 Set 來快速查詢，避免重複字符影響統計
+  /**
+   * 使用 Set 來快速查詢，避免重複字符影響統計
+   */
   const uniqueChars = new Set(chars);
   for (const char of uniqueChars) {
     if (hasGlyph(font, char)) count++;
@@ -157,14 +224,29 @@ const checkBlock = (font: any, charString: string) => {
 };
 
 // ============================================================================
-// 4. MAIN LOGIC (V11 - The Essential Filter)
+// 4. 核心邏輯 (Main Analysis Logic - V13 版本)
 // ============================================================================
+//
+// 演算法說明：
+// 1. 分層評分：Essential (40%) + Core (35%) + Extensions (15%) + Punctuation (10%)
+// 2. 懲罰機制：Essential 缺字超過 20% 時，分數鎖至 60% 以下
+// 3. 語言判定：基於覆蓋率和獨有字符比例
+// 4. 缺字收集：分別收集 Essential、Core 層級的缺字
+//
 
 /**
  * 分析字型檔案的繁體中文支援程度
  *
+ * 詳細流程：
+ * 1. 驗證檔案大小和格式
+ * 2. 逐層檢測字符覆蓋率
+ * 3. 計算多維度評分（繁體、簡體、日文、英文）
+ * 4. 根據 Essential Filter 應用懲罰機制
+ * 5. 判定語言標籤和描述
+ * 6. 收集並整理缺字列表
+ *
  * @param file - 字型檔案 (TTF/OTF/WOFF/WOFF2)
- * @returns 字型定義物件，包含覆蓋率、缺字列表等
+ * @returns Promise<FontDefinition> 字型定義物件，包含覆蓋率、缺字列表等
  * @throws Error 如果檔案格式不正確或解析失敗
  */
 export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
@@ -195,7 +277,7 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
 
         // --- 1. 數據統計 ---
         const statsEN = checkBlock(font, TIER_EN_BASIC);
-        const statsEssential = checkBlock(font, TIER_TC_ESSENTIAL); // ★ 新增：生存檢測
+        const statsEssential = checkBlock(font, TIER_TC_ESSENTIAL); // ★ 新增：基本檢測
         const statsCoreTC = checkBlock(font, TIER_CORE_TC);
         const statsCantonese = checkBlock(font, TIER_CANTONESE);
         const statsTaiwan = checkBlock(font, TIER_TAIWAN);
@@ -212,7 +294,7 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         // --- 2. 繁體中文評分系統 (V13 - JF7000 完整字集) ---
 
         // ★ 新評分系統（V13）：使用 JetBrains Font v0.9 完整字集
-        // Essential（生存字 35 字）和 Core（BASE 6373 字）的比重更重（40% + 35% = 75%）
+        // Essential（基本字 35 字）和 Core（BASE 6373 字）的比重更重（40% + 35% = 75%）
         // Essential 和 Core 合佔 75%，其他特定用途的字佔 25%
         let rawTcScore =
           statsEssential.rate * 0.4 +
@@ -221,7 +303,7 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
           statsPunct.rate * 0.1;
 
         // ★ 懲罰機制 (The Kill Switch)
-        // 如果「生存關鍵字」缺字太嚴重（例如日文字型常缺「你、們、於」），直接鎖死最高分
+        // 如果「基本關鍵字」缺字太嚴重（例如日文字型常缺「你、們、於」），直接鎖死最高分
         // 閾值設定：如果關鍵字少於 80% (35字缺7字以上)，分數壓在 60% 以下
         if (statsEssential.rate < 0.8) {
           rawTcScore = Math.min(rawTcScore, 0.59);
@@ -335,7 +417,7 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         }
 
         // ★ 新算法：覆蓋率只基於 GLYPH_BASE (TIER_CORE_TC)
-        // 生存字不列入覆蓋率計算，只用於檢視
+        // 基本字不列入覆蓋率計算，只用於檢視
         const coreCharCount = coreCharSet.size; // GLYPH_BASE 的字符數
         const coreCharsCovered = coreCharCount - missingCoreOnlyCount;
         const actualTCCoverage = coreCharCount > 0 ? coreCharsCovered / coreCharCount : 0;
@@ -373,12 +455,25 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
     reader.readAsArrayBuffer(file);
   });
 
+/**
+ * 將字型載入至瀏覽器 DOM
+ * 使 CSS @font-face 可以使用該字型進行渲染
+ *
+ * @param fontName - 字型名稱（用於 CSS 引用）
+ * @param data - 字型檔案的二進位資料
+ */
 export const loadFontFace = async (fontName: string, data: ArrayBuffer): Promise<void> => {
   const fontFace = new FontFace(fontName, data);
   await fontFace.load();
   document.fonts.add(fontFace);
 };
 
+/**
+ * 從瀏覽器 DOM 移除指定的字型
+ * 釋放記憶體並避免字型衝突
+ *
+ * @param fontName - 要移除的字型名稱
+ */
 export const removeFontFace = (fontName: string): void => {
   try {
     const fontsToDelete: FontFace[] = [];
@@ -392,16 +487,30 @@ export const removeFontFace = (fontName: string): void => {
 };
 
 // ============================================================================
-// 4. TEXT COVERAGE CHECK (用於預覽驗證)
+// 5. 文字覆蓋率檢測 (Text Coverage Checking)
 // ============================================================================
+//
+// 用於預覽時動態檢測使用者輸入的文字中，有多少字符
+// 在目前選擇的字型中無法顯示
 
+/**
+ * 檢查文字在指定字型中的覆蓋率
+ * 用於預覽效果和缺字視覺化
+ *
+ * @param font - OpenType 字型物件
+ * @param text - 要檢查的文字
+ * @returns { rate: 覆蓋率 0-1, missing: 缺失的唯一字符 }
+ */
 export const checkTextCoverage = (font: any, text: string): { rate: number; missing: string[] } => {
   const chars = Array.from(text);
   const missing: string[] = [];
   let covered = 0;
 
   for (const char of chars) {
-    // 跳過空格和換行符
+    /**
+     * 跳過空格和換行符
+     * 這些不應該被計入覆蓋率計算
+     */
     if (/\s/.test(char)) {
       continue;
     }
@@ -416,6 +525,6 @@ export const checkTextCoverage = (font: any, text: string): { rate: number; miss
   const total = chars.filter((c) => !/\s/.test(c)).length;
   return {
     rate: total > 0 ? covered / total : 1,
-    missing: Array.from(new Set(missing)), // 去重
+    missing: Array.from(new Set(missing)), // 去重：只保留唯一字符
   };
 };

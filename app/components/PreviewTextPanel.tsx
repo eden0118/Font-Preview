@@ -1,3 +1,19 @@
+/**
+ * PreviewTextPanel 元件 - 預覽文字與設定面板
+ *
+ * 功能：
+ * - 文字輸入區域
+ * - 語言切換（繁體中文 / 英文）
+ * - 預設預覽文本快速選擇
+ * - 預覽設定控制（字體大小、顏色、背景）
+ * - 實時缺字檢測與顯示
+ *
+ * 架構：
+ * - 上層：語言和預設文本選擇
+ * - 中層：文字輸入框
+ * - 下層：PreviewSetting 元件
+ */
+
 import React from 'react';
 import { PreviewSetting } from './PreviewSetting';
 import { PreviewLanguage } from '@/lib/previewTexts';
@@ -40,7 +56,7 @@ export const PreviewTextPanel: React.FC<PreviewTextPanelProps> = ({
 }) => {
   // ★ 新增：實時檢查預覽文本中的缺字
   const [missingChars, setMissingChars] = React.useState<string>('');
-  
+
   React.useEffect(() => {
     if (!hasGlyphFunc) {
       setMissingChars('');
@@ -50,7 +66,7 @@ export const PreviewTextPanel: React.FC<PreviewTextPanelProps> = ({
     // 檢查預覽文本中每個字元是否能顯示
     const charsInText = new Set(inputText);
     const missing: string[] = [];
-    
+
     for (const char of charsInText) {
       // 跳過空白字符
       if (/\s/.test(char)) continue;

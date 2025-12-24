@@ -1,3 +1,18 @@
+/**
+ * 全局樣式和 Tailwind CSS 設定
+ *
+ * 結構：
+ * - @theme: 設定全域顏色變數
+ * - @layer base: 基礎 HTML 元素樣式
+ * - @layer components: 可復用的元件樣式
+ *
+ * 設計系統：
+ * - 主色 (primary): #0c52ea - 藍色
+ * - 輔助色 (accent): #f5a524 - 橙色
+ * - 文字色: primaryText (#1c1917), secondaryText (#4b4745), infoText (#878787)
+ * - 背景: stone-50 (淺灰)
+ */
+
 @import 'tailwindcss';
 
 @theme {
@@ -8,6 +23,9 @@
   --color-infoText: #878787;
 }
 
+/**
+ * Base Layer - 基礎 HTML 元素的預設樣式
+ */
 @layer base {
   body {
     @apply text-primaryText bg-stone-50;
@@ -21,6 +39,10 @@
     @apply cursor-pointer transition-all duration-300 ease-in-out;
   }
 
+  /**
+   * 自訂捲軸樣式
+   * Webkit 瀏覽器（Chrome, Safari, Edge）支援
+   */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -39,42 +61,63 @@
   }
 }
 
+/**
+ * Components Layer - 可復用的 UI 元件樣式
+ */
 @layer components {
+  /**
+   * 卡片元件
+   * 使用於 FontInfo, PreviewCard 等容器
+   */
   .card {
     @apply rounded-2xl border border-stone-100 bg-white shadow-md;
   }
 
-  /* button */
+  /**
+   * 按鈕變體集合
+   */
+
+  /* 基礎按鈕 */
   .btn {
     @apply flex items-center justify-center gap-1 rounded-lg px-6 py-2.5 text-sm font-medium transition-colors;
   }
 
+  /* 小型按鈕 */
   .small-btn {
     @apply flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold;
   }
 
+  /* 幽靈按鈕（純文字） */
   .ghost-btn {
     @apply text-primaryText hover:text-primary border-primary flex items-center gap-1 px-1 py-0.5 text-xs font-medium;
   }
 
+  /* 主按鈕 */
   .primary-btn {
     @apply bg-primary hover:bg-primary/90 text-white;
   }
 
+  /* 次按鈕 */
   .secondary-btn {
     @apply text-secondaryText hover:text-primary bg-stone-100 shadow-sm hover:bg-stone-50 hover:shadow-md;
   }
 
+  /* 圖示按鈕 */
   .icon-btn {
     @apply text-secondaryText hover:text-primary hover:bg-primary/10 flex items-center justify-center rounded-full p-1;
   }
 
-  /* input */
+  /**
+   * 輸入欄位
+   */
   .input {
     @apply focus:border-primary w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:outline-none;
   }
 
-  /* language label */
+  /**
+   * 語言標籤
+   * 用於 FontInfo 中顯示支援的語言
+   */
   .lang-label {
     @apply inline-block rounded bg-stone-200/50 px-2 py-0.5 text-xs font-medium text-stone-700;
   }

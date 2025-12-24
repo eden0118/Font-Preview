@@ -1,3 +1,12 @@
+/**
+ * 全域 TypeScript 類型定義
+ *
+ * 包含：
+ * - FontDefinition: 字型分析結果
+ * - ComparisonFont: 比較頁面的字型插槽
+ * - PreviewLanguage: 預覽文字語言
+ */
+
 export interface FontDefinition {
   name: string;
   family: string;

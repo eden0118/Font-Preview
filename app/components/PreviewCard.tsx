@@ -1,3 +1,18 @@
+/**
+ * PreviewCard 元件 - 字型預覽卡片
+ *
+ * 功能：
+ * - 使用上傳的字型實時渲染預覽文字
+ * - 動態計算預覽文字的字型覆蓋率
+ * - 視覺化缺字警告
+ * - 支援字體大小、顏色、背景色自訂
+ *
+ * 技術特點：
+ * - 使用 CSS @font-face 動態載入字型
+ * - useMemo 最佳化覆蓋率計算效能
+ * - 響應式設計，支援各尺寸螢幕
+ */
+
 import React, { useMemo } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { FontDefinition } from '@/lib/types';

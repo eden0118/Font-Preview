@@ -1,3 +1,24 @@
+/**
+ * usePreviewSettings Hook - 預覽設定狀態管理
+ *
+ * 功能：
+ * - 管理預覽的字體大小、顏色、背景
+ * - 語言切換與文字管理
+ * - 設定重置功能
+ *
+ * 狀態：
+ * - fontSize: 預覽字體大小 (12-150px)
+ * - fontColor: 字體顏色 (hex)
+ * - bgColor: 背景色 (hex)
+ * - language: 預覽語言 ('cn' | 'en')
+ * - inputText: 目前輸入的預覽文字
+ *
+ * 特點：
+ * - SSR/Hydration 安全：避免客戶端與伺服器不同步
+ * - 語言切換時自動更新預覽文字
+ * - 提供預設文字庫快速切換
+ */
+
 import { useState, useCallback, useEffect } from 'react';
 import { getRandomPreviewText, PREVIEW_TEXTS_CN, PreviewLanguage } from '../lib/previewTexts';
 
@@ -15,7 +36,10 @@ const DEFAULT_SETTINGS: PreviewSettings = {
   language: 'cn',
 };
 
-// 預設預覽文字 - 使用第一篇中文作為伺服器端預設值，避免 hydration mismatch
+/**
+ * 預設預覽文字 - 使用第一篇中文作為伺服器端預設值
+ * 避免 hydration mismatch，客戶端載入後會隨機選擇
+ */
 const INITIAL_SAMPLE_TEXT = PREVIEW_TEXTS_CN[0];
 
 export const usePreviewSettings = () => {

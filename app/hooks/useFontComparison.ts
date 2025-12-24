@@ -1,3 +1,22 @@
+/**
+ * useFontComparison Hook - 多字型並排比較邏輯
+ *
+ * 功能：
+ * - 管理最多 3 個字型的比較插槽
+ * - 逐個分析上傳的字型
+ * - 動態載入多個字型至瀏覽器
+ * - 支援字型移除和替換
+ *
+ * 狀態：
+ * - comparisonSlots: 3 個比較插槽的字型陣列
+ * - analysingId: 目前正在分析的插槽 ID
+ * - uploadError: 分析錯誤訊息
+ *
+ * 使用場景：
+ * - 比較頁面需要並排展示多個字型
+ * - 快速判斷哪個字型最適合繁體中文
+ */
+
 import { useState, useCallback } from 'react';
 import { analyzeFontFile, loadFontFace, removeFontFace } from '@/lib/fontHelper';
 import { FontDefinition } from '@/lib/types';

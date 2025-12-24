@@ -1,3 +1,18 @@
+/**
+ * PreviewSetting 元件 - 預覽設定控制器
+ *
+ * 功能：
+ * - 字體大小調整（12px - 150px）
+ * - 字體顏色選擇
+ * - 背景色選擇
+ * - 設定重置按鈕
+ *
+ * 設計特色：
+ * - 實時更新預覽效果
+ * - 支援兩種配色主題（primary/accent）
+ * - 響應式佈局
+ */
+
 import React from 'react';
 import { RotateCcw } from 'lucide-react';
 

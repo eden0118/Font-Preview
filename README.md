@@ -24,7 +24,7 @@
 #### **關鍵特性**
 
 1. **分層字符測試系統**
-   - 生存關鍵字（35 字）：日文常缺字的死穴 → 缺字超過 20%，直接判死（分數鎖至 60%）
+   - 基本關鍵字（35 字）：日文常缺字的死穴 → 缺字超過 20%，直接判死（分數鎖至 60%）
    - 核心繁體（500 字）：日常用語必需 → 占 70% 評分權重
    - 進階繁體（500+ 字）：專業排版用 → 占 20% 評分權重
    - 標點符號（14 字）：排版品質指標 → 占 10% 評分權重
@@ -34,7 +34,7 @@
    ```
    最終分數 = 核心覆蓋率 × 0.7 + 進階覆蓋率 × 0.2 + 標點覆蓋率 × 0.1
 
-   懲罰機制：如果生存關鍵字缺字超過 20%，強制鎖死最高 60%
+   懲罰機制：如果基本關鍵字缺字超過 20%，強制鎖死最高 60%
    ```
 
 3. **確切的缺字列表**
@@ -311,7 +311,7 @@ calculateCoverageRate(font, charset): number
 ```javascript
 const CHAR_GROUPS = {
   critical: {
-    chars: '你們對...', // 35 個生存關鍵字
+    chars: '你們對...', // 35 個基本關鍵字
     weight: 'penalty' // 超過 20% 缺字則降分到 60%
   },
   core: {
@@ -400,76 +400,106 @@ interface DragDropState {
 - `FontInfo.tsx` - 字型資訊卡片
   - 展示：覆蓋率、缺字列表、基本資訊
   - 智能顏色編碼（紅色/黃色/綠色表示覆蓋率等級）
+  - 多維度覆蓋率視覺化：繁體、簡體、日文、英文
 
 - `PreviewCard.tsx` - 預覽卡片
   - 展示：字型實時預覽
+  - 動態計算預覽文字的字型覆蓋率
+  - 缺字警告和詳細缺字列表
   - 與 PreviewSetting 聯動
 
 - `PreviewTextPanel.tsx` - 文字編輯面板
   - 功能：編輯預覽文字、預設文本快速選擇
-  - 支援：繁中、簡中、英文、日文
+  - 語言切換（繁體中文 / 英文）
+  - 實時缺字檢測與顯示
 
 - `PreviewSetting.tsx` - 預覽控制面板
-  - 控制：字體大小、顏色、背景色
+  - 控制：字體大小 (12-150px)、顏色、背景色
   - 實時反映到預覽卡片
+  - 支援設定重置
 
 - `FontListItem.tsx` - 字型列表項（對比頁面）
   - 展示：字型名稱 + 覆蓋率
   - 功能：移除字型
 
-**上傳元件**
-
 - `UploadZone.tsx` - 拖放上傳區域
   - 支援：拖放 + 點擊上傳
   - 驗證：檔案大小（50MB）、格式檢查
+  - 視覺回饋和加載指示
 
-**首頁元件**
+- `PageHeader.tsx` - 頁面標題欄
+  - 返回按鈕導航
+  - 頁面標題展示
 
-- `FeatureCard.tsx` - 功能特性卡片
-- `FontUploadZone.tsx` - 首頁上傳區域
+- `FeatureCard.tsx` - 功能特性卡片（首頁）
+  - 展示應用功能概覽
+  - 導航到功能頁面
+
+- `Footer.tsx` - 底部欄位
+  - 應用資訊和社群連結
 
 #### **4. 工具模組 (lib/)**
 
-**fontHelper.ts**
+**fontHelper.ts** - ⭐ 字型分析引擎（核心）
 
-- 核心分析演算法
-- 字符覆蓋檢測
-- 覆蓋率計算
+核心演算法和字型處理功能：
 
-**coverageHelpers.ts**
+- 分層字符測試系統 (5 層)
+  - Essential Characters (35字): 基本關鍵字，缺字超過 20% 觸發懲罰
+  - Core Traditional Chinese (6373字): JF7000 標準字集
+  - Extended Sets: 粵語、台灣、人名用字
+  - Punctuation (14字): 排版標點符號
 
-- 覆蓋率顏色映射
-- UI 狀態展示邏輯
+- 多維評分系統 (V13)
+  - Essential: 40% 權重
+  - Core: 35% 權重
+  - Extensions: 15% 權重
+  - Punctuation: 10% 權重
 
-**previewTexts.ts**
+- 懲罰機制 (Kill Switch)
+  - Essential 缺字超過 20% → 分數鎖至 60% 以下
 
-- 預設預覽文本集合
-- 多語言支援
+- 匯出的主要函數
+  - `analyzeFontFile(file)`: 分析字型檔案
+  - `loadFontFace(name, data)`: 動態載入字型至瀏覽器
+  - `removeFontFace(name)`: 清理字型資源
+  - `checkTextCoverage(font, text)`: 文字覆蓋率檢測
 
-**types.ts**
+**其他工具模組**
 
-- TypeScript 介面定義
-- 整個應用的類型契約
+- `coverageHelpers.ts`: 覆蓋率顏色映射 (紅/黃/綠)、UI 狀態邏輯
+- `previewTexts.ts`: 預設預覽文本集合（繁中 + 英文）、隨機選擇
+- `glyphLists.ts`: JetBrains Font v0.9 完整字符集清單（8602 字）
+- `types.ts`: TypeScript 全域類型定義、介面契約
+
+#### **5. Hooks 模組 (hooks/)**
+
+- `useFontAnalysis.ts`: 單一字型分析狀態管理
+- `useFontComparison.ts`: 多字型並排比較（最多 3 個）
+- `usePreviewSettings.ts`: 預覽設定狀態（字體大小、顏色、背景、語言）
+- `usePreviewText.ts`: 預覽文字初始化（自動填入預設文本）
+- `useDragDrop.ts`: 拖放上傳功能（檔案驗證、視覺回饋）
 
 ### **資料流向圖**
 
 ```
 使用者上傳字型
        ↓
-UploadZone (檔案驗證)
+UploadZone (檔案驗證) [useDragDrop]
        ↓
 useFontAnalysis / useFontComparison (載入狀態)
        ↓
 fontHelper.ts (分析引擎)
   ├─ OpenType.js (字型解析)
-  ├─ 字符集檢測
-  └─ 覆蓋率計算
+  ├─ glyphLists.ts (標準字符集參照)
+  └─ 分層評分 + 懲罰機制
        ↓
 FontInfo.tsx (結果展示)
+usePreviewText.ts (自動填入預設文本)
        ↓
-usePreviewSettings (預覽設定)
+usePreviewSettings (預覽設定) [PreviewSetting]
        ↓
-PreviewCard.tsx (即時預覽)
+PreviewCard.tsx (即時預覽 + 缺字警告)
 ```
 
 ---
@@ -949,7 +979,7 @@ export default MyComponent;
 
 ```typescript
 // ✅ 有用的評論
-// 檢查生存關鍵字的缺字數量，如果超過 20% 則降分到 60%
+// 檢查基本關鍵字的缺字數量，如果超過 20% 則降分到 60%
 if (criticalCharsGap > 0.2) {
   score = 0.6;
 }
@@ -1119,13 +1149,13 @@ const x = font.name; // 獲取字型名稱
 
 **結論**：100% 覆蓋率的字型已經**非常優秀**，缺字清單中的字通常影響甚微。
 
-### **生存關鍵字的「懲罰機制」**
+### **基本關鍵字的「懲罰機制」**
 
 某些日文字型在繁體中文中會**系統性缺字**。例如：
 
 - 日文常缺「你、們、對」等常見繁體字
 
-如果生存關鍵字缺字超過 20%，我們會：
+如果基本關鍵字缺字超過 20%，我們會：
 
 1. ✅ 保持詳細的缺字列表（讓您知道確切缺什麼）
 2. 🔴 **強制降低評分到 60%**（反映出「不適合繁體使用」的事實）
