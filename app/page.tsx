@@ -13,7 +13,10 @@ export default function Home() {
           {/* Header */}
           <div className="mb-12 text-center">
             <h1 className="mb-2 text-5xl font-bold text-stone-900">FontFlow</h1>
-            <p className="text-lg text-stone-600">一站式字體預覽和分析工具</p>
+            <p className="text-primaryText text-lg">專為繁體中文使用者打造的字型分析工具</p>
+            <p className="text-infoText mt-3 text-sm">
+              快速檢測日文、簡體或其他字型對繁體中文的支援程度，掌握缺字情況
+            </p>
           </div>
 
           {/* Feature Cards */}
@@ -22,14 +25,14 @@ export default function Home() {
               href="/analysis"
               icon={BarChart3}
               title="字型分析"
-              description="上傳字型檔案，深入分析其覆蓋範圍、特性和適用語言"
+              description="上傳字型檢測繁體中文支援度，深入分析缺字字符和語言覆蓋率。"
               buttonText="開始分析"
             />
             <FeatureCard
               href="/comparison"
               icon={Zap}
               title="字型比較"
-              description="並排預覽多個字型檔案，快速比較視覺效果和特性"
+              description="並排測試多個字型，快速找到最適合繁體中文的字體。"
               buttonText="開始比較"
             />
           </div>

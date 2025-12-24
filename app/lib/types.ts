@@ -16,6 +16,8 @@ export interface FontDefinition {
   // 支援的字符範圍（用於快速檢查）
   supportedChars?: string;
   description?: string;
+  // 缺失的繁體中文字
+  missingTCChars?: string;
 }
 
 export type TabMode = 'analysis' | 'comparison';

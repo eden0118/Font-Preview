@@ -78,7 +78,7 @@ export default function AnalysisPage() {
       {/* Main Content */}
       <main className="mx-auto mb-6 grid max-w-7xl flex-1 grid-cols-1 gap-6 p-6 lg:grid-cols-4">
         {/* Upload */}
-        <div className="flex flex-col gap-6 lg:col-span-1">
+        <div className="flex flex-col gap-6">
           {/* Upload Section */}
           <div className="card p-6">
             <div className="mb-4 flex items-center gap-2">
@@ -104,34 +104,32 @@ export default function AnalysisPage() {
           {currentFont && <FontInfo font={currentFont} />}
         </div>
 
-        {/* Upload and Preview Settings */}
-        <PreviewTextPanel
-          inputText={inputText}
-          onInputChange={setInputText}
-          language={settings.language}
-          onLanguageChange={updateLanguage}
-          fontSize={settings.fontSize}
-          fontColor={settings.fontColor}
-          bgColor={settings.bgColor}
-          onFontSizeChange={updateFontSize}
-          onFontColorChange={updateFontColor}
-          onBgColorChange={updateBgColor}
-          onReset={resetSettings}
-          onResetDefault={resetToDefault}
-        >
-          {/* Preview Card */}
-          {currentFont && (
-            <div>
-              <PreviewCard
-                font={currentFont}
-                text={inputText}
-                fontColor={settings.fontColor}
-                bgColor={settings.bgColor}
-                fontSize={settings.fontSize}
-              />
-            </div>
-          )}
-        </PreviewTextPanel>
+        <div className="lg:col-span-3">
+          {/* Upload and Preview Settings */}
+          <PreviewTextPanel
+            inputText={inputText}
+            onInputChange={setInputText}
+            language={settings.language}
+            onLanguageChange={updateLanguage}
+            fontSize={settings.fontSize}
+            fontColor={settings.fontColor}
+            bgColor={settings.bgColor}
+            onFontSizeChange={updateFontSize}
+            onFontColorChange={updateFontColor}
+            onBgColorChange={updateBgColor}
+            onReset={resetSettings}
+            onResetDefault={resetToDefault}
+          >
+            {/* Preview Card */}
+            <PreviewCard
+              font={currentFont}
+              text={inputText}
+              fontColor={settings.fontColor}
+              bgColor={settings.bgColor}
+              fontSize={settings.fontSize}
+            />
+          </PreviewTextPanel>
+        </div>
       </main>
       <Footer />
     </div>

@@ -46,8 +46,12 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
           </div>
           <h2 className="mb-3 text-2xl font-bold text-stone-900">{title}</h2>
           <p className="mb-6 text-stone-600">{description}</p>
-          <div className={`text-primary flex items-center font-semibold`}>
-            {buttonText} <ArrowRight className="ml-2" size={20} />
+          <div className={`text-primary flex items-center gap-2 font-semibold`}>
+            {buttonText}{' '}
+            <ArrowRight
+              className="transition-all duration-500 group-hover:translate-x-3"
+              size={20}
+            />
           </div>
         </div>
       </div>

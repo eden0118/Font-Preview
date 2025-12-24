@@ -9,15 +9,15 @@ interface FontListItemProps {
 
 export const FontListItem: React.FC<FontListItemProps> = ({ font, onRemove }) => {
   return (
-    <div className="flex items-center justify-between rounded-lg border border-stone-200 bg-stone-50 p-3">
+    <div className="flex items-center justify-between rounded-lg border border-stone-300 bg-stone-100 px-2 py-1">
       <div className="flex-1">
-        <p className="text-sm font-medium text-stone-800">{font.name}</p>
+        <p className="text-xs font-medium text-stone-800">{font.name}</p>
       </div>
       <button
         onClick={onRemove}
-        className="ml-2 inline-flex items-center justify-center rounded-lg p-1.5 text-stone-400 transition-colors hover:bg-white hover:text-red-600"
+        className="text-secondaryText ml-2 inline-flex items-center justify-center rounded-full p-1.5 transition-colors hover:bg-white hover:text-red-600"
       >
-        <X size={18} />
+        <X size={16} />
       </button>
     </div>
   );

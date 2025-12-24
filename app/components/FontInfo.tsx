@@ -1,4 +1,5 @@
 import React from 'react';
+import { AlertTriangle } from 'lucide-react';
 import { FontDefinition } from '@/lib/types';
 import { getCoverageColor } from '@/lib/coverageHelpers';
 
@@ -112,6 +113,34 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
                     style={{ width: `${font.coverage.ja}%` }}
                   />
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Missing TC Characters */}
+        {font.missingTCChars && font.missingTCChars.length > 0 && (
+          <div className="border-t border-stone-200 pt-3">
+            <p className="mb-2 text-xs font-semibold text-stone-600">
+              缺失繁體字 ({font.missingTCChars.length})
+            </p>
+            <div className="space-y-2">
+              {font.missingTCChars.length > 5 && (
+                <div className="rounded-lg border border-amber-200 bg-amber-50 p-2">
+                  <div className="flex gap-2">
+                    <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 text-amber-800" />
+                    <p className="text-xs font-semibold text-amber-800">
+                      缺字超過5個，使用時可能經常遇到回退字型。
+                    </p>
+                  </div>
+                </div>
+              )}
+              <div className="rounded-lg p-2">
+                <p className="text-xs break-words text-red-700">
+                  {font.missingTCChars.length > 50
+                    ? font.missingTCChars.split('').slice(0, 50).join('、') + '...'
+                    : font.missingTCChars.split('').join('、')}
+                </p>
               </div>
             </div>
           </div>

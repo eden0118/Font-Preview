@@ -14,6 +14,7 @@ export const useFontComparison = (initialSlots: ComparisonSlot[] = []) => {
       : [
           { id: '1', font: null },
           { id: '2', font: null },
+          { id: '3', font: null },
         ]
   );
   const [analysingId, setAnalysingId] = useState<string | null>(null);
