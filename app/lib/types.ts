@@ -1,9 +1,9 @@
 export interface FontDefinition {
   name: string;
   family: string;
-  category: 'sans-serif' | 'serif' | 'display' | 'handwriting';
+
   tags: ('tc' | 'sc' | 'en' | 'ja' | 'ko')[];
-  description?: string;
+
   isCustom?: boolean;
   glyphCount?: number;
   // 適用性分數 (0-100)

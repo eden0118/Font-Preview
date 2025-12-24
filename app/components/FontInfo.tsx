@@ -8,27 +8,13 @@ interface FontInfoProps {
 
 export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
   return (
-    <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
-      <h3 className="mb-4 text-lg font-bold text-stone-800">字型信息</h3>
+    <div className="card p-6">
+      <h3 className="mb-3 font-bold text-stone-800">{font.name}</h3>
       <div className="space-y-3">
-        <div>
-          <p className="text-xs text-stone-500">名稱</p>
-          <p className="font-medium text-stone-700">{font.name}</p>
-        </div>
-        <div>
-          <p className="text-xs text-stone-500">類別</p>
-          <p className="font-medium text-stone-700">{font.category}</p>
-        </div>
         {font.glyphCount && (
           <div>
             <p className="text-xs text-stone-500">字符數</p>
             <p className="font-medium text-stone-700">{font.glyphCount.toLocaleString()}</p>
-          </div>
-        )}
-        {font.description && (
-          <div>
-            <p className="text-xs text-stone-500">描述</p>
-            <p className="text-sm text-stone-600">{font.description}</p>
           </div>
         )}
 
@@ -37,26 +23,10 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
           <div>
             <p className="text-xs text-stone-500">支援語系</p>
             <div className="flex flex-wrap gap-2">
-              {font.coverage.tc >= 80 && (
-                <span className="inline-block rounded-full bg-stone-200 px-3 py-1 text-xs font-medium text-stone-700">
-                  繁體中文
-                </span>
-              )}
-              {font.coverage.sc >= 80 && (
-                <span className="inline-block rounded-full bg-stone-200 px-3 py-1 text-xs font-medium text-stone-700">
-                  簡體中文
-                </span>
-              )}
-              {font.coverage.en >= 80 && (
-                <span className="inline-block rounded-full bg-stone-200 px-3 py-1 text-xs font-medium text-stone-700">
-                  英文
-                </span>
-              )}
-              {font.coverage.ja >= 80 && (
-                <span className="inline-block rounded-full bg-stone-200 px-3 py-1 text-xs font-medium text-stone-700">
-                  日文
-                </span>
-              )}
+              {font.coverage.tc >= 80 && <span className="lang-label">繁體中文</span>}
+              {font.coverage.sc >= 80 && <span className="lang-label">簡體中文</span>}
+              {font.coverage.en >= 80 && <span className="lang-label">英文</span>}
+              {font.coverage.ja >= 80 && <span className="lang-label">日文</span>}
               {font.coverage.tc < 80 &&
                 font.coverage.sc < 80 &&
                 font.coverage.en < 80 &&
@@ -71,7 +41,7 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
         {font.coverage && (
           <div className="border-t border-stone-200 pt-3">
             <p className="mb-3 text-xs font-semibold text-stone-600">語言覆蓋率</p>
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-3">
               {/* Traditional Chinese */}
               <div>
                 <div className="mb-1 flex items-center justify-between">

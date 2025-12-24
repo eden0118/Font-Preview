@@ -40,13 +40,17 @@
 }
 
 @layer components {
+  .card {
+    @apply rounded-2xl border border-stone-100 bg-white shadow-md;
+  }
+
   /* button */
   .btn {
     @apply flex items-center justify-center gap-1 rounded-lg px-6 py-2.5 text-sm font-medium transition-colors;
   }
 
   .small-btn {
-    @apply flex items-center gap-1 rounded-lg px-3 py-1.5 text-[10px] font-bold tracking-tighter;
+    @apply flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold tracking-tighter;
   }
 
   .ghost-btn {
@@ -58,7 +62,7 @@
   }
 
   .secondary-btn {
-    @apply text-secondaryText bg-stone-100 hover:bg-stone-200;
+    @apply text-secondaryText hover:text-primary bg-stone-100 hover:bg-stone-200;
   }
 
   .icon-btn {
@@ -68,5 +72,10 @@
   /* input */
   .input {
     @apply focus:border-primary w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:outline-none;
+  }
+
+  /* language label */
+  .lang-label {
+    @apply inline-block rounded-full bg-stone-200 px-3 py-0.5 text-xs font-medium text-stone-700;
   }
 }

@@ -31,7 +31,7 @@ export const FontUploadZone: React.FC<FontUploadProps> = ({
   const colorClass = variant === 'comparison' ? 'amber' : 'blue';
 
   return (
-    <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
+    <div className="card p-6">
       <div className="mb-4 flex items-center gap-2">
         <Upload className={`h-5 w-5 text-${colorClass}-600`} />
         <h2 className="text-lg font-bold text-stone-800">上傳字型檔案</h2>
@@ -47,7 +47,7 @@ export const FontUploadZone: React.FC<FontUploadProps> = ({
           isDragActive
             ? `border-${colorClass}-400 bg-${colorClass}-50`
             : isAnalyzing
-              ? 'border-orange-200 bg-orange-50'
+              ? 'border-primary-50 bg-primary/5'
               : `hover:border-${colorClass}-300 border-stone-300 hover:bg-stone-50`
         }`}
       >
@@ -70,8 +70,8 @@ export const FontUploadZone: React.FC<FontUploadProps> = ({
               <Upload className={`h-6 w-6 text-${colorClass}-600`} />
             </div>
             <div>
-              <p className="text-sm font-medium text-stone-700">點擊選擇或拖拽放入</p>
-              <p className="text-xs text-stone-500">支援 TTF, OTF, WOFF, WOFF2</p>
+              <p className="text-primaryText text-sm font-medium">點擊選擇或拖拽放入</p>
+              <p className="text-secondaryText text-xs">支援 TTF, OTF, WOFF, WOFF2</p>
             </div>
           </>
         )}

@@ -19,17 +19,16 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   fontSize,
 }) => {
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-stone-100 bg-white shadow-sm">
+    <div className="card flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-2 border-b border-stone-100 bg-stone-50/50 px-6 py-3">
+      <div className="bg-primary/5 flex items-center gap-2 border-b border-stone-100 px-6 py-3">
         <div className="bg-primary h-3 w-3 rounded-full" />
         <p className="font-semibold text-stone-800">{font ? font.name : fontName || '預設字型'}</p>
-        {font && <p className="text-xs text-stone-500">Detected: {font.category}</p>}
       </div>
 
       {/* Preview Area */}
       <div
-        className="flex min-h-64 flex-1 items-center justify-center overflow-auto p-6 transition-colors duration-300"
+        className="flex min-h-60 flex-1 items-center justify-center overflow-auto p-6 transition-colors duration-300"
         style={{ backgroundColor: bgColor }}
       >
         {text ? (
