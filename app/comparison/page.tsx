@@ -6,6 +6,7 @@ import { useFontComparison } from '../hooks/useFontComparison';
 import { usePreviewSettings } from '../hooks/usePreviewSettings';
 import { useDragDrop } from '../hooks/useDragDrop';
 import { PageHeader } from '../components/PageHeader';
+import { PreviewSetting } from '../components/PreviewSetting';
 import { Footer } from '../components/Footer';
 import { SAMPLE_TEXTS } from '@/lib/constants';
 
@@ -125,12 +126,7 @@ export default function ComparisonPage() {
 
           {/* Middle Panel - Text & Settings */}
           <div className="mb-6 rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-stone-800">預覽文字與設定</h3>
-              <button className="text-xs font-medium text-amber-600 hover:text-amber-700">
-                預設文字
-              </button>
-            </div>
+            <h3 className="mb-4 text-lg font-bold text-stone-800">預覽文字與設定</h3>
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
@@ -139,57 +135,19 @@ export default function ComparisonPage() {
             />
 
             {/* Settings Row */}
-            <div className="mt-6 grid grid-cols-1 gap-4 border-t border-stone-100 pt-6 md:grid-cols-3">
-              <div>
-                <div className="mb-2 flex items-center justify-between">
-                  <label className="text-sm font-medium text-stone-600">出現字體大小</label>
-                  <span className="font-mono text-sm font-bold text-amber-600">
-                    {settings.fontSize}px
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="12"
-                  max="150"
-                  value={settings.fontSize}
-                  onChange={(e) => updateFontSize(Number(e.target.value))}
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-stone-200 accent-amber-600"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-stone-600">TEXT 顏色</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={settings.fontColor}
-                    onChange={(e) => updateFontColor(e.target.value)}
-                    className="h-8 w-8 cursor-pointer overflow-hidden rounded border-0 p-0 shadow-sm"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-stone-600">BG 顏色</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={settings.bgColor}
-                    onChange={(e) => updateBgColor(e.target.value)}
-                    className="h-8 w-8 cursor-pointer overflow-hidden rounded border-0 p-0 shadow-sm"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="mt-6 flex gap-2 border-t border-stone-100 pt-6">
-              <button
-                onClick={resetSettings}
-                className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-stone-100 px-4 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200"
-              >
-                重置設定
-              </button>
+            <div className="mt-6 border-t border-stone-100 pt-6">
+              <PreviewSetting
+                fontSize={settings.fontSize}
+                fontColor={settings.fontColor}
+                bgColor={settings.bgColor}
+                onFontSizeChange={updateFontSize}
+                onFontColorChange={updateFontColor}
+                onBgColorChange={updateBgColor}
+                onReset={resetSettings}
+                accentColor="amber"
+                layout="horizontal"
+                showLabels={true}
+              />
             </div>
           </div>
 
