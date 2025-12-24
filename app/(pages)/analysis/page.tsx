@@ -64,7 +64,7 @@ export default function AnalysisPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-stone-100">
+    <section className="relative flex min-h-screen flex-col bg-stone-100">
       <PageHeader title="字型分析" />
 
       {/* Information Banner */}
@@ -133,7 +133,87 @@ export default function AnalysisPage() {
           </PreviewTextPanel>
         </div>
       </main>
+
+      {/* Analysis Logic Explanation */}
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <div className="rounded-lg border border-stone-200 bg-stone-50 p-6">
+          <h2 className="mb-4 text-lg font-bold text-stone-800">字型分析邏輯說明</h2>
+          <div className="space-y-4 text-sm text-stone-700">
+            <div>
+              <h3 className="font-semibold text-stone-800">📊 覆蓋率計算</h3>
+              <p className="mt-1 text-xs text-stone-600">
+                檢查 <strong>8,602 個繁體字符</strong>（生存字 72 + 核心字 6,373 + 粵語字 137 +
+                台灣字 930 + 人名字 625）
+                <br />
+                <em>來源：JetBrains Font v0.9 官方 glyph 清單（最新版）</em>
+              </p>
+              <p className="mt-1 text-xs text-stone-600">
+                公式：
+                <code className="rounded bg-white px-2 py-1 font-mono">
+                  覆蓋率 = (總字數 - 缺字數) / 總字數 × 100%
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-stone-800">⚖️ 得分加權</h3>
+              <ul className="mt-2 space-y-1 text-xs text-stone-600">
+                <li>
+                  • <strong>生存字</strong> 40% — 日常溝通必需（72 字：的、一、是、人...）
+                </li>
+                <li>
+                  • <strong>核心字</strong> 35% — 基礎溝通與商業文件（6,373 字）
+                </li>
+                <li>
+                  • <strong>特定用途</strong> 15% — 粵語、台灣、人名（各佔 5%）
+                </li>
+                <li>
+                  • <strong>標點符號</strong> 10% — 中文排版必需
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-stone-800">🏷️ 支援判定標準</h3>
+              <ul className="mt-2 space-y-1 text-xs text-stone-600">
+                <li>
+                  • <strong>繁體中文</strong>：得分 &gt; 70% 且非簡體字型
+                </li>
+                <li>
+                  • <strong>繁體中文（部分缺字）</strong>：得分 50~70%
+                </li>
+                <li>
+                  • <strong>日文</strong>：日文假名 &gt; 80% 且日文漢字 &gt; 50%
+                </li>
+                <li>
+                  • <strong>簡體中文</strong>：簡體獨有字 &gt; 70%
+                </li>
+                <li>
+                  • <strong>粵語字、台灣字、人名字</strong>：各層級 &gt; 70%
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-stone-800">⚠️ 缺字警告</h3>
+              <ul className="mt-2 space-y-1 text-xs text-stone-600">
+                <li>
+                  • <strong>生存字缺乏</strong>：顯示具體缺失字符（🔴 紅色警告）
+                  <br />
+                  <em>日常溝通將受影響，建議搭配備用字型</em>
+                </li>
+                <li>
+                  • <strong>無生存字缺乏</strong>：只顯示覆蓋率統計
+                  <br />
+                  <em>日常使用無虞，可放心使用</em>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <Footer />
-    </div>
+    </section>
   );
 }

@@ -68,7 +68,7 @@ export default function ComparisonPage() {
   const hasFonts = comparisonSlots.some((s) => s.font !== null);
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-stone-100">
+    <section className="relative flex min-h-screen flex-col bg-stone-100">
       <PageHeader title="字型比較" />
 
       {/* Main Content */}
@@ -162,6 +162,6 @@ export default function ComparisonPage() {
         </div>
       </main>
       <Footer />
-    </div>
+    </section>
   );
 }

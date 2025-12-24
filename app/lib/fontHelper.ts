@@ -1,48 +1,34 @@
 import { parse } from 'opentype.js';
 import { FontDefinition } from './types';
+import { GLYPH_BASE, GLYPH_CANTONESE, GLYPH_TAIWAN, GLYPH_NAMING, GLYPH_JAPAN } from './glyphLists';
 
 // ============================================================================
 // 1. DATASETS
 // ============================================================================
+//
+// 📋 字符集說明：
+// 以下字符集是基於繁體中文使用頻率統計和實務應用需求建立
+// 粵語、台灣、人名用字等擴展集由 glyphLists.ts 注入（來源：JetBrains Font v0.9）
+//
 
 // [English]
 const TIER_EN_BASIC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-// [Tier Survival] 繁體中文「生存關鍵字」 (35字)
-// 日文字型的死穴。只要缺了這些字，強制判死刑（分數上限鎖死）。
+// [Tier Survival] 繁體中文「生存關鍵字」 (~90 字)
+// 日常溝通最常用字。只要缺了這些字，評分會被大幅降低。
+// 包括：常用動詞、代詞、量詞、基礎名詞、時間詞等
 const TIER_TC_ESSENTIAL =
-  '的你我他這那們是於對和麼為著' + '說畫裡后發麼樣體國機關業員' + '會經現進將當'; // 擴充幾個日文常用不同寫法的字
+  '的一是不了人在有我他這中大來上個到說就要也你們會很那都能沒為吧嗎呢好著出對和時地要去看給還多小麼什麼之沒下天再沒想知道得真像把還讓被做用著樣只呢嗎啊啦喔把因為所以如果怎麼自己沒有可以應該已經然後讓覺得可能非常但是不是就是一起誰哪裡那裡東西現在今天明天昨天大家我們你們他們她們讓畫';
 
-// [Tier 0] 繁體核心 (500字 - 統計母體)
-// 覆蓋率 ~80%。
-const TIER_CORE_TC =
-  '的一是不了人我在有他這中大來上國個到說們為子和你地出道也時年得就那要下以生會自著去之過家學對可她里后' +
-  '小么心多天而能好都然沒日于起還發成事只作當想看文無開手十用主行方又如前所本見經頭面公同三已老從動兩長' +
-  '知民樣現分將外但身些與高意進把法此實回二理今明問力最賢氣口使情各正向化定師由果利機代全平真社內表常條' +
-  '重名別幾政新收員角統指決活題接部度建性點應加信數少機反管期保權界系支展像象認條治導完書强記每車規據' +
-  '做區感南度門者認結影告戰帶樣候遠程畫義選聲報條樂難顯傳觀究院識越球式照深消極晚苦熱視整響聽格盡未約質' +
-  '養滿推支古驗算示流速增值容確備優除連始愛足供食早引商視話資達亞美花馬金六北海空廣語何話算臺灣男林布' +
-  '務原界據司命案規基價式提求紀則專希單容演雖設線際費團精布羅苦念底指腦切品睡速比形狀參查權示狀片史' +
-  '層臺介土勞委集術領局市消皇病醫族響約價習票證存整研究眼舉身離險落孩拿寫云講農夜座精率似突曾輕冷首' +
-  '歌速懷園衆半須獨幫校停假久印句村德週律風微旅連令講推單細刻找絕單衆香酒殺藝害官護級造念媽父哥姐弟' +
-  '妹水火木土金錢買賣讀書筆畫圖色紅白黑黃綠藍跑走跳吃喝睡醒喜怒哀樂春夏秋冬東西南北前後左右上下高低';
+// [Tier 0] 繁體核心 (基於 JetBrains Font v0.9 - 6373 字)
+// 這是完整的 JF7000 核心字集，涵蓋常見的繁體中文字符
+const TIER_CORE_TC = GLYPH_BASE;
 
-// [Tier 1] 繁體進階 (500+ 字)
-// 用於區分「能用」與「專業排版用」
-const TIER_EXTENDED_TC =
-  '風雨雷電雪冰霜雲霧露天地山川河流海洋湖泊森林樹木花草葉根莖果實種子鳥獸蟲魚牛羊豬狗貓雞鴨鵝虎獅象' +
-  '金銀銅鐵錫鉛鋁鋼煤油鹽糖醋茶酒米麵飯菜肉蛋奶衣帽鞋襪床桌椅櫃燈窗門牆瓦磚石沙土塵泥煙灰' +
-  '頭頸肩背胸腹腰臀手腳指甲毛髮骨血汗淚唾尿屎呼吸睡眠行走跑跳坐臥站立拿提抬扛推拉拖按壓摸抓握抱' +
-  '看聽聞嘗嗅喊叫哭笑喜怒憂思悲恐驚痛癢酸甜苦辣冷熱溫涼乾濕軟硬輕重快慢高低長短大小粗細方圓扁平' +
-  '城市鄉村街道橋樑工廠商店學校醫院銀行郵局圖書館博物館公園體育館劇場電影院餐廳旅館車站機場碼頭' +
-  '老師學生醫生護士工人農民士兵警察法官律師記者司機廚師服務員老闆經理秘書會計清潔工' +
-  '早午晚昨今明後年月日週季世紀元角分零一二三四五六七八九十百千萬億兆' +
-  '真假是非對錯好壞善惡美醜愛恨恩怨情仇忠奸智愚勇怯強弱勝敗得失生死存亡興衰成敗榮辱貴賤貧富' +
-  '紅橙黃綠青藍紫黑白灰棕粉金銀透明模糊清晰整齊雜亂清潔骯髒簡單複雜容易困難安全危險幸運倒霉' +
-  '詩詞歌賦琴棋書畫筆墨紙硯文章字句語法邏輯哲學歷史地理數學物理化學生物音樂美術體育旅遊休閒娛樂' +
-  '互充免判另否吸呀呆咬吵吹吻含周呼喝圈堆塵壺壽夢夾奇奈姓委始姐姑姓姆姨娘婚婦嫌孔孤孫宅宇守安宏宗官宙' +
-  '定客宣室害家容宿寂寄密富寒察寢寬審寫對導將專尊尋對導小少尖尚尤就尺局屁居屆屋展屬屠山岡岩岸峰島峽' +
-  '直鄰鵑鶉鷺鶯鸚鸜鸝鸛鸞隻隻隻隻隻隻隻隻隻隻隻隻隻隻隻隻隻隻隻隻隻隻';
+// [Tier 1-3] 粵語、台灣、人名用字 (由 glyphLists.ts 注入)
+// 來源：JetBrains Font v0.9 官方 glyph 清單
+const TIER_CANTONESE = GLYPH_CANTONESE;
+const TIER_TAIWAN = GLYPH_TAIWAN;
+const TIER_NAMING = GLYPH_NAMING;
 
 // [Tier Punctuation] 標點符號
 const TIER_PUNCTUATION = '，。、：；？！「」『』（）—…';
@@ -66,19 +52,37 @@ const TIER_JA_KANJI =
 // 注：日文字型的「日文覆蓋率」現在改為衡量**日文漢字常用字的支援程度**
 // 而非只看平假名片假名（這樣會誤導，因為平假名片假名容易達到 100%）
 
-// [Simplified] 簡體特徵
+// [Simplified] 簡體特徵（只包含簡體獨有字、簡化字等，排除繁體已有的字）
 const TIER_SC_UNIQUE =
   '国体话门经号叶爱龟转导层边实职结样机关电彻头业见龙办务运义独复厂万历书乡云亏亚亲亿仅从仑仓仪们价众优' +
   '伙会伟传伤伦伟伪伫体余佣侧侨侦偶偷伪儿允元兄充兆光兔入内全两八公六共关兴兵其具典养兼兽冁内冈册再冒' +
-  '刘齐划剂剑剧劝劳势勋励欢变难艰叹对戏观欢买岁轮软辐辑输辞辩农迅进远违迟运达过迈还这适选亿优偿储言语';
+  '刘齐划剂剑剧劝劳势勋励欢变难艰叹对戏观欢买岁轮软辐辑输辞辩农迅进远违迟运达过迈还这适选亿优偿储言语' +
+  '込啕嗯呃呇唛唝唞嗐嘦噅噞嘮嘬嘨嘦嘤嘥嘘嘜嘝嘞嘚嘙嘗嘛嘏嘔嗞嘓嘒嘑嘐嘏嘎嘍嗿嗾嗽嗺嗻嗼嗷嗶嗵' +
+  '嗴嗳嗲嗱嗰嗯嗮嗭嗬嗫嗪嗩嗨嗧嗦嗥嗤嗣嗢嗡嗠嗞嗝嗜嗛嗚嗙嗘嗗嗖嗕嗔嗓嗒嗑嗐嗏嗎嗍嗌嗋嗊嗉嗈嗇嗆嗅' +
+  '唷啑啐問啎啍啌啋啊呿呾命呼呻呺呹呸呷呶呵呴味呲呱呰呯呮呭呬呫呪呩周呧呦呥呤呣呢呡呠呟呞呝呜呛呚呙员' +
+  '呗呖呕呔呓呒呑呐呏呎呍呌呋告呉呈呇呆呅呄呃呂呁呀';
+
+// 注：簡體獨有字集，用於準確識別簡體中文字型與繁體的差異
 
 // ============================================================================
 // 2. OPTIMIZED CHARACTER SETS (預先計算)
 // ============================================================================
 
 // 所有繁體中文字符的組合（用於缺字掃描）
-const ALL_TC_CHARS_SET = new Set((TIER_TC_ESSENTIAL + TIER_CORE_TC + TIER_EXTENDED_TC).split(''));
-const TC_CHARS_FOR_SCAN = TIER_TC_ESSENTIAL + TIER_CORE_TC + TIER_EXTENDED_TC;
+// 包括：ESSENTIAL、BASE、粵語字、台灣字、人名用字
+// ★ 注：ESSENTIAL 已包含在 BASE 中，但為了精確計算和警告，保持分離
+const ALL_TC_CHARS_SET = new Set(
+  (TIER_TC_ESSENTIAL + TIER_CORE_TC + TIER_CANTONESE + TIER_TAIWAN + TIER_NAMING).split('')
+);
+const TC_CHARS_FOR_SCAN =
+  TIER_TC_ESSENTIAL + TIER_CORE_TC + TIER_CANTONESE + TIER_TAIWAN + TIER_NAMING;
+
+// 各層級字符集（用於層級檢測）
+const TIER_CORE_TC_SET = new Set(TIER_CORE_TC.split(''));
+const TIER_ESSENTIAL_SET = new Set(TIER_TC_ESSENTIAL.split(''));
+const TIER_CANTONESE_SET = new Set(TIER_CANTONESE.split(''));
+const TIER_TAIWAN_SET = new Set(TIER_TAIWAN.split(''));
+const TIER_NAMING_SET = new Set(TIER_NAMING.split(''));
 
 // English 字符集
 const EN_CHARS_SET = new Set(TIER_EN_BASIC.split(''));
@@ -102,7 +106,33 @@ const validateFileSize = (file: File): void => {
 
 const hasGlyph = (font: any, char: string): boolean => {
   try {
-    return font.charToGlyphIndex(char) > 0;
+    const glyphIndex = font.charToGlyphIndex(char);
+
+    // 無此字符
+    if (glyphIndex <= 0) return false;
+
+    // ★ 進一步檢查：glyph 是否有實際內容（路徑）
+    // 有些字體雖然有 glyph index，但實際上是空的 glyph
+    const glyph = font.glyphs.get(glyphIndex);
+    if (!glyph) return false;
+
+    // 檢查 glyph 是否有路徑命令（實際可渲染的內容）
+    // 空的 glyph 通常沒有 path 或 path.commands 為空
+    if (glyph.path && glyph.path.commands && glyph.path.commands.length > 0) {
+      return true;
+    }
+
+    // 某些字體使用 numberOfContours 來表示輪廓數量
+    if (glyph.numberOfContours && glyph.numberOfContours > 0) {
+      return true;
+    }
+
+    // 複合字形（compound glyph）也算有內容
+    if (glyph.isComposite || (glyph.components && glyph.components.length > 0)) {
+      return true;
+    }
+
+    return false;
   } catch {
     return false;
   }
@@ -167,7 +197,9 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         const statsEN = checkBlock(font, TIER_EN_BASIC);
         const statsEssential = checkBlock(font, TIER_TC_ESSENTIAL); // ★ 新增：生存檢測
         const statsCoreTC = checkBlock(font, TIER_CORE_TC);
-        const statsExtendedTC = checkBlock(font, TIER_EXTENDED_TC);
+        const statsCantonese = checkBlock(font, TIER_CANTONESE);
+        const statsTaiwan = checkBlock(font, TIER_TAIWAN);
+        const statsNaming = checkBlock(font, TIER_NAMING);
         const statsPunct = checkBlock(font, TIER_PUNCTUATION);
         const statsJaKana = checkBlock(font, TIER_JA_KANA);
         const statsJaKanji = checkBlock(font, TIER_JA_KANJI); // ★ 日文漢字覆蓋率（才是真的日文支援度）
@@ -177,17 +209,21 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         const descriptions: string[] = [];
         let isCJK = false;
 
-        // --- 2. 繁體中文評分系統 (V11) ---
+        // --- 2. 繁體中文評分系統 (V13 - JF7000 完整字集) ---
 
-        // 基礎分：依舊依賴廣泛的 300 字與 150 字
+        // ★ 新評分系統（V13）：使用 JetBrains Font v0.9 完整字集
+        // Essential（生存字 35 字）和 Core（BASE 6373 字）的比重更重（40% + 35% = 75%）
+        // Essential 和 Core 合佔 75%，其他特定用途的字佔 25%
         let rawTcScore =
-          statsCoreTC.rate * 0.7 + statsExtendedTC.rate * 0.2 + statsPunct.rate * 0.1;
+          statsEssential.rate * 0.4 +
+          statsCoreTC.rate * 0.35 +
+          ((statsCantonese.rate + statsTaiwan.rate + statsNaming.rate) / 3) * 0.15 +
+          statsPunct.rate * 0.1;
 
         // ★ 懲罰機制 (The Kill Switch)
         // 如果「生存關鍵字」缺字太嚴重（例如日文字型常缺「你、們、於」），直接鎖死最高分
-        // 閾值設定：如果關鍵字少於 80% (30字缺6字以上)，這字型就不能算合格的繁體字型
+        // 閾值設定：如果關鍵字少於 80% (35字缺7字以上)，分數壓在 60% 以下
         if (statsEssential.rate < 0.8) {
-          // 強制將分數壓在 60% 以下，反映出「雖然有很多漢字，但不能打中文」的事實
           rawTcScore = Math.min(rawTcScore, 0.59);
         }
 
@@ -225,29 +261,43 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         // B. 繁體中文判定
         if (!tags.has('tc')) {
           // 進入條件：分數要高，且不能是簡體
-          if (tcScore > 0.6 && statsUniqueSC.rate < 0.15) {
-            // 只有分數真的很高才給 TC 標籤
-            if (tcScore > 0.9) {
+          if (tcScore > 0.5 && statsUniqueSC.rate < 0.15) {
+            // ★ V13 判定標準：基於 JF7000 完整字集 (6373+1692 字)
+            // 由於字集擴大，降低標準到：> 70% = 優質，> 50% = 可用
+            if (tcScore > 0.7) {
               tags.add('tc');
               if (statsPunct.rate < 0.8) descriptions.push('繁體中文 (缺標點)');
               else descriptions.push('繁體中文');
-            } else {
-              // 分數 0.6~0.9 之間，屬於「通用但缺字」
-              // 不給 TC 標籤，但給描述，或者給 TC 標籤但標註缺字
+            } else if (tcScore > 0.5) {
+              // 分數 0.5~0.7 之間，屬於「通用但缺字」
               tags.add('tc');
               descriptions.push('繁體中文 (部分缺字)');
             }
           }
         }
 
-        // C. 簡體中文
+        // C. 粵語、台灣、人名用字判定 (新增)
+        if (statsCantonese.rate > 0.7) {
+          tags.add('yue');
+          descriptions.push('粵語字');
+        }
+        if (statsTaiwan.rate > 0.7) {
+          tags.add('zh-TW');
+          descriptions.push('台灣字');
+        }
+        if (statsNaming.rate > 0.7) {
+          tags.add('naming');
+          descriptions.push('人名用字');
+        }
+
+        // D. 簡體中文
         if (statsUniqueSC.rate > 0.7) {
           tags.add('sc');
           descriptions.push('簡體中文');
           isCJK = true;
         }
 
-        // D. 英文
+        // E. 英文
         if (!isCJK && statsEN.rate > 0.8) {
           tags.add('en');
           descriptions.push('英文/歐語');
@@ -256,18 +306,40 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         }
 
         // --- 4. 收集缺失的繁體中文字 ---
-        const missingChars: string[] = [];
-        const missingCoreChars: string[] = []; // ★ 新增：只統計核心層級的缺字
+        const missingChars: string[] = []; // 全部缺字（用於統計）
+        const missingEssentialChars: string[] = []; // ★ ESSENTIAL 缺字：用於顯示和檢視
+        const missingCoreChars: string[] = []; // 核心字缺字：用於警告
+        const missingCoreOnlyChars: string[] = []; // 核心層級缺字
+        const totalTCCharsChecked = ALL_TC_CHARS_SET.size; // 檢查的總字符數
+
+        // 只計算 CORE 字的缺字（用於覆蓋率計算）
+        let missingCoreOnlyCount = 0;
+        const coreCharSet = new Set(TIER_CORE_TC.split(''));
 
         for (const char of ALL_TC_CHARS_SET) {
           if (!hasGlyph(font, char)) {
             missingChars.push(char);
-            // 檢查是否在核心字集中
-            if (TIER_TC_ESSENTIAL.includes(char) || TIER_CORE_TC.includes(char)) {
+            // 檢查是否在 ESSENTIAL 中
+            if (TIER_TC_ESSENTIAL.includes(char)) {
+              missingEssentialChars.push(char); // 只有 ESSENTIAL 缺字才會顯示具體字符
+              missingCoreOnlyChars.push(char); // 也加入 coreOnly 供警告判定
               missingCoreChars.push(char);
+            }
+            // 檢查是否在核心字集中（CORE）
+            else if (coreCharSet.has(char)) {
+              missingCoreChars.push(char);
+              missingCoreOnlyChars.push(char);
+              missingCoreOnlyCount++; // ★ 只計算 CORE 缺字
             }
           }
         }
+
+        // ★ 新算法：覆蓋率只基於 GLYPH_BASE (TIER_CORE_TC)
+        // 生存字不列入覆蓋率計算，只用於檢視
+        const coreCharCount = coreCharSet.size; // GLYPH_BASE 的字符數
+        const coreCharsCovered = coreCharCount - missingCoreOnlyCount;
+        const actualTCCoverage = coreCharCount > 0 ? coreCharsCovered / coreCharCount : 0;
+        const adjustedTcScore = Math.round(actualTCCoverage * 100);
 
         // --- 5. 輸出 ---
         const fontDef: FontDefinition = {
@@ -276,15 +348,19 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
           tags: Array.from(tags) as any,
           coverage: {
             en: Math.round(statsEN.rate * 100),
-            tc: Math.round(tcScore * 100), // 這裡輸出的分數現在會反映懲罰結果
+            tc: adjustedTcScore, // ★ 改為基於實際缺字計算
             sc: Math.round(statsUniqueSC.rate * 100),
             ja: Math.round(statsJaKanji.rate * 100), // ★ 改為日文漢字覆蓋率（才是真正的日文支援度）
           },
           glyphCount: font.glyphs.length,
           isCustom: true,
           description: descriptions.join(' | '),
-          missingTCChars: missingChars.join(''), // 已在上面使用 Set 自動去重
-          missingCoreTCChars: missingCoreChars.join(''), // ★ 新增：只有核心字的缺字
+          missingTCChars: missingChars.join(''), // 全部缺字（用於內部統計）
+          missingEssentialChars: missingEssentialChars.join(''), // ★ 新增：只顯示 ESSENTIAL 缺字的具體字符
+          missingCoreOnlyChars: missingCoreOnlyChars.join(''), // 核心層級的缺字（用於警告判定）
+          missingCoreTCChars: missingCoreChars.join(''), // 用於警告判定的核心缺字
+          totalTCCharsChecked, // 檢查的繁體字總數（包含所有 TIER）
+          totalCoreCharsChecked: coreCharCount, // ★ GLYPH_BASE 字符數（用於覆蓋率分母）
         };
 
         resolve(fontDef);

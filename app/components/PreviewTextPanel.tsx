@@ -16,6 +16,9 @@ interface PreviewTextPanelProps {
   onReset: () => void;
   onResetDefault: () => void;
   children?: React.ReactNode;
+  // ★ 新增：缺字檢測相關屬性
+  missingCharsInPreview?: string; // 預覽文本中的缺字
+  hasGlyphFunc?: (char: string) => boolean; // 檢查字元是否存在的函數
 }
 
 export const PreviewTextPanel: React.FC<PreviewTextPanelProps> = ({
@@ -32,7 +35,32 @@ export const PreviewTextPanel: React.FC<PreviewTextPanelProps> = ({
   onReset,
   onResetDefault,
   children,
+  missingCharsInPreview,
+  hasGlyphFunc,
 }) => {
+  // ★ 新增：實時檢查預覽文本中的缺字
+  const [missingChars, setMissingChars] = React.useState<string>('');
+  
+  React.useEffect(() => {
+    if (!hasGlyphFunc) {
+      setMissingChars('');
+      return;
+    }
+
+    // 檢查預覽文本中每個字元是否能顯示
+    const charsInText = new Set(inputText);
+    const missing: string[] = [];
+    
+    for (const char of charsInText) {
+      // 跳過空白字符
+      if (/\s/.test(char)) continue;
+      if (!hasGlyphFunc(char)) {
+        missing.push(char);
+      }
+    }
+
+    setMissingChars(missing.join(''));
+  }, [inputText, hasGlyphFunc]);
   return (
     <div className="card space-y-4 p-4 shadow-sm sm:p-6 lg:col-span-3">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

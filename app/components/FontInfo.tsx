@@ -96,32 +96,30 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
           </div>
         )}
 
-        {/* Missing TC Characters */}
-        {font.missingTCChars && font.missingTCChars.length > 0 && (
+        {/* Missing Essential Characters - Show specific characters and warning only if missing */}
+        {font.missingEssentialChars && font.missingEssentialChars.length > 0 ? (
           <div className="border-t border-stone-200 pt-3">
-            <p className="mb-2 text-xs font-semibold text-stone-600">
-              缺失繁體字 ({font.missingTCChars.length})
-            </p>
-            <div className="space-y-2">
-              {/* 只有當缺失的「核心字」超過 5 個時才顯示警告 */}
-              {font.missingCoreTCChars && font.missingCoreTCChars.length > 5 && (
-                <div className="rounded-lg border border-amber-200 bg-amber-50 p-2">
-                  <div className="flex gap-2">
-                    <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 text-amber-800" />
-                    <p className="text-xs font-semibold text-amber-800">
-                      核心字缺字超過5個，使用時可能經常遇到回退字型。
-                    </p>
-                  </div>
-                </div>
-              )}
-              <div className="rounded-lg p-2">
-                <p className="text-xs break-words text-red-700">
-                  {font.missingTCChars.length > 50
-                    ? font.missingTCChars.split('').slice(0, 50).join('、') + '...'
-                    : font.missingTCChars.split('').join('、')}
+            {/* 紅色警告 + 缺失的字符 */}
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+              <div className="mb-2 flex gap-2">
+                <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 text-red-800" />
+                <p className="text-xs font-semibold text-red-800">
+                  缺失生存關鍵字 {font.missingEssentialChars.length} 個：
                 </p>
               </div>
+              <p className="ml-6 font-mono text-xs break-words text-red-700">
+                {font.missingEssentialChars.split('').join('  ')}
+              </p>
             </div>
+          </div>
+        ) : (
+          // 沒有 ESSENTIAL 缺字時，只顯示覆蓋率（基於 GLYPH_BASE）
+          <div className="border-t border-stone-200 pt-3">
+            <p className="text-xs text-stone-500">
+              繁體字覆蓋率：{font.coverage?.tc}% (
+              {(font.totalCoreCharsChecked || 0) - (font.missingCoreOnlyChars?.length || 0)}/
+              {font.totalCoreCharsChecked || 0} 字)
+            </p>
           </div>
         )}
       </div>
