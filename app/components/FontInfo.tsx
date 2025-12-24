@@ -39,10 +39,10 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
               <div>
                 <div className="mb-1 flex items-center justify-between">
                   <span className="text-xs text-stone-600">繁體中文</span>
-                  <span className="text-xs font-medium text-blue-600">{font.coverage.tc}%</span>
+                  <span className="text-primary text-xs font-medium">{font.coverage.tc}%</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-stone-200">
-                  <div className="h-full bg-blue-500" style={{ width: `${font.coverage.tc}%` }} />
+                  <div className="bg-primary h-full" style={{ width: `${font.coverage.tc}%` }} />
                 </div>
               </div>
               <div>

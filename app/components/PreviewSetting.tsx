@@ -9,7 +9,7 @@ interface PreviewSettingProps {
   onFontColorChange: (color: string) => void;
   onBgColorChange: (color: string) => void;
   onReset: () => void;
-  accentColor?: 'blue' | 'amber';
+  accentColor?: 'primary' | 'accent';
   layout?: 'vertical' | 'horizontal';
   showLabels?: boolean;
 }
@@ -22,12 +22,12 @@ export const PreviewSetting: React.FC<PreviewSettingProps> = ({
   onFontColorChange,
   onBgColorChange,
   onReset,
-  accentColor = 'blue',
+  accentColor = 'primary',
   layout = 'vertical',
   showLabels = true,
 }) => {
-  const accentClass = accentColor === 'amber' ? 'accent-amber-600' : 'accent-blue-600';
-  const colorClass = accentColor === 'amber' ? 'text-amber-600' : 'text-blue-600';
+  const accentClass = accentColor === 'accent' ? 'accent-accent' : 'accent-primary';
+  const colorClass = accentColor === 'accent' ? 'text-accent' : 'text-primary';
   const gridClass = layout === 'horizontal' ? 'grid-cols-3' : 'grid-cols-1';
 
   return (

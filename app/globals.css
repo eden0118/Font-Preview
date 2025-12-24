@@ -65,4 +65,45 @@
   .input {
     @apply focus:border-primary w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:outline-none;
   }
+
+  /* Color utilities */
+  .text-primary {
+    @apply text-[var(--color-primary)];
+  }
+
+  .bg-primary {
+    @apply bg-[var(--color-primary)];
+  }
+
+  .border-primary {
+    @apply border-[var(--color-primary)];
+  }
+
+  .bg-primary-light {
+    @apply bg-[rgb(12,82,234,0.1)];
+  }
+
+  .border-primary-light {
+    @apply border-[rgb(12,82,234,0.3)];
+  }
+
+  .text-accent {
+    @apply text-[var(--color-accent)];
+  }
+
+  .bg-accent {
+    @apply bg-[var(--color-accent)];
+  }
+
+  .border-accent {
+    @apply border-[var(--color-accent)];
+  }
+
+  .bg-accent-light {
+    @apply bg-[rgb(245,165,36,0.1)];
+  }
+
+  .border-accent-light {
+    @apply border-[rgb(245,165,36,0.3)];
+  }
 }

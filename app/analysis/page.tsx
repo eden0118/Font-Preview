@@ -67,7 +67,7 @@ export default function AnalysisPage() {
             {/* Upload Section */}
             <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-2">
-                <Upload className="h-5 w-5 text-blue-600" />
+                <Upload className="text-primary h-5 w-5" />
                 <h2 className="text-lg font-bold text-stone-800">上傳字型檔案</h2>
               </div>
 
@@ -79,10 +79,10 @@ export default function AnalysisPage() {
                 onClick={() => document.getElementById('file-input-analysis')?.click()}
                 className={`flex min-h-52 cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-all ${
                   isDragActive
-                    ? 'border-blue-400 bg-blue-50'
+                    ? 'border-primary-light bg-primary-light'
                     : isAnalyzing
                       ? 'border-orange-200 bg-orange-50'
-                      : 'border-stone-300 hover:border-blue-300 hover:bg-stone-50'
+                      : 'hover:border-primary/30 border-stone-300 hover:bg-stone-50'
                 }`}
               >
                 <input
@@ -95,13 +95,13 @@ export default function AnalysisPage() {
 
                 {isAnalyzing ? (
                   <>
-                    <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                    <Loader2 className="text-primary h-8 w-8 animate-spin" />
                     <span className="text-sm text-stone-600">正在分析字型...</span>
                   </>
                 ) : (
                   <>
-                    <div className="rounded-full bg-blue-100 p-3">
-                      <Upload className="h-6 w-6 text-blue-600" />
+                    <div className="bg-primary-light rounded-full p-3">
+                      <Upload className="text-primary h-6 w-6" />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-stone-700">點擊選擇或拖拽放入</p>
@@ -154,13 +154,13 @@ export default function AnalysisPage() {
                         <div>
                           <div className="mb-1 flex items-center justify-between">
                             <span className="text-xs text-stone-600">繁體中文</span>
-                            <span className="text-xs font-medium text-blue-600">
+                            <span className="text-primary text-xs font-medium">
                               {currentFont.coverage.tc}%
                             </span>
                           </div>
                           <div className="h-2 overflow-hidden rounded-full bg-stone-200">
                             <div
-                              className="h-full bg-blue-500"
+                              className="bg-primary h-full"
                               style={{ width: `${currentFont.coverage.tc}%` }}
                             />
                           </div>
@@ -209,7 +209,7 @@ export default function AnalysisPage() {
               onFontColorChange={updateFontColor}
               onBgColorChange={updateBgColor}
               onReset={resetSettings}
-              accentColor="blue"
+              accentColor="primary"
             />
           </div>
 
@@ -222,7 +222,7 @@ export default function AnalysisPage() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="輸入預覽文字..."
-                className="h-32 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 transition-all outline-none placeholder:text-stone-400 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                className="focus:ring-primary h-32 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 transition-all outline-none placeholder:text-stone-400 focus:border-transparent focus:ring-2"
               />
             </div>
 

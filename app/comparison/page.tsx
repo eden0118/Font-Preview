@@ -69,7 +69,7 @@ export default function ComparisonPage() {
           <div className="mb-6 rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Upload className="h-5 w-5 text-amber-600" />
+                <Upload className="text-accent h-5 w-5" />
                 <h2 className="text-lg font-bold text-stone-800">上傳字體</h2>
               </div>
               <div className="text-sm font-medium text-stone-600">
@@ -107,7 +107,7 @@ export default function ComparisonPage() {
               ) : (
                 <>
                   <div className="rounded-full bg-amber-100 p-3">
-                    <Upload className="h-6 w-6 text-amber-600" />
+                    <Upload className="text-accent h-6 w-6" />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-stone-700">點擊選擇或拖拽放入</p>
@@ -131,7 +131,7 @@ export default function ComparisonPage() {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder="輸入預覽文字..."
-              className="min-h-24 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 transition-all outline-none placeholder:text-stone-400 focus:border-transparent focus:ring-2 focus:ring-amber-500"
+              className="focus:ring-accent min-h-24 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 transition-all outline-none placeholder:text-stone-400 focus:border-transparent focus:ring-2"
             />
 
             {/* Settings Row */}
@@ -144,7 +144,7 @@ export default function ComparisonPage() {
                 onFontColorChange={updateFontColor}
                 onBgColorChange={updateBgColor}
                 onReset={resetSettings}
-                accentColor="amber"
+                accentColor="accent"
                 layout="horizontal"
                 showLabels={true}
               />
