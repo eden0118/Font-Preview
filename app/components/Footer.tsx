@@ -1,4 +1,5 @@
 import React from 'react';
+import { Shield } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -15,8 +16,9 @@ export const Footer: React.FC = () => {
 
           {/* 中間：功能說明 */}
           <div className="text-center">
-            <p className="text-xs text-stone-600">
-              🔒 所有處理均在本地完成，不上傳任何資料到伺服器
+            <p className="flex items-center justify-center gap-2 text-xs text-stone-600">
+              <Shield size={14} className="text-stone-400" />
+              所有處理均在本地完成，不上傳任何資料到伺服器
             </p>
           </div>
 
@@ -30,9 +32,14 @@ export const Footer: React.FC = () => {
         {/* 版權聲明 */}
         <div className="border-t border-stone-100 pt-6 text-center">
           <p className="text-xs text-stone-500">© {currentYear} FontFlow. 採用 MIT 授權。</p>
-          <p className="mt-2 text-xs text-stone-400">
-            使用 Next.js、React、TypeScript、Tailwind CSS 與 OpenType.js 構建
-          </p>
+          <span>
+            <a href="http://" target="_blank" rel="noopener noreferrer">
+              Github
+            </a>
+            <a href="http://" target="_blank" rel="noopener noreferrer">
+              Buy me a coffee
+            </a>
+          </span>
         </div>
       </div>
     </footer>

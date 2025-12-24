@@ -56,11 +56,6 @@ export default function Home() {
               </div>
             </Link>
           </div>
-
-          {/* Footer */}
-          <div className="mt-12 text-center text-sm text-stone-500">
-            <p>🔒 所有檔案處理均在本地完成，不上傳任何資料</p>
-          </div>
         </div>
       </main>
       <Footer />

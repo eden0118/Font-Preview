@@ -200,30 +200,30 @@ const analyzeCompatibility = (font: any, fileName: string): AnalysisResult => {
   // === 生成描述 ===
   // 以繁體中文為主要關注點
   if (tcCoverage.percent >= 90) {
-    descriptions.push('✅ 完全適用繁體中文');
+    descriptions.push('完全適用繁體中文');
   } else if (tcCoverage.percent >= 70) {
-    descriptions.push('⚠️ 大致適用繁體（可能缺少少數字）');
+    descriptions.push('大致適用繁體（可能缺少少數字）');
   } else if (tcCoverage.percent >= 50) {
-    descriptions.push('⚠️ 部分支援繁體（建議謹慎使用）');
+    descriptions.push('部分支援繁體（建議謹慎使用）');
   } else if (tcCoverage.percent > 0) {
-    descriptions.push('❌ 繁體支援不足');
+    descriptions.push('繁體支援不足');
   }
 
   if (jaCoverage.percent >= 50) {
-    descriptions.push('🇯🇵 包含日文假名');
+    descriptions.push('包含日文假名');
   }
 
   if (scCoverage.percent >= 70 && tcCoverage.percent < 50) {
-    descriptions.push('🇨🇳 簡體中文字型');
+    descriptions.push('簡體中文字型');
   }
 
   // 兜底
   if (tags.size === 0) {
     if (hasGlyph(font, 'A') && hasGlyph(font, 'z')) {
       tags.add('en');
-      descriptions.push('🔤 英文/拉丁字型');
+      descriptions.push('英文/拉丁字型');
     } else {
-      descriptions.push('❓ 符號或特殊字型');
+      descriptions.push('符號或特殊字型');
     }
   }
 
