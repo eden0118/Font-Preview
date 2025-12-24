@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Info, Upload, Trash2, X, Loader2 } from 'lucide-react';
 import { analyzeFontFile, loadFontFace } from '@/lib/fontHelper';
 import { FontDefinition, TabMode, ComparisonFont } from '@/lib/types';
@@ -12,6 +12,9 @@ interface ComparisonSlot {
 }
 
 export default function App() {
+  // Hydration Fix
+  const [mounted, setMounted] = useState(false);
+
   // Tab State
   const [tab, setTab] = useState<TabMode>('analysis');
 
@@ -34,6 +37,15 @@ export default function App() {
   ]);
   const [analysingId, setAnalysingId] = useState<string | null>(null);
   const [dragActiveId, setDragActiveId] = useState<string | null>(null);
+
+  // Ensure client-side only rendering
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   // ==================== Analysis Mode Functions ====================
   const processFont = async (file: File) => {
@@ -102,17 +114,21 @@ export default function App() {
   };
 
   // ==================== Comparison Mode Functions ====================
-  const processFontForComparison = async (file: File, slotId: string) => {
-    setAnalysingId(slotId);
+  const processFontForComparison = async (file: File) => {
+    setAnalysingId('main');
 
     try {
       const fontDef = await analyzeFontFile(file);
       const buffer = await file.arrayBuffer();
       await loadFontFace(fontDef.family, buffer);
 
-      setComparisonSlots((prev) =>
-        prev.map((item) => (item.id === slotId ? { ...item, font: fontDef } : item))
-      );
+      setComparisonSlots((prev) => {
+        const emptySlot = prev.find((item) => item.font === null);
+        if (emptySlot) {
+          return prev.map((item) => (item.id === emptySlot.id ? { ...item, font: fontDef } : item));
+        }
+        return prev;
+      });
     } catch (err) {
       console.error(err);
     } finally {
@@ -120,24 +136,23 @@ export default function App() {
     }
   };
 
-  const handleComparisonFileUpload =
-    (slotId: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      processFontForComparison(file, slotId);
-    };
+  const handleComparisonFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    processFontForComparison(file);
+  };
 
-  const handleComparisonDrag = (slotId: string) => (e: React.DragEvent<HTMLDivElement>) => {
+  const handleComparisonDrag = (_slotId: string) => (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActiveId(slotId);
+      setDragActiveId(_slotId);
     } else if (e.type === 'dragleave') {
       setDragActiveId(null);
     }
   };
 
-  const handleComparisonDrop = (slotId: string) => (e: React.DragEvent<HTMLDivElement>) => {
+  const handleComparisonDrop = (_slotId: string) => (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActiveId(null);
@@ -160,7 +175,7 @@ export default function App() {
         validTypes.includes(file.type) || validExtensions.some((ext) => fileName.endsWith(ext));
 
       if (isValidType) {
-        processFontForComparison(file, slotId);
+        processFontForComparison(file);
       }
     }
   };
@@ -242,7 +257,7 @@ export default function App() {
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
-                className={`min-h-50 flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-all ${
+                className={`flex min-h-50 cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-all ${
                   isDragActive
                     ? 'border-primary/50 bg-primary/5'
                     : isAnalyzing
@@ -343,7 +358,7 @@ export default function App() {
                       onChange={(e) => setFontColor(e.target.value)}
                       className="h-10 w-10 cursor-pointer overflow-hidden rounded-lg border-0 p-0 shadow-sm"
                     />
-                    <div className="flex-1 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 font-mono text-sm uppercase text-stone-600">
+                    <div className="flex-1 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 font-mono text-sm text-stone-600 uppercase">
                       {fontColor}
                     </div>
                   </div>
@@ -358,7 +373,7 @@ export default function App() {
                       onChange={(e) => setBgColor(e.target.value)}
                       className="h-10 w-10 cursor-pointer overflow-hidden rounded-lg border-0 p-0 shadow-sm"
                     />
-                    <div className="flex-1 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 font-mono text-sm uppercase text-stone-600">
+                    <div className="flex-1 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 font-mono text-sm text-stone-600 uppercase">
                       {bgColor}
                     </div>
                   </div>
@@ -383,7 +398,7 @@ export default function App() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="輸入預覽文字..."
-                className="focus:ring-primary h-32 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 outline-none transition-all placeholder:text-stone-400 focus:border-transparent focus:ring-2"
+                className="focus:ring-primary h-32 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 transition-all outline-none placeholder:text-stone-400 focus:border-transparent focus:ring-2"
               />
             </div>
 
@@ -437,74 +452,86 @@ export default function App() {
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 p-6 pb-40 md:gap-8 lg:grid-cols-12">
           {/* Left Panel - Upload */}
           <div className="flex flex-col gap-6 lg:col-span-3">
-            {/* Upload Slots */}
-            {comparisonSlots.map((slot) => (
+            {/* Upload Section */}
+            <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
+              <div className="mb-4 flex items-center gap-2">
+                <Upload className="text-primary h-5 w-5" />
+                <h2 className="text-lg font-bold text-stone-800">上傳字型</h2>
+              </div>
+
               <div
-                key={slot.id}
-                className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm"
+                onClick={() => document.getElementById('file-input-comparison')?.click()}
+                onDragEnter={handleComparisonDrag('main')}
+                onDragLeave={handleComparisonDrag('main')}
+                onDragOver={handleComparisonDrag('main')}
+                onDrop={handleComparisonDrop('main')}
+                className={`flex min-h-48 cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-all ${
+                  dragActiveId === 'main'
+                    ? 'border-primary/50 bg-primary/5'
+                    : analysingId
+                      ? 'bg-primary/5 border-orange-200'
+                      : 'hover:border-primary/50 border-stone-300 hover:bg-stone-50'
+                }`}
               >
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Upload className="text-primary h-5 w-5" />
-                    <h3 className="text-lg font-bold text-stone-800">字型 {slot.id}</h3>
-                  </div>
-                </div>
+                <input
+                  id="file-input-comparison"
+                  type="file"
+                  className="hidden"
+                  accept=".ttf,.otf,.woff,.woff2"
+                  onChange={handleComparisonFileUpload('main')}
+                />
 
-                {slot.font ? (
-                  <div className="space-y-3">
-                    <div className="rounded-lg border border-stone-200 bg-stone-50 p-4">
-                      <p className="text-sm font-medium text-stone-700">{slot.font.name}</p>
-                      <p className="text-xs text-stone-500">{slot.font.category}</p>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveComparisonFont(slot.id)}
-                      className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-red-50 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-100"
-                    >
-                      <X className="h-4 w-4" />
-                      移除
-                    </button>
-                  </div>
+                {analysingId ? (
+                  <>
+                    <Loader2 className="text-primary h-8 w-8 animate-spin" />
+                    <span className="text-sm text-stone-500">正在分析字型...</span>
+                  </>
                 ) : (
-                  <div
-                    onClick={() => document.getElementById(`file-input-${slot.id}`)?.click()}
-                    onDragEnter={handleComparisonDrag(slot.id)}
-                    onDragLeave={handleComparisonDrag(slot.id)}
-                    onDragOver={handleComparisonDrag(slot.id)}
-                    onDrop={handleComparisonDrop(slot.id)}
-                    className={`flex min-h-40 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center transition-all ${
-                      dragActiveId === slot.id
-                        ? 'border-primary/50 bg-primary/5'
-                        : analysingId === slot.id
-                          ? 'bg-primary/5 border-orange-200'
-                          : 'hover:border-primary/50 border-stone-300 hover:bg-stone-50'
-                    }`}
-                  >
-                    <input
-                      id={`file-input-${slot.id}`}
-                      type="file"
-                      className="hidden"
-                      accept=".ttf,.otf,.woff,.woff2"
-                      onChange={handleComparisonFileUpload(slot.id)}
-                    />
-
-                    {analysingId === slot.id ? (
-                      <>
-                        <Loader2 className="text-primary h-6 w-6 animate-spin" />
-                        <span className="text-xs text-stone-500">分析中...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="text-primary/50 h-5 w-5" />
-                        <div>
-                          <p className="text-xs font-medium text-stone-700">選擇或拖入</p>
-                          <p className="text-xs text-stone-500">TTF/OTF/WOFF</p>
-                        </div>
-                      </>
-                    )}
-                  </div>
+                  <>
+                    <div className="rounded-full bg-stone-100 p-3">
+                      <Upload className="text-primary h-6 w-6" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-stone-700">點擊選擇或拖拽放入</p>
+                      <p className="text-xs text-stone-500">支援 TTF, OTF, WOFF, WOFF2</p>
+                    </div>
+                  </>
                 )}
               </div>
-            ))}
+            </div>
+
+            {/* Font List */}
+            {comparisonSlots.some((s) => s.font !== null) && (
+              <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
+                <h3 className="mb-4 text-lg font-bold text-stone-800">
+                  已上傳字型 ({comparisonSlots.filter((s) => s.font).length})
+                </h3>
+                <div className="space-y-2">
+                  {comparisonSlots
+                    .filter((s) => s.font !== null)
+                    .map((slot) => (
+                      <div
+                        key={slot.id}
+                        className="flex items-center justify-between rounded-lg border border-stone-200 bg-stone-50 p-3"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium text-stone-700">
+                            {slot.font?.name}
+                          </p>
+                          <p className="text-xs text-stone-500">{slot.font?.category}</p>
+                        </div>
+                        <button
+                          onClick={() => handleRemoveComparisonFont(slot.id)}
+                          className="ml-2 flex cursor-pointer items-center justify-center rounded-md p-1.5 text-stone-400 transition-colors hover:bg-white hover:text-red-600"
+                          title="移除此字型"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
 
             {/* Settings */}
             <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
@@ -535,7 +562,7 @@ export default function App() {
                       onChange={(e) => setFontColor(e.target.value)}
                       className="h-10 w-10 cursor-pointer overflow-hidden rounded-lg border-0 p-0 shadow-sm"
                     />
-                    <div className="flex-1 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 font-mono text-sm uppercase text-stone-600">
+                    <div className="flex-1 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 font-mono text-sm text-stone-600 uppercase">
                       {fontColor}
                     </div>
                   </div>
@@ -550,7 +577,7 @@ export default function App() {
                       onChange={(e) => setBgColor(e.target.value)}
                       className="h-10 w-10 cursor-pointer overflow-hidden rounded-lg border-0 p-0 shadow-sm"
                     />
-                    <div className="flex-1 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 font-mono text-sm uppercase text-stone-600">
+                    <div className="flex-1 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 font-mono text-sm text-stone-600 uppercase">
                       {bgColor}
                     </div>
                   </div>
@@ -575,7 +602,7 @@ export default function App() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="輸入預覽文字..."
-                className="focus:ring-primary h-24 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 outline-none transition-all placeholder:text-stone-400 focus:border-transparent focus:ring-2"
+                className="focus:ring-primary h-24 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 transition-all outline-none placeholder:text-stone-400 focus:border-transparent focus:ring-2"
               />
             </div>
 
