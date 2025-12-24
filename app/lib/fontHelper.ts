@@ -60,8 +60,30 @@ const TIER_SC_UNIQUE =
   '刘齐划剂剑剧劝劳势勋励欢变难艰叹对戏观欢买岁轮软辐辑输辞辩农迅进远违迟运达过迈还这适选亿优偿储言语';
 
 // ============================================================================
-// 2. HELPER FUNCTIONS
+// 2. OPTIMIZED CHARACTER SETS (預先計算)
 // ============================================================================
+
+// 所有繁體中文字符的組合（用於缺字掃描）
+const ALL_TC_CHARS_SET = new Set((TIER_TC_ESSENTIAL + TIER_CORE_TC + TIER_EXTENDED_TC).split(''));
+const TC_CHARS_FOR_SCAN = TIER_TC_ESSENTIAL + TIER_CORE_TC + TIER_EXTENDED_TC;
+
+// English 字符集
+const EN_CHARS_SET = new Set(TIER_EN_BASIC.split(''));
+const SC_CHARS_SET = new Set(TIER_SC_UNIQUE.split(''));
+const PUNCT_CHARS_SET = new Set(TIER_PUNCTUATION.split(''));
+
+// ============================================================================
+// 3. HELPER FUNCTIONS
+// ============================================================================
+
+// 文件大小驗證（防止超大檔案卡頓）
+const MAX_FONT_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
+const validateFileSize = (file: File): void => {
+  if (file.size > MAX_FONT_FILE_SIZE) {
+    throw new Error(`字型檔案超過 ${MAX_FONT_FILE_SIZE / 1024 / 1024}MB，請選擇更小的檔案`);
+  }
+};
 
 const hasGlyph = (font: any, char: string): boolean => {
   try {
@@ -75,22 +97,40 @@ const checkBlock = (font: any, charString: string) => {
   const chars = charString.split('');
   const total = chars.length;
   let count = 0;
-  for (let i = 0; i < total; i++) {
-    if (hasGlyph(font, chars[i])) count++;
+
+  // 使用 Set 來快速查詢，避免重複字符影響統計
+  const uniqueChars = new Set(chars);
+  for (const char of uniqueChars) {
+    if (hasGlyph(font, char)) count++;
   }
+
   return {
     count,
-    total,
-    rate: count / total,
+    total: uniqueChars.size,
+    rate: uniqueChars.size > 0 ? count / uniqueChars.size : 0,
   };
 };
 
 // ============================================================================
-// 3. MAIN LOGIC (V11 - The Essential Filter)
+// 4. MAIN LOGIC (V11 - The Essential Filter)
 // ============================================================================
 
-export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
-  return new Promise((resolve, reject) => {
+/**
+ * 分析字型檔案的繁體中文支援程度
+ *
+ * @param file - 字型檔案 (TTF/OTF/WOFF/WOFF2)
+ * @returns 字型定義物件，包含覆蓋率、缺字列表等
+ * @throws Error 如果檔案格式不正確或解析失敗
+ */
+export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
+  new Promise((resolve, reject) => {
+    // 驗證文件大小
+    try {
+      validateFileSize(file);
+    } catch (err) {
+      return reject(err);
+    }
+
     const reader = new FileReader();
 
     reader.onload = (e) => {
@@ -98,8 +138,13 @@ export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
       if (!buffer) return reject(new Error('Failed to read file'));
 
       try {
-        // @ts-ignore
-        const font = parse ? parse(buffer) : window.opentype.parse(buffer);
+        // 使用動態導入或備用方案處理 opentype.js
+        const font =
+          typeof parse === 'function' ? parse(buffer) : (window as any).opentype?.parse?.(buffer);
+
+        if (!font) {
+          throw new Error('無法解析字型檔案，請確認是有效的 TTF/OTF/WOFF 檔案');
+        }
         let fontName = file.name.split('.')[0];
         if (font.names.fontFamily?.en) fontName = font.names.fontFamily.en;
 
@@ -186,9 +231,8 @@ export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
         }
 
         // --- 4. 收集缺失的繁體中文字 ---
-        const allTCChars = TIER_TC_ESSENTIAL + TIER_CORE_TC + TIER_EXTENDED_TC;
         const missingChars: string[] = [];
-        for (const char of allTCChars.split('')) {
+        for (const char of ALL_TC_CHARS_SET) {
           if (!hasGlyph(font, char)) {
             missingChars.push(char);
           }
@@ -208,7 +252,7 @@ export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
           glyphCount: font.glyphs.length,
           isCustom: true,
           description: descriptions.join(' | '),
-          missingTCChars: Array.from(new Set(missingChars)).join(''),
+          missingTCChars: missingChars.join(''), // 已在上面使用 Set 自動去重
         };
 
         resolve(fontDef);
@@ -220,7 +264,6 @@ export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
     reader.onerror = reject;
     reader.readAsArrayBuffer(file);
   });
-};
 
 export const loadFontFace = async (fontName: string, data: ArrayBuffer): Promise<void> => {
   const fontFace = new FontFace(fontName, data);

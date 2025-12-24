@@ -70,11 +70,11 @@ export default function ComparisonPage() {
 
       {/* Main Content */}
       <main className="flex-1">
-        <div className="mx-auto max-w-7xl p-6">
+        <div className="mx-auto max-w-7xl px-4 sm:p-6">
           {/* Top Section - Upload and Preview Settings */}
-          <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-4">
+          <div className="mb-4 grid grid-cols-1 gap-4 sm:mb-6 sm:gap-6 lg:grid-cols-4">
             {/* Left Panel - Upload */}
-            <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm lg:col-span-1">
+            <div className="rounded-2xl border border-stone-100 bg-white p-4 shadow-sm sm:p-6 lg:col-span-1">
               <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Upload className="text-primary h-5 w-5" />

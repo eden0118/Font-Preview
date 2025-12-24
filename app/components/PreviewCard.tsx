@@ -57,33 +57,33 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-stone-100 bg-white shadow-sm">
       {/* Header */}
-      <div className="bg-primary/5 flex items-center gap-2 border-b border-stone-100 px-6 py-3">
-        <div className="bg-primary h-3 w-3 rounded-full" />
-        <div className="flex-1">
-          <p className="font-semibold text-stone-800">
+      <div className="bg-primary/5 flex flex-col gap-1 border-b border-stone-100 px-4 py-2 sm:flex-row sm:items-center sm:gap-2 sm:px-6 sm:py-3">
+        <div className="flex flex-1 items-center gap-2">
+          <div className="bg-primary h-3 w-3 flex-shrink-0 rounded-full" />
+          <p className="truncate text-sm font-semibold text-stone-800">
             {font ? font.name : fontName || '預設字型'}
           </p>
-          {textCoverageInfo && textCoverageInfo.coverage < 100 && (
-            <div className="mt-2 space-y-1">
-              {textCoverageInfo.coverage < 80 && (
-                <p className="text-xs text-amber-700">
-                  ⚠️ 預覽文字覆蓋率 {textCoverageInfo.coverage}%，有缺字
-                </p>
-              )}
-              {textCoverageInfo.missing && textCoverageInfo.missing.length > 0 && (
-                <p className="text-xs text-stone-600">
-                  缺字: {textCoverageInfo.missing.slice(0, 10).join('')}
-                  {textCoverageInfo.missing.length > 10 ? '...' : ''}
-                </p>
-              )}
-            </div>
-          )}
         </div>
+        {textCoverageInfo && textCoverageInfo.coverage < 100 && (
+          <div className="mt-2 space-y-1 text-xs">
+            {textCoverageInfo.coverage < 80 && (
+              <p className="text-xs text-amber-700">
+                ⚠️ 預覽文字覆蓋率 {textCoverageInfo.coverage}%，有缺字
+              </p>
+            )}
+            {textCoverageInfo.missing && textCoverageInfo.missing.length > 0 && (
+              <p className="text-xs text-stone-600">
+                缺字: {textCoverageInfo.missing.slice(0, 10).join('')}
+                {textCoverageInfo.missing.length > 10 ? '...' : ''}
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Preview Area */}
       <div
-        className="flex min-h-60 flex-1 items-center justify-center overflow-auto p-6 transition-colors duration-300"
+        className="flex min-h-40 flex-1 items-center justify-center overflow-auto p-4 transition-colors duration-300 sm:min-h-60 sm:p-6"
         style={{ backgroundColor: bgColor }}
       >
         {text ? (

@@ -36,23 +36,17 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
 }) => {
   return (
     <Link href={href}>
-      <div className="group hover:border-primary relative cursor-pointer overflow-hidden rounded-2xl border-2 border-stone-200 bg-white p-8 transition-all duration-300 hover:shadow-lg">
-        <div
-          className={`text-primary absolute inset-0 bg-linear-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
-        />
-        <div className="relative">
-          <div className={`text-primary mb-6 inline-block rounded-full p-3`}>
-            <Icon size={32} />
-          </div>
-          <h2 className="mb-3 text-2xl font-bold text-stone-900">{title}</h2>
-          <p className="mb-6 text-stone-600">{description}</p>
-          <div className={`text-primary flex items-center gap-2 font-semibold`}>
-            {buttonText}{' '}
-            <ArrowRight
-              className="transition-all duration-500 group-hover:translate-x-3"
-              size={20}
-            />
-          </div>
+      <div className="group h-full cursor-pointer rounded-2xl border border-stone-100 bg-white p-6 shadow-md transition-shadow hover:shadow-lg sm:p-8">
+        <div className="bg-primary/10 mb-3 flex h-10 w-10 items-center justify-center rounded-full sm:mb-4 sm:h-12 sm:w-12">
+          <Icon size={20} className="text-primary sm:h-6 sm:w-6" />
+        </div>
+        <h3 className="mb-2 text-lg font-bold text-stone-800 sm:text-xl">{title}</h3>
+        <p className="mb-4 text-xs leading-relaxed text-stone-600 sm:mb-6 sm:text-sm">
+          {description}
+        </p>
+        <div className="flex items-center gap-1 font-medium">
+          {buttonText}
+          <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
         </div>
       </div>
     </Link>

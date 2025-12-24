@@ -5,7 +5,7 @@ export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-stone-200 bg-white py-8">
+    <footer className="border-t border-stone-100 bg-white px-4 py-6 text-center text-xs text-stone-500 sm:py-8">
       <div className="mx-auto flex w-full max-w-7xl items-baseline justify-between px-6">
         {/* 左側：應用名稱 */}
         <div className="flex flex-col items-center gap-1 md:items-start">

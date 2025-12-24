@@ -26,9 +26,9 @@ export const PreviewSetting: React.FC<PreviewSettingProps> = ({
   const colorClass = accentColor === 'accent' ? 'text-accent' : 'text-primary';
 
   return (
-    <div className="flex justify-between gap-10">
+    <div className="flex flex-col justify-between gap-4 sm:flex-row sm:gap-6 lg:gap-10">
       {/* Font Size */}
-      <div className="col-span-2 flex-1">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
           <label className="mb-1 text-sm font-medium text-stone-600">字體大小</label>
           <span className={`font-mono text-sm font-bold ${colorClass}`}>{fontSize}px</span>
@@ -44,7 +44,7 @@ export const PreviewSetting: React.FC<PreviewSettingProps> = ({
       </div>
 
       {/* Font Color */}
-      <div>
+      <div className="flex-1 sm:flex-none">
         <label className="mb-1 block text-sm font-medium text-stone-600">字體顏色</label>
         <div className="flex items-center gap-2">
           <input
@@ -58,7 +58,7 @@ export const PreviewSetting: React.FC<PreviewSettingProps> = ({
       </div>
 
       {/* Background Color */}
-      <div>
+      <div className="flex-1 sm:flex-none">
         <label className="mb-1 block text-sm font-medium text-stone-600">背景顏色</label>
         <div className="flex items-center gap-2">
           <input
@@ -70,7 +70,7 @@ export const PreviewSetting: React.FC<PreviewSettingProps> = ({
           <div className="text-infoText font-mono text-xs uppercase">{bgColor}</div>
         </div>
       </div>
-      <div className="flex items-end justify-end">
+      <div className="flex w-full items-end justify-end sm:w-auto">
         <button onClick={onReset} className="small-btn secondary-btn">
           <RotateCcw size={12} />
           重置設定

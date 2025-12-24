@@ -34,10 +34,10 @@ export const PreviewTextPanel: React.FC<PreviewTextPanelProps> = ({
   children,
 }) => {
   return (
-    <div className="card space-y-4 p-6 shadow-sm lg:col-span-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-stone-800">預覽文字與設定</h3>
-        <div className="flex gap-5">
+    <div className="card space-y-4 p-4 shadow-sm sm:p-6 lg:col-span-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h3 className="text-base font-bold text-stone-800 sm:text-lg">預覽文字與設定</h3>
+        <div className="flex gap-3 sm:gap-5">
           <div className="flex gap-3">
             <button
               onClick={() => onLanguageChange('cn')}

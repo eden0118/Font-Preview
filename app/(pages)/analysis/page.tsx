@@ -65,20 +65,19 @@ export default function AnalysisPage() {
       <PageHeader title="字型分析" />
 
       {/* Information Banner */}
-      <div className="bg-primary/20 p-2 lg:col-span-4">
-        <div className="mx-auto flex max-w-6xl items-center justify-center gap-1 text-sm text-blue-800">
-          <Info size={16} />
-          <p className="font-semibold">
-            專為繁體中文使用者設計：
-            上傳日文、簡體或其他字型，快速檢測其對繁體中文的支援程度。覆蓋率越高，代表缺字情況越少。
+      <div className="bg-primary/20 p-1 sm:p-2 lg:col-span-4">
+        <div className="mx-auto flex max-w-6xl items-start justify-center gap-2 text-xs text-blue-800 sm:text-sm">
+          <Info size={16} className="mt-0.5 flex-shrink-0" />
+          <p className="leading-relaxed font-semibold">
+            專為繁體中文使用者設計。上傳日文、簡體或其他字型，快速檢測其對繁體中文的支援程度。覆蓋率越高，代表缺字情況越少。
           </p>
         </div>
       </div>
 
       {/* Main Content */}
-      <main className="mx-auto mb-6 grid max-w-7xl flex-1 grid-cols-1 gap-6 p-6 lg:grid-cols-4">
-        {/* Upload */}
-        <div className="flex flex-col gap-6">
+      <main className="mx-auto my-6 grid w-full max-w-7xl flex-1 grid-cols-1 gap-4 px-4 sm:gap-6 sm:p-6 lg:grid-cols-4">
+        {/* Upload - 行動設備堆疊 */}
+        <div className="flex flex-col gap-4 sm:gap-6">
           {/* Upload Section */}
           <div className="card p-6">
             <div className="mb-4 flex items-center gap-2">
@@ -104,7 +103,7 @@ export default function AnalysisPage() {
           {currentFont && <FontInfo font={currentFont} />}
         </div>
 
-        <div className="lg:col-span-3">
+        <div className="w-full lg:col-span-3">
           {/* Upload and Preview Settings */}
           <PreviewTextPanel
             inputText={inputText}

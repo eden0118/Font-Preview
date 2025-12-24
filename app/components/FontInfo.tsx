@@ -9,7 +9,7 @@ interface FontInfoProps {
 
 export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
   return (
-    <div className="card p-6">
+    <div className="card p-4 sm:p-6">
       <h3 className="mb-3 font-bold text-stone-800">{font.name}</h3>
       <div className="space-y-3">
         {font.glyphCount && (
@@ -21,9 +21,9 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
 
         {/* Supported Languages */}
         {font.coverage && (
-          <div className="flex gap-2">
-            <p className="min-w-fit text-xs text-stone-500">支援語系</p>
-            <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
+            <p className="text-xs whitespace-nowrap text-stone-500">支援語系</p>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {font.coverage.tc >= 80 && <span className="lang-label">繁體中文</span>}
               {font.coverage.sc >= 80 && <span className="lang-label">簡體中文</span>}
               {font.coverage.en >= 80 && <span className="lang-label">英文</span>}
@@ -42,7 +42,7 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
         {font.coverage && (
           <div className="border-t border-stone-200 pt-3">
             <p className="mb-3 text-xs font-semibold text-stone-600">語言覆蓋率</p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
               {/* Traditional Chinese */}
               <div>
                 <div className="mb-1 flex items-center justify-between">

@@ -7,18 +7,25 @@ export const useFontAnalysis = () => {
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
+  // 清理舊字體的輔助函數
+  const cleanupFont = useCallback((font: FontDefinition | null) => {
+    if (font) {
+      removeFontFace(font.family);
+    }
+  }, []);
+
   const processFont = useCallback(
     async (file: File) => {
       setIsAnalyzing(true);
       setUploadError(null);
 
-      // 清理舊字體以防止內存洩漏
-      if (currentFont) {
-        removeFontFace(currentFont.family);
-      }
-      setCurrentFont(null);
-
       try {
+        // 先清理舊字體
+        setCurrentFont((prevFont) => {
+          cleanupFont(prevFont);
+          return null;
+        });
+
         const fontDef = await analyzeFontFile(file);
         const buffer = await file.arrayBuffer();
         await loadFontFace(fontDef.family, buffer);
@@ -28,21 +35,21 @@ export const useFontAnalysis = () => {
         const errorMessage =
           err instanceof Error ? err.message : '字型檔案解析失敗。請嘗試其他 TTF/OTF/WOFF 檔案。';
         setUploadError(errorMessage);
+        setCurrentFont(null);
       } finally {
         setIsAnalyzing(false);
       }
     },
-    [currentFont]
+    [cleanupFont]
   );
 
   const clearFont = useCallback(() => {
-    // 清理字體資源
-    if (currentFont) {
-      removeFontFace(currentFont.family);
-    }
-    setCurrentFont(null);
+    setCurrentFont((prevFont) => {
+      cleanupFont(prevFont);
+      return null;
+    });
     setUploadError(null);
-  }, [currentFont]);
+  }, [cleanupFont]);
 
   return {
     currentFont,

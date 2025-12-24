@@ -34,7 +34,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
         onDragOver={onDragOver}
         onDrop={onDrop}
         onClick={onClick}
-        className={`flex min-h-52 cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-all ${
+        className={`flex min-h-48 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center transition-all sm:min-h-52 sm:gap-3 sm:p-8 ${
           isDragActive
             ? 'border-primary/30 bg-primary-light'
             : isAnalyzing
@@ -52,16 +52,16 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
 
         {isAnalyzing ? (
           <>
-            <Loader2 className="text-primary h-8 w-8 animate-spin" />
-            <span className="text-sm text-stone-600">正在分析字型...</span>
+            <Loader2 className="text-primary h-7 w-7 animate-spin sm:h-8 sm:w-8" />
+            <span className="text-xs text-stone-600 sm:text-sm">正在分析字型...</span>
           </>
         ) : (
           <>
-            <div className="bg-primary-light rounded-full p-3">
-              <Upload className="text-primary h-6 w-6" />
+            <div className="bg-primary-light rounded-full p-2 sm:p-3">
+              <Upload className="text-primary h-5 w-5 sm:h-6 sm:w-6" />
             </div>
             <div>
-              <p className="text-sm font-medium text-stone-700">點擊選擇或拖拽放入</p>
+              <p className="text-xs font-medium text-stone-700 sm:text-sm">點擊選擇或拖拽放入</p>
               <p className="text-xs text-stone-500">支援 TTF, OTF, WOFF, WOFF2</p>
             </div>
           </>

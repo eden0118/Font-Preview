@@ -9,17 +9,15 @@ interface PageHeaderProps {
 
 export const PageHeader: React.FC<PageHeaderProps> = ({ title, backHref = '/' }) => {
   return (
-    <header className="border-b border-stone-200 bg-white shadow-sm">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <header className="border-b border-stone-100 bg-white p-4 shadow-sm sm:p-6">
+      <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-4">
         <Link
           href={backHref}
-          className="flex items-center gap-2 text-stone-600 transition-colors hover:text-stone-900"
+          className="text-primaryText hover:text-primary flex flex-shrink-0 items-center gap-1 transition-all duration-500 ease-in-out sm:gap-2"
         >
-          <ArrowLeft size={20} className="h-5 w-5" />
-          <span className="text-sm font-medium">返回首頁</span>
+          <ArrowLeft size={20} className="transition-transform hover:-translate-x-1.5" />
         </Link>
-        <h1 className="text-2xl font-bold text-stone-900">{title}</h1>
-        <div className="w-24" />
+        <h1 className="truncate text-2xl font-bold text-stone-800 sm:text-3xl">{title}</h1>
       </div>
     </header>
   );
