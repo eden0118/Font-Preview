@@ -18,6 +18,8 @@ export interface FontDefinition {
   description?: string;
   // 缺失的繁體中文字
   missingTCChars?: string;
+  // 缺失的核心繁體字（影響日常使用）- 用於判定是否顯示警告
+  missingCoreTCChars?: string;
 }
 
 export type TabMode = 'analysis' | 'comparison';

@@ -47,11 +47,24 @@ const TIER_EXTENDED_TC =
 // [Tier Punctuation] 標點符號
 const TIER_PUNCTUATION = '，。、：；？！「」『』（）—…';
 
-// [Japanese] 日文
-const TIER_JA_ALL =
+// [Japanese] 日文平假名與片假名（輔助判定日文字型的記號系統）
+const TIER_JA_KANA =
   'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん' +
   'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン' +
   'ッャュョヮヵヶ';
+
+// [Japanese Kanji] 日文漢字常用集 (JIS Level 1 + Level 2 的常見漢字 - 簡化版 ~500字)
+// 這是衡量「日文字型是否真的能排日文」的關鍵
+// 包括：日本教育用漢字、常用字等
+const TIER_JA_KANJI =
+  '亜悪醒圧扱安暗案以囲位衣違壱逸稲益印因姻烏営怨援丘老荷架飾機械開害街楷格郭巻干刊慣甘監眼含漢汗澗潰環還' +
+  '勧観願機議求救旧教許境均衡荷華落乾簡間雑支持司試侍字児治辞垂推奨承床症成清製誠請生声精聖製責総造沿塚漬' +
+  '痛筒統領老艦警軍型径惠計貴喫禁金近銀群係航功効衡鋼高項豪郷広恐拘救孝講坑行広好耕攻貢郭爻購造根絡絡革割' +
+  '格勘換慣漢邯館岸岩貫簡肝冠慣慨壊開械簡貝被背倍博拝払泊迫爆伯博縛舶薄販妃微疲飛扉費徴嫌嫌弦限般般隔確格' +
+  '獲割樺鍛辞準准勲純唯囲隆硫留粒陸履和';
+
+// 注：日文字型的「日文覆蓋率」現在改為衡量**日文漢字常用字的支援程度**
+// 而非只看平假名片假名（這樣會誤導，因為平假名片假名容易達到 100%）
 
 // [Simplified] 簡體特徵
 const TIER_SC_UNIQUE =
@@ -71,6 +84,8 @@ const TC_CHARS_FOR_SCAN = TIER_TC_ESSENTIAL + TIER_CORE_TC + TIER_EXTENDED_TC;
 const EN_CHARS_SET = new Set(TIER_EN_BASIC.split(''));
 const SC_CHARS_SET = new Set(TIER_SC_UNIQUE.split(''));
 const PUNCT_CHARS_SET = new Set(TIER_PUNCTUATION.split(''));
+const JA_KANA_SET = new Set(TIER_JA_KANA.split(''));
+const JA_KANJI_SET = new Set(TIER_JA_KANJI.split(''));
 
 // ============================================================================
 // 3. HELPER FUNCTIONS
@@ -154,7 +169,8 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         const statsCoreTC = checkBlock(font, TIER_CORE_TC);
         const statsExtendedTC = checkBlock(font, TIER_EXTENDED_TC);
         const statsPunct = checkBlock(font, TIER_PUNCTUATION);
-        const statsKana = checkBlock(font, TIER_JA_ALL);
+        const statsJaKana = checkBlock(font, TIER_JA_KANA);
+        const statsJaKanji = checkBlock(font, TIER_JA_KANJI); // ★ 日文漢字覆蓋率（才是真的日文支援度）
         const statsUniqueSC = checkBlock(font, TIER_SC_UNIQUE);
 
         const tags = new Set<string>();
@@ -180,7 +196,13 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         // --- 3. 決策與標籤 ---
 
         // A. 日文判定
-        if (statsKana.rate > 0.5) {
+        // ★ 改進：日文覆蓋率現在基於「日文漢字」（Kanji），而非只看平假名片假名
+        // 這樣才能準確反映「這個字型是否真的適合排日文」
+        const hasJaKana = statsJaKana.rate > 0.8; // 至少有 80% 的日文假名
+        const hasJaKanji = statsJaKanji.rate > 0.5; // 至少有 50% 的日文漢字
+
+        if (hasJaKana && hasJaKanji) {
+          // 真正的日文字型：假名 + 漢字都有
           tags.add('ja');
           isCJK = true;
 
@@ -195,6 +217,9 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
             // 關鍵字大量缺失
             descriptions.push('日文 (繁體缺字嚴重)');
           }
+        } else if (hasJaKana && !hasJaKanji) {
+          // 只有假名沒有漢字的字型（通常不是日文字型）
+          descriptions.push('⚠️ 平假名字型（非日文字型）');
         }
 
         // B. 繁體中文判定
@@ -232,9 +257,15 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
 
         // --- 4. 收集缺失的繁體中文字 ---
         const missingChars: string[] = [];
+        const missingCoreChars: string[] = []; // ★ 新增：只統計核心層級的缺字
+
         for (const char of ALL_TC_CHARS_SET) {
           if (!hasGlyph(font, char)) {
             missingChars.push(char);
+            // 檢查是否在核心字集中
+            if (TIER_TC_ESSENTIAL.includes(char) || TIER_CORE_TC.includes(char)) {
+              missingCoreChars.push(char);
+            }
           }
         }
 
@@ -247,12 +278,13 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
             en: Math.round(statsEN.rate * 100),
             tc: Math.round(tcScore * 100), // 這裡輸出的分數現在會反映懲罰結果
             sc: Math.round(statsUniqueSC.rate * 100),
-            ja: Math.round(statsKana.rate * 100),
+            ja: Math.round(statsJaKanji.rate * 100), // ★ 改為日文漢字覆蓋率（才是真正的日文支援度）
           },
           glyphCount: font.glyphs.length,
           isCustom: true,
           description: descriptions.join(' | '),
           missingTCChars: missingChars.join(''), // 已在上面使用 Set 自動去重
+          missingCoreTCChars: missingCoreChars.join(''), // ★ 新增：只有核心字的缺字
         };
 
         resolve(fontDef);

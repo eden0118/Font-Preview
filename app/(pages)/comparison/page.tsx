@@ -15,6 +15,9 @@ import { UploadZone } from '../../components/UploadZone';
 import { PreviewTextPanel } from '../../components/PreviewTextPanel';
 import { getCoverageColor } from '../../lib/coverageHelpers';
 
+// 禁用預渲染（此頁面依賴客戶端交互和用戶輸入）
+export const dynamic = 'force-dynamic';
+
 export default function ComparisonPage() {
   const { comparisonSlots, analysingId, uploadError, processFont, removeFont } =
     useFontComparison();

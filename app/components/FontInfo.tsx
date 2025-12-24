@@ -27,13 +27,9 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
               {font.coverage.tc >= 80 && <span className="lang-label">繁體中文</span>}
               {font.coverage.sc >= 80 && <span className="lang-label">簡體中文</span>}
               {font.coverage.en >= 80 && <span className="lang-label">英文</span>}
-              {font.coverage.ja >= 80 && <span className="lang-label">日文</span>}
-              {font.coverage.tc < 80 &&
-                font.coverage.sc < 80 &&
-                font.coverage.en < 80 &&
-                font.coverage.ja < 80 && (
-                  <span className="text-xs text-stone-400">無主要語言支援</span>
-                )}
+              {font.coverage.tc < 80 && font.coverage.sc < 80 && font.coverage.en < 80 && (
+                <span className="text-xs text-stone-400">無主要語言支援</span>
+              )}
             </div>
           </div>
         )}
@@ -96,24 +92,6 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
                   />
                 </div>
               </div>
-
-              {/* Japanese */}
-              <div>
-                <div className="mb-1 flex items-center justify-between">
-                  <span className="text-xs text-stone-600">日文</span>
-                  <span
-                    className={`text-xs font-medium ${getCoverageColor(font.coverage.ja).text}`}
-                  >
-                    {font.coverage.ja}%
-                  </span>
-                </div>
-                <div className="h-2 overflow-hidden rounded-full bg-stone-200">
-                  <div
-                    className={`h-full ${getCoverageColor(font.coverage.ja).bar}`}
-                    style={{ width: `${font.coverage.ja}%` }}
-                  />
-                </div>
-              </div>
             </div>
           </div>
         )}
@@ -125,12 +103,13 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
               缺失繁體字 ({font.missingTCChars.length})
             </p>
             <div className="space-y-2">
-              {font.missingTCChars.length > 5 && (
+              {/* 只有當缺失的「核心字」超過 5 個時才顯示警告 */}
+              {font.missingCoreTCChars && font.missingCoreTCChars.length > 5 && (
                 <div className="rounded-lg border border-amber-200 bg-amber-50 p-2">
                   <div className="flex gap-2">
                     <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 text-amber-800" />
                     <p className="text-xs font-semibold text-amber-800">
-                      缺字超過5個，使用時可能經常遇到回退字型。
+                      核心字缺字超過5個，使用時可能經常遇到回退字型。
                     </p>
                   </div>
                 </div>
