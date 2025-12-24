@@ -13,3 +13,10 @@ export interface FontDefinition {
     ja: number; // 日文適用性
   };
 }
+
+export type ComparisonMode = 'single' | 'compare';
+
+export interface ComparisonFont {
+  font: FontDefinition | null;
+  id: string;
+}
