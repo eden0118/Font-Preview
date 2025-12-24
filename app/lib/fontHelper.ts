@@ -5,240 +5,25 @@ import { FontDefinition } from './types';
 // 1. DATASETS (字頻數據集)
 // ============================================================================
 
-// [Level 1] 繁體中文 TOP 100 高頻字
-// 來源：教育部常用字頻表
-// 邏輯：這些字是中文的「骨架」，缺了這些字，字型基本上無法使用。
-const TC_COMMON_100 = [
-  '的',
-  '一',
-  '是',
-  '不',
-  '了',
-  '人',
-  '我',
-  '在',
-  '有',
-  '他',
-  '這',
-  '中',
-  '大',
-  '來',
-  '上',
-  '國',
-  '個',
-  '到',
-  '說',
-  '們',
-  '為',
-  '子',
-  '和',
-  '你',
-  '地',
-  '出',
-  '道',
-  '也',
-  '時',
-  '年',
-  '得',
-  '就',
-  '那',
-  '要',
-  '下',
-  '以',
-  '生',
-  '會',
-  '自',
-  '著',
-  '去',
-  '之',
-  '過',
-  '家',
-  '學',
-  '對',
-  '可',
-  '她',
-  '里',
-  '后',
-  '小',
-  '么',
-  '心',
-  '多',
-  '天',
-  '而',
-  '能',
-  '好',
-  '都',
-  '然',
-  '沒',
-  '日',
-  '于',
-  '起',
-  '還',
-  '發',
-  '成',
-  '事',
-  '只',
-  '作',
-  '當',
-  '想',
-  '看',
-  '文',
-  '無',
-  '開',
-  '手',
-  '十',
-  '用',
-  '主',
-  '行',
-  '方',
-  '又',
-  '如',
-  '前',
-  '所',
-  '本',
-  '見',
-  '經',
-  '頭',
-  '面',
-  '公',
-  '同',
-  '三',
-  '已',
-  '老',
-  '從',
-  '動',
-  '兩',
-  '長',
-];
+// [English] 基礎歐語/數字 (62字)
+// 這是所有現代字型的基石
+const TIER_EN_BASIC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-// [Level 2] 繁體特有特徵字 (用於區分簡體/日文)
-const TC_UNIQUE = [
-  '體',
-  '國',
-  '話',
-  '門',
-  '經',
-  '號',
-  '葉',
-  '愛',
-  '龜',
-  '轉',
-  '導',
-  '層',
-  '邊',
-  '實',
-  '職',
-  '結',
-  '樣',
-  '機',
-  '關',
-  '電',
-];
+// [Tier 0] 繁體核心 (50字)
+const TIER_CORE_TC =
+  '的一是不了人我在有他這中大來上國個到說們為子和你地出道也時年得就那要下以生會自著去之過家學對可她里后小么心多天而能好都然沒日于起還發成事只作當想看文無開手十用主行方又如前所本見經頭面公同三已老從動兩長';
 
-// [Level 2] 簡體特有特徵字
-const SC_UNIQUE = [
-  '体',
-  '国',
-  '话',
-  '门',
-  '经',
-  '号',
-  '叶',
-  '爱',
-  '龟',
-  '转',
-  '导',
-  '层',
-  '边',
-  '实',
-  '职',
-  '结',
-  '样',
-  '机',
-  '关',
-  '电',
-];
+// [Tier 1] 繁體常用 (150字)
+const TIER_COMMON_TC =
+  '知民樣現分將外但身些與高意進把法此實回二理今明問力最賢氣口使情各正向化定師由果利機代全平真社內表常條重名別幾政新收員角統指決活題接員教至放決解山任總受目反確提果海位夫件最理幾公特做系計管期情入保建步給色書通界林華今日比員神幾感認數情區即求變權光情結科影告戰界張展馬制像將性導務制條幹變許選史強';
 
-// [Level 3] 全形標點符號 (重要判斷依據)
-const PUNCTUATION = ['，', '。', '、', '：', '「', '」'];
+// [Japanese] 假名核心
+const TIER_KANA =
+  'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん';
 
-// [Level 2] 英文常用字母和數字 (共52個)
-// 包含：26個小寫字母 + 26個大寫字母 + 10個數字 + 常見英文標點
-const EN_COMMON = [
-  'a',
-  'b',
-  'c',
-  'd',
-  'e',
-  'f',
-  'g',
-  'h',
-  'i',
-  'j',
-  'k',
-  'l',
-  'm',
-  'n',
-  'o',
-  'p',
-  'q',
-  'r',
-  's',
-  't',
-  'u',
-  'v',
-  'w',
-  'x',
-  'y',
-  'z',
-  'A',
-  'B',
-  'C',
-  'D',
-  'E',
-  'F',
-  'G',
-  'H',
-  'I',
-  'J',
-  'K',
-  'L',
-  'M',
-  'N',
-  'O',
-  'P',
-  'Q',
-  'R',
-  'S',
-  'T',
-  'U',
-  'V',
-  'W',
-  'X',
-  'Y',
-  'Z',
-  '0',
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  ' ',
-  '.',
-  ',',
-  '!',
-  '?',
-  "'",
-  '"',
-  '-',
-];
-
-// 日文假名
-const JA_KANA = ['あ', 'い', 'う', 'え', 'お', 'の', 'は', 'を', 'ん', 'が'];
+// [Simplified] 簡體特徵
+const TIER_SC_UNIQUE =
+  '国体话门经号叶爱龟转导层边实职结样机关电彻头业见龙办务运义独复厂万历书乡云亏亚亲亿仅从仑仓仪们价众优伙会伟传伤伦伟伪伫体余佣侧侨侦偶偷伪儿允元兄充兆光兔入内全两八公六共关兴兵其具典养兼兽冁内冈册再冒冕冠冬冰冶凉凌准减凑凝几凡凤凫凭凯凶凸凹出击凿';
 
 // ============================================================================
 // 2. HELPER FUNCTIONS
@@ -246,105 +31,40 @@ const JA_KANA = ['あ', 'い', 'う', 'え', 'お', 'の', 'は', 'を', 'ん', 
 
 const hasGlyph = (font: any, char: string): boolean => {
   try {
-    const glyphIndex = font.charToGlyphIndex(char);
-    return glyphIndex > 0;
-  } catch (e) {
+    // charToGlyphIndex 回傳 0 代表 .notdef (缺失)
+    return font.charToGlyphIndex(char) > 0;
+  } catch {
     return false;
   }
 };
 
-const getCoverage = (font: any, chars: string[]) => {
-  const count = chars.reduce((acc, char) => acc + (hasGlyph(font, char) ? 1 : 0), 0);
+/**
+ * 通用區塊檢測函數
+ */
+const checkBlock = (font: any, charString: string) => {
+  const chars = charString.split('');
+  const total = chars.length;
+  let count = 0;
+
+  for (let i = 0; i < total; i++) {
+    if (hasGlyph(font, chars[i])) count++;
+  }
+
   return {
     count,
-    total: chars.length,
-    percent: count / chars.length, // 0.0 ~ 1.0
+    total,
+    rate: count / total, // 0.0 ~ 1.0
   };
 };
 
 // ============================================================================
-// 3. ANALYSIS LOGIC
-// ============================================================================
-
-const analyzeAdvanced = (font: any, fileName: string) => {
-  const tags = new Set<string>();
-  const descriptions: string[] = [];
-
-  // 1. 基礎覆蓋率計算
-  const commonScore = getCoverage(font, TC_COMMON_100).percent;
-  const uniqueTC = getCoverage(font, TC_UNIQUE).percent;
-  const uniqueSC = getCoverage(font, SC_UNIQUE).percent;
-  const kanaScore = getCoverage(font, JA_KANA).percent;
-  const punctScore = getCoverage(font, PUNCTUATION).percent;
-  const englishScore = getCoverage(font, EN_COMMON).percent;
-
-  // 2. 判斷邏輯
-
-  // [英文判定] - 優先級次高
-  // 條件：英文基本字母覆蓋 > 80% 即認為支持英文
-  if (englishScore > 0.8) {
-    tags.add('en');
-    descriptions.push('英文/歐語');
-  }
-
-  // [日文判定]
-  if (kanaScore > 0.5) {
-    tags.add('ja');
-    descriptions.push('日文');
-  }
-
-  // [繁體中文判定]
-  // 條件：常用字 > 80% 且 繁體特徵 > 簡體特徵
-  if (commonScore > 0.8 && uniqueTC > uniqueSC) {
-    // 進階檢查：標點符號
-    if (punctScore > 0.8) {
-      tags.add('tc');
-      descriptions.push('繁體中文 (完整)');
-    } else {
-      // 有字但沒標點，可能是標題字或日文漢字
-      if (!tags.has('ja')) {
-        tags.add('tc');
-        descriptions.push('繁體中文 (缺標點)');
-      }
-    }
-  }
-  // [容錯判定] 如果是日文字型，但繁體常用字支援度極高 (>90%)
-  else if (tags.has('ja') && commonScore > 0.9) {
-    tags.add('tc');
-    descriptions.push('繁體通用');
-  }
-
-  // [簡體中文判定]
-  if (uniqueSC > 0.6 && uniqueSC > uniqueTC) {
-    tags.add('sc');
-    descriptions.push('簡體中文');
-  }
-
-  // [兜底] 如果都不符合，檢查英文是否可用
-  if (tags.size === 0) {
-    if (englishScore > 0.5) {
-      tags.add('en');
-      descriptions.push('英文/歐語');
-    } else if (hasGlyph(font, 'A')) {
-      tags.add('en');
-      descriptions.push('英文/歐語');
-    }
-  }
-
-  return {
-    tags: Array.from(tags),
-    description: descriptions.join(' | '),
-    stats: { commonScore, uniqueTC, uniqueSC, kanaScore, englishScore },
-  };
-};
-
-// ============================================================================
-// 4. EXPORT
+// 3. MAIN LOGIC
 // ============================================================================
 
 export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
+
     reader.onload = (e) => {
       const buffer = e.target?.result as ArrayBuffer;
       if (!buffer) return reject(new Error('Failed to read file'));
@@ -352,29 +72,87 @@ export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
       try {
         // @ts-ignore
         const font = parse ? parse(buffer) : window.opentype.parse(buffer);
-
         let fontName = file.name.split('.')[0];
         if (font.names.fontFamily?.en) fontName = font.names.fontFamily.en;
 
-        const result = analyzeAdvanced(font, file.name);
+        // --- 1. 執行所有統計 (並行計算) ---
+        // 這裡一定要全部執行，不可以像之前那樣有條件執行
+        const statsEN = checkBlock(font, TIER_EN_BASIC);
+        const statsCoreTC = checkBlock(font, TIER_CORE_TC);
+        const statsCommonTC = checkBlock(font, TIER_COMMON_TC);
+        const statsKana = checkBlock(font, TIER_KANA);
+        const statsUniqueSC = checkBlock(font, TIER_SC_UNIQUE);
+
+        const tags = new Set<string>();
+        const descriptions: string[] = [];
+
+        // --- 2. 判斷邏輯 (Tagging Logic) ---
+
+        // 分數計算
+        const tcScore = statsCoreTC.rate * 0.6 + statsCommonTC.rate * 0.4;
+
+        let isCJK = false;
+
+        // A. 日文判定
+        if (statsKana.rate > 0.8) {
+          tags.add('ja');
+          descriptions.push('日文');
+          isCJK = true;
+
+          // 日文字型若是漢字多，也算繁體通用
+          if (statsCoreTC.rate > 0.9) tags.add('tc');
+        }
+
+        // B. 繁體中文判定
+        if (statsCoreTC.rate > 0.9 && statsUniqueSC.rate < 0.2) {
+          tags.add('tc');
+          isCJK = true;
+
+          if (statsCommonTC.rate > 0.9) descriptions.push('繁體中文');
+          else descriptions.push('繁體中文 (通用)');
+        }
+
+        // C. 簡體中文判定
+        if (statsUniqueSC.rate > 0.8) {
+          tags.add('sc');
+          descriptions.push('簡體中文');
+          isCJK = true;
+        }
+
+        // D. 英文判定 logic
+        // 如果完全沒有 CJK 特徵，且英文完整 -> 標記為英文
+        if (!isCJK && statsEN.rate > 0.8) {
+          tags.add('en');
+          descriptions.push('英文/歐語');
+        }
+
+        // 額外邏輯：雖然是 CJK，但如果使用者上傳了一個完全壞掉的字型（英文全是方塊），我們還是要標記出來
+        if (statsEN.rate < 0.5) {
+          descriptions.push('⚠️ 英文缺字');
+        }
+
+        // --- 3. 輸出結果 ---
 
         const fontDef: FontDefinition = {
           name: fontName,
           family: fontName,
           category: 'display',
-          tags: result.tags as any,
-          description: result.description,
-          // 可以將詳細分數存入 meta 以供前端顯示進度條
+          tags: Array.from(tags) as any,
+          description: descriptions.join(' | ') || '未知格式',
+          // 這裡確保回傳所有數值，無論 Tag 是什麼
           coverage: {
-            tc: Math.round(result.stats.commonScore * 100),
-            sc: Math.round(result.stats.uniqueSC * 100),
-            en: Math.round(result.stats.englishScore * 100),
-            ja: Math.round(result.stats.kanaScore * 100),
+            en: Math.round(statsEN.rate * 100), // 這裡現在會有數值了！
+            tc: Math.round(tcScore * 100),
+            sc: Math.round(statsUniqueSC.rate * 100),
+            ja: Math.round(statsKana.rate * 100),
           },
+          glyphCount: font.glyphs.length,
           isCustom: true,
         };
+
         resolve(fontDef);
       } catch (err) {
+        console.error(err);
         reject(err);
       }
     };

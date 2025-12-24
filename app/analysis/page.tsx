@@ -10,6 +10,19 @@ import { PageHeader } from '../components/PageHeader';
 import { PreviewSetting } from '../components/PreviewSetting';
 import { Footer } from '../components/Footer';
 
+// 根據覆蓋率百分比返回顏色
+const getCoverageColor = (percentage: number): { text: string; bar: string } => {
+  if (percentage >= 95) {
+    return { text: 'text-green-600', bar: 'bg-green-500' };
+  } else if (percentage >= 75) {
+    return { text: 'text-blue-600', bar: 'bg-blue-500' };
+  } else if (percentage >= 50) {
+    return { text: 'text-amber-600', bar: 'bg-amber-500' };
+  } else {
+    return { text: 'text-stone-400', bar: 'bg-stone-300' };
+  }
+};
+
 export default function AnalysisPage() {
   const { currentFont, isAnalyzing, uploadError, processFont, clearFont } = useFontAnalysis();
   const {
@@ -147,49 +160,113 @@ export default function AnalysisPage() {
                       </div>
                     )}
 
+                    {/* Supported Languages */}
+                    {currentFont.coverage && (
+                      <div>
+                        <p className="text-xs text-stone-500">支援語系</p>
+                        <div className="flex flex-wrap gap-2">
+                          {currentFont.coverage.tc >= 80 && (
+                            <span className="inline-block rounded-full bg-stone-200 px-3 py-1 text-xs font-medium text-stone-700">
+                              繁體中文
+                            </span>
+                          )}
+                          {currentFont.coverage.sc >= 80 && (
+                            <span className="inline-block rounded-full bg-stone-200 px-3 py-1 text-xs font-medium text-stone-700">
+                              簡體中文
+                            </span>
+                          )}
+                          {currentFont.coverage.en >= 80 && (
+                            <span className="inline-block rounded-full bg-stone-200 px-3 py-1 text-xs font-medium text-stone-700">
+                              英文
+                            </span>
+                          )}
+                          {currentFont.coverage.ja >= 80 && (
+                            <span className="inline-block rounded-full bg-stone-200 px-3 py-1 text-xs font-medium text-stone-700">
+                              日文
+                            </span>
+                          )}
+                          {currentFont.coverage.tc < 80 &&
+                            currentFont.coverage.sc < 80 &&
+                            currentFont.coverage.en < 80 &&
+                            currentFont.coverage.ja < 80 && (
+                              <span className="text-xs text-stone-400">無主要語言支援</span>
+                            )}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Coverage Info */}
                     {currentFont.coverage && (
                       <div className="border-t border-stone-200 pt-3">
                         <p className="mb-3 text-xs font-semibold text-stone-600">語言覆蓋率</p>
                         <div className="space-y-2">
+                          {/* Traditional Chinese */}
                           <div>
                             <div className="mb-1 flex items-center justify-between">
                               <span className="text-xs text-stone-600">繁體中文</span>
-                              <span className="text-primary text-xs font-medium">
+                              <span
+                                className={`text-xs font-medium ${getCoverageColor(currentFont.coverage.tc).text}`}
+                              >
                                 {currentFont.coverage.tc}%
                               </span>
                             </div>
                             <div className="h-2 overflow-hidden rounded-full bg-stone-200">
                               <div
-                                className="bg-primary h-full"
+                                className={`h-full ${getCoverageColor(currentFont.coverage.tc).bar}`}
                                 style={{ width: `${currentFont.coverage.tc}%` }}
                               />
                             </div>
                           </div>
+
+                          {/* Simplified Chinese */}
                           <div>
                             <div className="mb-1 flex items-center justify-between">
                               <span className="text-xs text-stone-600">簡體中文</span>
-                              <span className="text-xs font-medium text-green-600">
+                              <span
+                                className={`text-xs font-medium ${getCoverageColor(currentFont.coverage.sc).text}`}
+                              >
                                 {currentFont.coverage.sc}%
                               </span>
                             </div>
                             <div className="h-2 overflow-hidden rounded-full bg-stone-200">
                               <div
-                                className="h-full bg-green-500"
+                                className={`h-full ${getCoverageColor(currentFont.coverage.sc).bar}`}
                                 style={{ width: `${currentFont.coverage.sc}%` }}
                               />
                             </div>
                           </div>
+
+                          {/* English */}
+                          <div>
+                            <div className="mb-1 flex items-center justify-between">
+                              <span className="text-xs text-stone-600">英文</span>
+                              <span
+                                className={`text-xs font-medium ${getCoverageColor(currentFont.coverage.en).text}`}
+                              >
+                                {currentFont.coverage.en}%
+                              </span>
+                            </div>
+                            <div className="h-2 overflow-hidden rounded-full bg-stone-200">
+                              <div
+                                className={`h-full ${getCoverageColor(currentFont.coverage.en).bar}`}
+                                style={{ width: `${currentFont.coverage.en}%` }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Japanese */}
                           <div>
                             <div className="mb-1 flex items-center justify-between">
                               <span className="text-xs text-stone-600">日文</span>
-                              <span className="text-xs font-medium text-purple-600">
+                              <span
+                                className={`text-xs font-medium ${getCoverageColor(currentFont.coverage.ja).text}`}
+                              >
                                 {currentFont.coverage.ja}%
                               </span>
                             </div>
                             <div className="h-2 overflow-hidden rounded-full bg-stone-200">
                               <div
-                                className="h-full bg-purple-500"
+                                className={`h-full ${getCoverageColor(currentFont.coverage.ja).bar}`}
                                 style={{ width: `${currentFont.coverage.ja}%` }}
                               />
                             </div>

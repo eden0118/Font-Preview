@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { getRandomPreviewText, PREVIEW_TEXTS } from '../lib/factWords';
 
 interface PreviewSettings {
   fontColor: string;
@@ -12,9 +13,8 @@ const DEFAULT_SETTINGS: PreviewSettings = {
   fontSize: 32,
 };
 
-// 預設預覽文字
-const DEFAULT_SAMPLE_TEXT =
-  '信念、想法、思想很強的人，即使心情很糟、內心受傷，也還是會朝著目的奔跑。';
+// 預設預覽文字 - 隨機選擇
+const DEFAULT_SAMPLE_TEXT = getRandomPreviewText();
 
 export const usePreviewSettings = () => {
   const [settings, setSettings] = useState<PreviewSettings>(DEFAULT_SETTINGS);
