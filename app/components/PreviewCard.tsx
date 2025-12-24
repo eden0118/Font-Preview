@@ -19,7 +19,7 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   fontSize,
 }) => {
   return (
-    <div className="card flex flex-col overflow-hidden">
+    <div className="flex flex-col overflow-hidden rounded-2xl border border-stone-100 bg-white shadow-sm">
       {/* Header */}
       <div className="bg-primary/5 flex items-center gap-2 border-b border-stone-100 px-6 py-3">
         <div className="bg-primary h-3 w-3 rounded-full" />

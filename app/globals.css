@@ -50,11 +50,11 @@
   }
 
   .small-btn {
-    @apply flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold tracking-tighter;
+    @apply flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold;
   }
 
   .ghost-btn {
-    @apply from-primary to-accent hover:from-accent hover:to-primary bg-linear-to-r text-white;
+    @apply text-primaryText hover:text-primary border-primary flex items-center gap-1 px-1 py-0.5 text-xs font-medium;
   }
 
   .primary-btn {
@@ -62,7 +62,7 @@
   }
 
   .secondary-btn {
-    @apply text-secondaryText hover:text-primary bg-stone-100 hover:bg-stone-200;
+    @apply text-secondaryText hover:text-primary bg-stone-100 shadow-sm hover:bg-stone-50 hover:shadow-md;
   }
 
   .icon-btn {
@@ -76,6 +76,6 @@
 
   /* language label */
   .lang-label {
-    @apply inline-block rounded-full bg-stone-200 px-3 py-0.5 text-xs font-medium text-stone-700;
+    @apply inline-block rounded bg-stone-200/50 px-2 py-0.5 text-xs font-medium text-stone-700;
   }
 }

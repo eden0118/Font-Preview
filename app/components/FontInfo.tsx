@@ -13,15 +13,15 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
       <div className="space-y-3">
         {font.glyphCount && (
           <div>
-            <p className="text-xs text-stone-500">字符數</p>
-            <p className="font-medium text-stone-700">{font.glyphCount.toLocaleString()}</p>
+            <span className="mr-2 text-xs text-stone-500">字符數</span>
+            <span className="font-medium text-stone-700">{font.glyphCount.toLocaleString()}</span>
           </div>
         )}
 
         {/* Supported Languages */}
         {font.coverage && (
-          <div>
-            <p className="text-xs text-stone-500">支援語系</p>
+          <div className="flex gap-2">
+            <p className="min-w-fit text-xs text-stone-500">支援語系</p>
             <div className="flex flex-wrap gap-2">
               {font.coverage.tc >= 80 && <span className="lang-label">繁體中文</span>}
               {font.coverage.sc >= 80 && <span className="lang-label">簡體中文</span>}

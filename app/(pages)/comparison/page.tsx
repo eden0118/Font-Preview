@@ -11,6 +11,8 @@ import { PreviewSetting } from '../../components/PreviewSetting';
 import { Footer } from '../../components/Footer';
 import { PreviewCard } from '../../components/PreviewCard';
 import { FontListItem } from '../../components/FontListItem';
+import { UploadZone } from '../../components/UploadZone';
+import { PreviewTextPanel } from '../../components/PreviewTextPanel';
 import { getCoverageColor } from '../../lib/coverageHelpers';
 
 export default function ComparisonPage() {
@@ -83,51 +85,18 @@ export default function ComparisonPage() {
                 </div>
               </div>
 
-              <div
+              <UploadZone
+                isDragActive={isDragActive}
+                isAnalyzing={!!analysingId}
+                uploadError={uploadError}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onClick={() => document.getElementById('file-input-comparison')?.click()}
-                className={`flex min-h-48 cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-all ${
-                  isDragActive
-                    ? 'border-primary/80 bg-primary/5'
-                    : analysingId
-                      ? 'border-primary/80 bg-primary/5'
-                      : 'hover:border-primary/80 border-stone-300 hover:bg-stone-50'
-                }`}
-              >
-                <input
-                  id="file-input-comparison"
-                  type="file"
-                  className="hidden"
-                  accept=".ttf,.otf,.woff,.woff2"
-                  onChange={handleFileInput}
-                />
-
-                {analysingId ? (
-                  <>
-                    <Loader2 className="text-primary h-8 w-8 animate-spin" />
-                    <span className="text-sm text-stone-600">正在分析字型...</span>
-                  </>
-                ) : (
-                  <>
-                    <div className="bg-primary/5 rounded-full p-3">
-                      <Upload className="text-primary h-6 w-6" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-stone-700">點擊選擇或拖拽放入</p>
-                      <p className="text-xs text-stone-500">支援 TTF, OTF, WOFF, WOFF2</p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {uploadError && (
-                <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-600">
-                  {uploadError}
-                </div>
-              )}
+                fileInputId="file-input-comparison"
+                onFileChange={handleFileInput}
+              />
 
               {/* Uploaded Fonts List */}
               {comparisonSlots.some((s) => s.font) && (
@@ -146,61 +115,20 @@ export default function ComparisonPage() {
             </div>
 
             {/* Right Panel - Text & Settings */}
-            <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm lg:col-span-3">
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-lg font-bold text-stone-800">預覽文字與設定</h3>
-                <div className="flex gap-2">
-                  <div className="flex gap-1 rounded-lg bg-stone-100 p-1">
-                    <button
-                      onClick={() => updateLanguage('cn')}
-                      className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
-                        settings.language === 'cn'
-                          ? 'text-primary bg-white'
-                          : 'text-stone-600 hover:text-stone-800'
-                      }`}
-                    >
-                      中文
-                    </button>
-                    <button
-                      onClick={() => updateLanguage('en')}
-                      className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
-                        settings.language === 'en'
-                          ? 'text-primary bg-white'
-                          : 'text-stone-600 hover:text-stone-800'
-                      }`}
-                    >
-                      English
-                    </button>
-                  </div>
-                  <button
-                    onClick={resetToDefault}
-                    className="hover:text-primary rounded-lg bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600 transition-colors hover:bg-stone-200"
-                  >
-                    使用預設
-                  </button>
-                </div>
-              </div>
-              <textarea
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="輸入預覽文字..."
-                className="focus:ring-primary mb-4 min-h-24 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 transition-all outline-none placeholder:text-stone-400 focus:border-transparent focus:ring-2"
-              />
-
-              {/* Settings Row */}
-              <div className="border-t border-stone-100 pt-4">
-                <PreviewSetting
-                  fontSize={settings.fontSize}
-                  fontColor={settings.fontColor}
-                  bgColor={settings.bgColor}
-                  onFontSizeChange={updateFontSize}
-                  onFontColorChange={updateFontColor}
-                  onBgColorChange={updateBgColor}
-                  onReset={resetSettings}
-                  accentColor="accent"
-                />
-              </div>
-            </div>
+            <PreviewTextPanel
+              inputText={inputText}
+              onInputChange={setInputText}
+              language={settings.language}
+              onLanguageChange={updateLanguage}
+              fontSize={settings.fontSize}
+              fontColor={settings.fontColor}
+              bgColor={settings.bgColor}
+              onFontSizeChange={updateFontSize}
+              onFontColorChange={updateFontColor}
+              onBgColorChange={updateBgColor}
+              onReset={resetSettings}
+              onResetDefault={resetToDefault}
+            />
           </div>
 
           {/* Bottom Panel - Comparison Previews */}
