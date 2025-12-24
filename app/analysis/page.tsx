@@ -9,7 +9,6 @@ import { useDragDrop } from '../hooks/useDragDrop';
 import { PageHeader } from '../components/PageHeader';
 import { PreviewSetting } from '../components/PreviewSetting';
 import { Footer } from '../components/Footer';
-import { SAMPLE_TEXTS } from '@/lib/constants';
 
 export default function AnalysisPage() {
   const { currentFont, isAnalyzing, uploadError, processFont, clearFont } = useFontAnalysis();
@@ -229,36 +228,39 @@ export default function AnalysisPage() {
             </div>
           </div>
 
-          {/* Bottom Panel - Font Analysis */}
-          {currentFont && (
-            <div className="space-y-6">
+          {/* Bottom Panel - Font Analysis/Preview */}
+          <div className="space-y-6">
+            {currentFont && (
               <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
                 <div className="mb-4 flex items-center gap-2">
                   <div className="bg-primary h-3 w-3 rounded-full" />
                   <p className="font-semibold text-stone-800">{currentFont.name}</p>
                   <p className="text-xs text-stone-500">Detected: {currentFont.category}</p>
                 </div>
-                <div
-                  className="flex min-h-64 flex-1 items-center justify-center overflow-auto p-6 transition-colors duration-300"
-                  style={{ backgroundColor: settings.bgColor }}
+              </div>
+            )}
+            <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
+              <h3 className="mb-4 text-lg font-bold text-stone-800">預覽</h3>
+              <div
+                className="flex min-h-64 flex-1 items-center justify-center overflow-auto p-6 transition-colors duration-300"
+                style={{ backgroundColor: settings.bgColor }}
+              >
+                <p
+                  style={{
+                    fontFamily: currentFont ? `"${currentFont.family}"` : 'sans-serif',
+                    color: settings.fontColor,
+                    fontSize: `${settings.fontSize}px`,
+                    lineHeight: 1.6,
+                    wordBreak: 'break-word',
+                    textAlign: 'center',
+                    whiteSpace: 'pre-wrap',
+                  }}
                 >
-                  <p
-                    style={{
-                      fontFamily: currentFont ? `"${currentFont.family}"` : 'sans-serif',
-                      color: settings.fontColor,
-                      fontSize: `${settings.fontSize}px`,
-                      lineHeight: 1.6,
-                      wordBreak: 'break-word',
-                      textAlign: 'center',
-                      whiteSpace: 'pre-wrap',
-                    }}
-                  >
-                    {inputText || '請輸入文字預覽效果'}
-                  </p>
-                </div>
+                  {inputText}
+                </p>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </main>
       <Footer />

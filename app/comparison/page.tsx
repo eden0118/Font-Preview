@@ -9,7 +9,6 @@ import { useDragDrop } from '../hooks/useDragDrop';
 import { PageHeader } from '../components/PageHeader';
 import { PreviewSetting } from '../components/PreviewSetting';
 import { Footer } from '../components/Footer';
-import { SAMPLE_TEXTS } from '@/lib/constants';
 
 export default function ComparisonPage() {
   const { comparisonSlots, analysingId, uploadError, processFont, removeFont } =
@@ -178,7 +177,8 @@ export default function ComparisonPage() {
           </div>
 
           {/* Bottom Panel - Comparison Previews */}
-          {hasFonts && (
+          {/* Bottom Panel - Comparison Previews */}
+          {hasFonts ? (
             <div className="space-y-6">
               {comparisonSlots
                 .filter((s) => s.font !== null)
@@ -206,20 +206,19 @@ export default function ComparisonPage() {
                           whiteSpace: 'pre-wrap',
                         }}
                       >
-                        {inputText || '請輸入文字預覽效果'}
+                        {inputText}
                       </p>
                     </div>
                   </div>
                 ))}
             </div>
-          )}
-          {!hasFonts && (
+          ) : (
             <div className="rounded-2xl border-2 border-dashed border-stone-300 bg-white p-24 text-center">
               <div className="mb-3 flex justify-center">
                 <div className="text-4xl text-stone-300">T</div>
               </div>
               <p className="text-sm text-stone-400">尚未上傳字體</p>
-              <p className="mt-1 text-xs text-stone-400">請在左側欄位 TTF/OTF 檔案開始比較</p>
+              <p className="mt-1 text-xs text-stone-400">請在左側欄位上傳 TTF/OTF 檔案開始比較</p>
             </div>
           )}
         </div>

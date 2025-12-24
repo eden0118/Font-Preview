@@ -2,71 +2,66 @@
 
 一個現代、快速的字體預覽和分析工具，支援上傳 TTF、OTF、WOFF、WOFF2 字體檔案，並智能檢測繁簡中文、日文等多語言支援情況。
 
-## 功能特性
+## ✨ 核心功能
 
-- **雙功能設計** - 字型分析 + 字型比較，各司其職
-- **快速上傳預覽** - 無需安裝字體到系統，即時在瀏覽器中預覽效果
-- **完整自訂選項** - 調整字體大小、文字顏色、背景顏色
-- **文字輸入管理** - 支援自訂文字輸入
-- **智能字體分析** - 自動檢測字體對繁體中文、簡體中文、日文的適用性覆蓋率
-- **視覺化呈現** - 進度條展示覆蓋率，顏色編碼快速判斷適用性
-- **隱私保護** - 所有檔案處理均在瀏覽器本地完成，不上傳任何資料到伺服器
-- **響應式設計** - 支援桌面和行動設備
+- **🔍 字型分析** - 上傳單個字型，深入分析其覆蓋範圍、特性和適用語言
+- **⚖️ 字型比較** - 並排預覽多個字型檔案，快速對比視覺效果
+- **⚡ 即時預覽** - 無需安裝字體到系統，在瀏覽器中即時預覽效果
+- **🎨 完整自訂** - 調整字體大小、文字顏色、背景顏色
+- **📊 智能分析** - 自動檢測字體對繁體中文、簡體中文、日文的覆蓋率
+- **🔒 隱私優先** - 所有檔案處理均在瀏覽器本地完成，無伺服器上傳
+- **📱 響應式設計** - 完美支援桌面和行動設備
 
-## 技術棧
+## 🛠 技術棧
 
-### 核心依賴
+| 類別                | 技術                 | 版本    |
+| ------------------- | -------------------- | ------- |
+| **Framework**       | Next.js (App Router) | 15.2.0  |
+| **Language**        | TypeScript           | 5.8.2   |
+| **Styling**         | Tailwind CSS         | 4.0.0   |
+| **UI Icons**        | Lucide React         | 0.562.0 |
+| **Font Parsing**    | OpenType.js          | 1.3.4   |
+| **Code Formatting** | Prettier             | 3.7.4   |
 
-- **Framework**: Next.js 15.2 (App Router)
-- **Language**: TypeScript 5.8 (strict mode)
-- **Styling**: Tailwind CSS v4 (@tailwindcss/postcss)
-- **Icons**: Lucide React 0.562.0
-- **Font Parsing**: OpenType.js 1.3.4
-
-### 開發工具
-
-- **Package Manager**: npm
-- **Code Formatter**: Prettier 3.7.4
-- **Bundler**: Next.js (built-in)
-
-## 項目結構
+## 📁 專案結構
 
 ```
 Font-Preview/
-├── app/                              # Next.js App Router
-│   ├── page.tsx                      # 入口首頁 (功能選擇)
+├── app/
+│   ├── page.tsx                      # 入口首頁
 │   ├── analysis/
 │   │   └── page.tsx                  # 字型分析頁面
 │   ├── comparison/
 │   │   └── page.tsx                  # 字型比較頁面
-│   ├── hooks/                        # 自訂 React Hooks
-│   │   ├── useFontAnalysis.ts        # 單個字型分析邏輯
-│   │   ├── useFontComparison.ts      # 多字型比較邏輯
-│   │   ├── usePreviewSettings.ts     # 預覽設定狀態管理
-│   │   └── useDragDrop.ts            # 拖曳上傳功能
-│   ├── components/                   # 可復用組件
-│   │   ├── FontUploadZone.tsx        # 檔案上傳區域
+│   ├── components/                   # 可復用元件
+│   │   ├── FeatureCard.tsx           # 功能卡片
 │   │   ├── PreviewSetting.tsx        # 預覽設定面板
 │   │   ├── PageHeader.tsx            # 頁面標題欄
-│   │   └── FontInfo.tsx              # 字型資訊卡片
+│   │   └── Footer.tsx                # 底部欄位
+│   ├── hooks/                        # 自訂 React Hooks
+│   │   ├── useFontAnalysis.ts        # 字型分析邏輯
+│   │   ├── useFontComparison.ts      # 字型比較邏輯
+│   │   ├── usePreviewSettings.ts     # 預覽設定狀態
+│   │   ├── usePreviewText.ts         # 預覽文字初始化
+│   │   └── useDragDrop.ts            # 拖曳上傳功能
+│   ├── lib/
+│   │   ├── fontHelper.ts             # 字體分析引擎
+│   │   ├── types.ts                  # TypeScript 型別定義
+│   │   └── constants.ts              # 應用常數
 │   ├── layout.tsx                    # 全局 Layout
 │   └── globals.css                   # 全局樣式
-├── lib/                              # Next.js 工具庫
-│   ├── fontHelper.ts                 # 字體分析引擎
-│   ├── types.ts                      # TypeScript 型別
-│   └── constants.ts                  # 常數定義
-├── package.json                      # 依賴配置
-├── tsconfig.json                     # TypeScript 配置
-├── next.config.js                    # Next.js 配置
-├── tailwind.config.js                # Tailwind CSS 配置
-├── postcss.config.js                 # PostCSS 配置
-├── .prettierrc.json                  # Prettier 配置
+├── package.json
+├── tsconfig.json
+├── next.config.js
+├── tailwind.config.js
+├── postcss.config.js
+├── .prettierrc.json
 └── README.md                         # 本文件
 ```
 
 ## 🚀 快速開始
 
-### 前提條件
+### 系統要求
 
 - Node.js 18+
 - npm 9+
@@ -84,7 +79,7 @@ npm install
 npm run dev
 ```
 
-開發伺服器將在 `http://localhost:3000` 啟動
+開發伺服器將在 `http://localhost:4000` 啟動
 
 ### 可用命令
 
@@ -98,11 +93,94 @@ npm run build
 # 預覽生產版本
 npm start
 
-# 程式碼格式化 (Prettier)
+# 程式碼格式化
 npm run format
 
 # 檢查程式碼格式
 npm run format:check
+```
+
+## 📖 使用指南
+
+### 字型分析頁面
+
+1. **上傳字型**
+   - 點擊上傳區域或拖曳 TTF/OTF/WOFF/WOFF2 檔案
+   - 系統自動分析檔案並提取字體信息
+
+2. **檢視分析結果**
+   - 字體名稱、分類
+   - 字符數量統計
+   - 多語言覆蓋率進度條
+
+3. **自訂預覽**
+   - 輸入或編輯預覽文字
+   - 調整字體大小（12px - 150px）
+   - 修改文字和背景顏色
+
+### 字型比較頁面
+
+1. **上傳多個字型**
+   - 最多可上傳 3 個字型
+   - 支援拖曳或點擊上傳
+
+2. **並排預覽**
+   - 相同文字在各字型中的效果展示
+   - 即時調整預覽設定，所有字型同步更新
+
+## 🔧 開發相關
+
+### TypeScript 配置
+
+- **嚴格模式** (`strict: true`) - 完整的型別檢查
+- **路徑別名** - `@/*` 指向 `./app/*`
+- **模組解析** - `bundler` 模式，最佳化打包
+
+### Tailwind CSS v4
+
+- 使用新的 `@tailwindcss/postcss` 插件
+- 自訂顏色變數透過 `@theme` 定義
+- PostCSS 自動化處理
+
+### 程式碼風格
+
+- **格式化工具** - Prettier with Tailwind CSS plugin
+- **列寬** - 100 字符
+- **引號** - 單引號
+- **尾逗號** - ES5 模式
+
+## 🐛 已知問題和解決方案
+
+### Tailwind CSS 熱更新
+
+如果編輯樣式後沒有立即生效：
+
+```bash
+# 清除 Next.js 緩存
+rm -rf .next
+npm run dev
+```
+
+## 📄 許可證
+
+MIT
+
+## 👨‍💻 開發者
+
+Eden Chang - [@eden0118](https://github.com/eden0118)
+
+---
+
+**上次更新**: 2025 年 12 月 24 日
+
+# 程式碼格式化 (Prettier)
+
+npm run format
+
+# 檢查程式碼格式
+
+npm run format:check
+
 ```
 
 ## 📖 使用指南
@@ -171,6 +249,7 @@ FontFlow 採用**適用性評估**而非傳統的語系分類：
 ### 頁面分離的優勢
 
 ```
+
 之前 (單頁面)
 ├─ 分析功能 + 比較功能混合
 ├─ 狀態管理複雜
@@ -178,14 +257,15 @@ FontFlow 採用**適用性評估**而非傳統的語系分類：
 
 之後 (多頁面)
 ├─ App Router (首頁)
-│  └─ 功能選擇介面
+│ └─ 功能選擇介面
 ├─ /analysis 路由
-│  ├─ useFontAnalysis Hook
-│  └─ 分析專用邏輯
+│ ├─ useFontAnalysis Hook
+│ └─ 分析專用邏輯
 └─ /comparison 路由
-   ├─ useFontComparison Hook
-   └─ 比較專用邏輯
-```
+├─ useFontComparison Hook
+└─ 比較專用邏輯
+
+````
 
 ### 共用 Hooks
 
@@ -240,7 +320,7 @@ A: 可以。編輯 `lib/fontHelper.ts` 中的字符測試集。
 ```bash
 npm i -g vercel
 vercel
-```
+````
 
 ### 部署到其他平台
 

@@ -2,117 +2,168 @@ import { parse } from 'opentype.js';
 import { FontDefinition } from './types';
 
 // ============================================================================
-// 1. 測試字符集 - 用於判斷「適用性」而非「語系分類」
+// 1. DATASETS (字頻數據集)
 // ============================================================================
 
-// 繁體中文常用字測試集 (50字)
-// 包含：高頻常用字 + 繁體特有寫法字
-// 目標：測試這個字體能否滿足「繁體中文文案」的需求
-const TC_TEST_CHARS = [
-  // 繁體特有字（與簡體寫法不同）
+// [Level 1] 繁體中文 TOP 100 高頻字
+// 來源：教育部常用字頻表
+// 邏輯：這些字是中文的「骨架」，缺了這些字，字型基本上無法使用。
+const TC_COMMON_100 = [
+  '的',
+  '一',
+  '是',
+  '不',
+  '了',
+  '人',
+  '我',
+  '在',
+  '有',
+  '他',
+  '這',
+  '中',
+  '大',
+  '來',
+  '上',
   '國',
+  '個',
+  '到',
+  '說',
+  '們',
+  '為',
+  '子',
+  '和',
+  '你',
+  '地',
+  '出',
+  '道',
+  '也',
+  '時',
+  '年',
+  '得',
+  '就',
+  '那',
+  '要',
+  '下',
+  '以',
+  '生',
+  '會',
+  '自',
+  '著',
+  '去',
+  '之',
+  '過',
+  '家',
+  '學',
+  '對',
+  '可',
+  '她',
+  '里',
+  '后',
+  '小',
+  '么',
+  '心',
+  '多',
+  '天',
+  '而',
+  '能',
+  '好',
+  '都',
+  '然',
+  '沒',
+  '日',
+  '于',
+  '起',
+  '還',
+  '發',
+  '成',
+  '事',
+  '只',
+  '作',
+  '當',
+  '想',
+  '看',
+  '文',
+  '無',
+  '開',
+  '手',
+  '十',
+  '用',
+  '主',
+  '行',
+  '方',
+  '又',
+  '如',
+  '前',
+  '所',
+  '本',
+  '見',
+  '經',
+  '頭',
+  '面',
+  '公',
+  '同',
+  '三',
+  '已',
+  '老',
+  '從',
+  '動',
+  '兩',
+  '長',
+];
+
+// [Level 2] 繁體特有特徵字 (用於區分簡體/日文)
+const TC_UNIQUE = [
   '體',
+  '國',
   '話',
-  '寶',
   '門',
   '經',
   '號',
   '葉',
-  '說',
+  '愛',
+  '龜',
+  '轉',
+  '導',
+  '層',
   '邊',
   '實',
-  '這',
-  '會',
-  '後',
-  '學',
+  '職',
+  '結',
+  '樣',
   '機',
   '關',
-  '開',
   '電',
-  '車',
-  // 高頻常用字（繁簡同形但必須存在）
-  '的',
-  '是',
-  '在',
-  '有',
-  '我',
-  '你',
-  '他',
-  '她',
-  '們',
-  '個',
-  '來',
-  '去',
-  '好',
-  '看',
-  '想',
-  '要',
-  '能',
-  '不',
-  '了',
-  '也',
-  // 繁體文案常見字
-  '臺',
-  '灣',
-  '網',
-  '路',
-  '資',
-  '訊',
-  '設',
-  '計',
-  '產',
-  '品',
 ];
 
-// 簡體中文特有字測試集 (20字)
-// 目標：快速判斷是否為簡體字型
-const SC_TEST_CHARS = [
-  '国',
+// [Level 2] 簡體特有特徵字
+const SC_UNIQUE = [
   '体',
+  '国',
   '话',
-  '宝',
   '门',
   '经',
   '号',
   '叶',
-  '说',
+  '爱',
+  '龟',
+  '转',
+  '导',
+  '层',
   '边',
   '实',
-  '这',
-  '会',
-  '后',
-  '学',
+  '职',
+  '结',
+  '样',
   '机',
   '关',
-  '开',
   '电',
-  '车',
 ];
 
-// 日文假名測試集 (20字)
-// 平假名 + 片假名混合
-const JA_TEST_CHARS = [
-  'あ',
-  'い',
-  'う',
-  'え',
-  'お',
-  'か',
-  'き',
-  'く',
-  'け',
-  'こ',
-  'ア',
-  'イ',
-  'ウ',
-  'エ',
-  'オ',
-  'カ',
-  'キ',
-  'ク',
-  'ケ',
-  'コ',
-];
+// [Level 3] 全形標點符號 (重要判斷依據)
+const PUNCTUATION = ['，', '。', '、', '：', '「', '」'];
+
+// 日文假名
+const JA_KANA = ['あ', 'い', 'う', 'え', 'お', 'の', 'は', 'を', 'ん', 'が'];
 
 // ============================================================================
 // 2. HELPER FUNCTIONS
@@ -127,114 +178,77 @@ const hasGlyph = (font: any, char: string): boolean => {
   }
 };
 
-/**
- * 計算字符集的覆蓋數量和百分比
- */
-const getCoverage = (
-  font: any,
-  chars: string[]
-): { count: number; total: number; percent: number } => {
-  if (chars.length === 0) return { count: 0, total: 0, percent: 0 };
+const getCoverage = (font: any, chars: string[]) => {
   const count = chars.reduce((acc, char) => acc + (hasGlyph(font, char) ? 1 : 0), 0);
   return {
     count,
     total: chars.length,
-    percent: Math.round((count / chars.length) * 100),
+    percent: count / chars.length, // 0.0 ~ 1.0
   };
 };
 
-/**
- * 計算字體中的字符總數
- */
-const countGlyphs = (font: any): number => {
-  try {
-    return Math.max(0, (font.glyphs?.length || 0) - 1);
-  } catch (e) {
-    return 0;
-  }
-};
-
 // ============================================================================
-// 3. 適用性分析邏輯
+// 3. ANALYSIS LOGIC
 // ============================================================================
 
-interface AnalysisResult {
-  tags: string[];
-  description: string;
-  coverage: {
-    tc: number;
-    sc: number;
-    ja: number;
-  };
-}
-
-const analyzeCompatibility = (font: any, fileName: string): AnalysisResult => {
-  // 計算各語言的覆蓋率
-  const tcCoverage = getCoverage(font, TC_TEST_CHARS);
-  const scCoverage = getCoverage(font, SC_TEST_CHARS);
-  const jaCoverage = getCoverage(font, JA_TEST_CHARS);
-
+const analyzeAdvanced = (font: any, fileName: string) => {
   const tags = new Set<string>();
   const descriptions: string[] = [];
 
-  // === 繁體中文適用性判斷 ===
-  // 90%+ : 完全適用
-  // 70-89%: 大致適用（可能缺少少數字）
-  // 50-69%: 部分適用（建議謹慎使用）
-  // <50%: 不建議用於繁體
-  if (tcCoverage.percent >= 70) {
-    tags.add('tc');
-  }
+  // 1. 基礎覆蓋率計算
+  const commonScore = getCoverage(font, TC_COMMON_100).percent;
+  const uniqueTC = getCoverage(font, TC_UNIQUE).percent;
+  const uniqueSC = getCoverage(font, SC_UNIQUE).percent;
+  const kanaScore = getCoverage(font, JA_KANA).percent;
+  const punctScore = getCoverage(font, PUNCTUATION).percent;
 
-  // === 簡體中文適用性判斷 ===
-  if (scCoverage.percent >= 70) {
-    tags.add('sc');
-  }
+  // 2. 判斷邏輯
 
-  // === 日文適用性判斷 ===
-  // 假名是日文獨有，只要有就代表支援日文
-  if (jaCoverage.percent >= 50) {
+  // [日文判定]
+  if (kanaScore > 0.5) {
     tags.add('ja');
+    descriptions.push('日文');
   }
 
-  // === 生成描述 ===
-  // 以繁體中文為主要關注點
-  if (tcCoverage.percent >= 90) {
-    descriptions.push('完全適用繁體中文');
-  } else if (tcCoverage.percent >= 70) {
-    descriptions.push('大致適用繁體（可能缺少少數字）');
-  } else if (tcCoverage.percent >= 50) {
-    descriptions.push('部分支援繁體（建議謹慎使用）');
-  } else if (tcCoverage.percent > 0) {
-    descriptions.push('繁體支援不足');
-  }
-
-  if (jaCoverage.percent >= 50) {
-    descriptions.push('包含日文假名');
-  }
-
-  if (scCoverage.percent >= 70 && tcCoverage.percent < 50) {
-    descriptions.push('簡體中文字型');
-  }
-
-  // 兜底
-  if (tags.size === 0) {
-    if (hasGlyph(font, 'A') && hasGlyph(font, 'z')) {
-      tags.add('en');
-      descriptions.push('英文/拉丁字型');
+  // [繁體中文判定]
+  // 條件：常用字 > 80% 且 繁體特徵 > 簡體特徵
+  if (commonScore > 0.8 && uniqueTC > uniqueSC) {
+    // 進階檢查：標點符號
+    if (punctScore > 0.8) {
+      tags.add('tc');
+      descriptions.push('繁體中文 (完整)');
     } else {
-      descriptions.push('符號或特殊字型');
+      // 有字但沒標點，可能是標題字或日文漢字
+      if (!tags.has('ja')) {
+        tags.add('tc');
+        descriptions.push('繁體中文 (缺標點)');
+      }
+    }
+  }
+  // [容錯判定] 如果是日文字型，但繁體常用字支援度極高 (>90%)
+  else if (tags.has('ja') && commonScore > 0.9) {
+    tags.add('tc');
+    descriptions.push('繁體通用');
+  }
+
+  // [簡體中文判定]
+  if (uniqueSC > 0.6 && uniqueSC > uniqueTC) {
+    tags.add('sc');
+    descriptions.push('簡體中文');
+  }
+
+  // [兜底]
+  if (tags.size === 0) {
+    if (hasGlyph(font, 'A')) {
+      tags.add('en');
+      descriptions.push('英文/歐語');
     }
   }
 
   return {
     tags: Array.from(tags),
     description: descriptions.join(' | '),
-    coverage: {
-      tc: tcCoverage.percent,
-      sc: scCoverage.percent,
-      ja: jaCoverage.percent,
-    },
+    stats: { commonScore, uniqueTC, uniqueSC, kanaScore },
   };
 };
 
@@ -256,20 +270,20 @@ export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
         let fontName = file.name.split('.')[0];
         if (font.names.fontFamily?.en) fontName = font.names.fontFamily.en;
 
-        // 分析適用性
-        const { tags, description, coverage } = analyzeCompatibility(font, file.name);
-
-        // 計算字符數
-        const glyphCount = countGlyphs(font);
+        const result = analyzeAdvanced(font, file.name);
 
         const fontDef: FontDefinition = {
           name: fontName,
           family: fontName,
           category: 'display',
-          tags: tags as ('tc' | 'sc' | 'en' | 'ja' | 'ko')[],
-          description: description,
-          glyphCount: glyphCount,
-          coverage: coverage,
+          tags: result.tags as any,
+          description: result.description,
+          // 可以將詳細分數存入 meta 以供前端顯示進度條
+          coverage: {
+            tc: Math.round(result.stats.commonScore * 100),
+            sc: Math.round(result.stats.uniqueSC * 100),
+            ja: Math.round(result.stats.kanaScore * 100),
+          },
           isCustom: true,
         };
         resolve(fontDef);

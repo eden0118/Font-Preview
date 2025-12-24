@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { analyzeFontFile, loadFontFace, removeFontFace } from '@/lib/fontHelper';
 import { FontDefinition } from '@/lib/types';
-import { SAMPLE_TEXTS } from '@/lib/constants';
 
 export const useFontAnalysis = () => {
   const [currentFont, setCurrentFont] = useState<FontDefinition | null>(null);

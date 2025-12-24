@@ -12,9 +12,13 @@ const DEFAULT_SETTINGS: PreviewSettings = {
   fontSize: 32,
 };
 
+// 預設預覽文字
+const DEFAULT_SAMPLE_TEXT =
+  '信念、想法、思想很強的人，即使心情很糟、內心受傷，也還是會朝著目的奔跑。';
+
 export const usePreviewSettings = () => {
   const [settings, setSettings] = useState<PreviewSettings>(DEFAULT_SETTINGS);
-  const [inputText, setInputText] = useState<string>('');
+  const [inputText, setInputText] = useState<string>(DEFAULT_SAMPLE_TEXT);
 
   const updateFontColor = useCallback((color: string) => {
     setSettings((prev) => ({ ...prev, fontColor: color }));
@@ -45,5 +49,6 @@ export const usePreviewSettings = () => {
     resetSettings,
     clearText,
     setInputText,
+    DEFAULT_SAMPLE_TEXT,
   };
 };

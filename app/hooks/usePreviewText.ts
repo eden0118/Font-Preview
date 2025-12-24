@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { FontDefinition } from '@/lib/types';
-import { SAMPLE_TEXTS } from '@/lib/constants';
+import { usePreviewSettings } from './usePreviewSettings';
 
 /**
  * Hook 用於管理預覽文字初始化
@@ -11,13 +11,15 @@ export const usePreviewText = (
   inputText: string,
   setInputText: (text: string) => void
 ): void => {
+  const { DEFAULT_SAMPLE_TEXT } = usePreviewSettings();
+
   useEffect(() => {
     // 判斷是否有字體
     const hasFonts = Array.isArray(fonts) ? fonts.some((f) => f !== null) : fonts !== null;
 
     // 如果有字體但預覽文字為空，設置默認文本
     if (hasFonts && !inputText) {
-      setInputText(SAMPLE_TEXTS.tc);
+      setInputText(DEFAULT_SAMPLE_TEXT);
     }
-  }, [fonts, inputText, setInputText]);
+  }, [fonts, inputText, setInputText, DEFAULT_SAMPLE_TEXT]);
 };
