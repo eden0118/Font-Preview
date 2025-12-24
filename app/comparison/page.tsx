@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { Info, Upload, Loader2, ArrowLeft, X } from 'lucide-react';
+import { Info, Upload, Loader2, X } from 'lucide-react';
 import { useFontComparison } from '../hooks/useFontComparison';
 import { usePreviewSettings } from '../hooks/usePreviewSettings';
 import { useDragDrop } from '../hooks/useDragDrop';
+import { PageHeader } from '../components/PageHeader';
 import { Footer } from '../components/Footer';
 import { SAMPLE_TEXTS } from '@/lib/constants';
 
@@ -59,20 +59,7 @@ export default function ComparisonPage() {
 
   return (
     <div className="relative flex min-h-screen flex-col bg-stone-100">
-      {/* Header */}
-      <header className="border-b border-stone-200 bg-white shadow-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-stone-600 transition-colors hover:text-stone-900"
-          >
-            <ArrowLeft size={20} />
-            <span className="text-sm font-medium">返回首頁</span>
-          </Link>
-          <h1 className="text-2xl font-bold text-stone-900">字型比較</h1>
-          <div className="w-24" />
-        </div>
-      </header>
+      <PageHeader title="字型比較" />
 
       {/* Main Content */}
       <main className="flex-1">
@@ -141,7 +128,7 @@ export default function ComparisonPage() {
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-bold text-stone-800">預覽文字與設定</h3>
               <button className="text-xs font-medium text-amber-600 hover:text-amber-700">
-                AI 範例
+                預設文字
               </button>
             </div>
             <textarea

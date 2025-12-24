@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { Info, Upload, Trash2, Loader2, ArrowLeft } from 'lucide-react';
+import { Info, Upload, Trash2, Loader2 } from 'lucide-react';
 import { useFontAnalysis } from '../hooks/useFontAnalysis';
 import { usePreviewSettings } from '../hooks/usePreviewSettings';
 import { useDragDrop } from '../hooks/useDragDrop';
+import { PageHeader } from '../components/PageHeader';
 import { Footer } from '../components/Footer';
 import { SAMPLE_TEXTS } from '@/lib/constants';
 
@@ -56,20 +56,7 @@ export default function AnalysisPage() {
 
   return (
     <div className="relative flex min-h-screen flex-col bg-stone-100">
-      {/* Header */}
-      <header className="border-b border-stone-200 bg-white shadow-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-stone-600 transition-colors hover:text-stone-900"
-          >
-            <ArrowLeft size={20} />
-            <span className="text-sm font-medium">返回首頁</span>
-          </Link>
-          <h1 className="text-2xl font-bold text-stone-900">字型分析</h1>
-          <div className="w-24" />
-        </div>
-      </header>
+      <PageHeader title="字型分析" />
 
       {/* Main Content */}
       <main className="flex-1">

@@ -2,14 +2,23 @@
 
 @theme {
   --color-primary: #0c52ea;
-  --color-primary-light: #fef3e2;
-  --color-stone-50: #fafaf9;
-  --color-stone-900: #1c1917;
+  --color-accent: #f5a524;
+  --color-primaryText: #1c1917;
+  --color-secondaryText: #4b4745;
+  --color-infoText: #878787;
 }
 
 @layer base {
   body {
-    @apply bg-stone-50 text-stone-900;
+    @apply text-primaryText bg-stone-50;
+  }
+
+  a {
+    @apply hover:text-primary cursor-pointer transition-colors;
+  }
+
+  button {
+    @apply cursor-pointer transition-all duration-300 ease-in-out;
   }
 
   ::-webkit-scrollbar {
@@ -27,5 +36,33 @@
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-stone-400;
+  }
+}
+
+@layer components {
+  /* button */
+  .btn {
+    @apply flex items-center justify-center gap-1 rounded-xl px-8 py-3 text-base font-medium shadow-xl transition-colors;
+  }
+
+  .small-btn {
+    @apply flex items-center gap-1 rounded-lg px-3 py-1.5 text-[10px] font-bold tracking-tighter;
+  }
+
+  .ghost-btn {
+    @apply from-primary to-accent hover:from-accent hover:to-primary bg-gradient-to-r text-white;
+  }
+
+  .primary-btn {
+    @apply bg-primary hover:bg-primary/90 text-white;
+  }
+
+  .icon-btn {
+    @apply text-secondaryText hover:text-primary hover:bg-primary/10 flex items-center justify-center rounded-full p-1;
+  }
+
+  /* input */
+  .input {
+    @apply focus:border-primary w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:outline-none;
   }
 }
