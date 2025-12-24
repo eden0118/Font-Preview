@@ -2,26 +2,16 @@
 
 import React from 'react';
 import { Info, Upload, Loader2, X } from 'lucide-react';
-import { useFontComparison } from '../hooks/useFontComparison';
-import { usePreviewSettings } from '../hooks/usePreviewSettings';
-import { usePreviewText } from '../hooks/usePreviewText';
-import { useDragDrop } from '../hooks/useDragDrop';
-import { PageHeader } from '../components/PageHeader';
-import { PreviewSetting } from '../components/PreviewSetting';
-import { Footer } from '../components/Footer';
-
-// 根據覆蓋率百分比返回顏色
-const getCoverageColor = (percentage: number): { text: string; bar: string } => {
-  if (percentage >= 95) {
-    return { text: 'text-green-600', bar: 'bg-green-500' };
-  } else if (percentage >= 75) {
-    return { text: 'text-blue-600', bar: 'bg-blue-500' };
-  } else if (percentage >= 50) {
-    return { text: 'text-amber-600', bar: 'bg-amber-500' };
-  } else {
-    return { text: 'text-stone-400', bar: 'bg-stone-300' };
-  }
-};
+import { useFontComparison } from '../../hooks/useFontComparison';
+import { usePreviewSettings } from '../../hooks/usePreviewSettings';
+import { usePreviewText } from '../../hooks/usePreviewText';
+import { useDragDrop } from '../../hooks/useDragDrop';
+import { PageHeader } from '../../components/PageHeader';
+import { PreviewSetting } from '../../components/PreviewSetting';
+import { Footer } from '../../components/Footer';
+import { PreviewCard } from '../../components/PreviewCard';
+import { FontListItem } from '../../components/FontListItem';
+import { getCoverageColor } from '../../lib/coverageHelpers';
 
 export default function ComparisonPage() {
   const { comparisonSlots, analysingId, uploadError, processFont, removeFont } =
@@ -33,6 +23,7 @@ export default function ComparisonPage() {
     updateFontColor,
     updateBgColor,
     updateFontSize,
+    updateLanguage,
     resetSettings,
     resetToDefault,
     DEFAULT_SAMPLE_TEXT,
@@ -144,20 +135,11 @@ export default function ComparisonPage() {
                   {comparisonSlots
                     .filter((s) => s.font !== null)
                     .map((slot) => (
-                      <div
+                      <FontListItem
                         key={slot.id}
-                        className="flex items-center justify-between rounded-lg border border-stone-200 bg-stone-50 p-3"
-                      >
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-stone-800">{slot.font?.name}</p>
-                        </div>
-                        <button
-                          onClick={() => removeFont(slot.id)}
-                          className="ml-2 inline-flex items-center justify-center rounded-lg p-1.5 text-stone-400 transition-colors hover:bg-white hover:text-red-600"
-                        >
-                          <X size={18} />
-                        </button>
-                      </div>
+                        font={slot.font!}
+                        onRemove={() => removeFont(slot.id)}
+                      />
                     ))}
                 </div>
               )}
@@ -167,12 +149,36 @@ export default function ComparisonPage() {
             <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm lg:col-span-3">
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-bold text-stone-800">預覽文字與設定</h3>
-                <button
-                  onClick={resetToDefault}
-                  className="hover:text-primary rounded-lg bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600 transition-colors hover:bg-stone-200"
-                >
-                  使用預設
-                </button>
+                <div className="flex gap-2">
+                  <div className="flex gap-1 rounded-lg bg-stone-100 p-1">
+                    <button
+                      onClick={() => updateLanguage('cn')}
+                      className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
+                        settings.language === 'cn'
+                          ? 'text-primary bg-white'
+                          : 'text-stone-600 hover:text-stone-800'
+                      }`}
+                    >
+                      中文
+                    </button>
+                    <button
+                      onClick={() => updateLanguage('en')}
+                      className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
+                        settings.language === 'en'
+                          ? 'text-primary bg-white'
+                          : 'text-stone-600 hover:text-stone-800'
+                      }`}
+                    >
+                      English
+                    </button>
+                  </div>
+                  <button
+                    onClick={resetToDefault}
+                    className="hover:text-primary rounded-lg bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600 transition-colors hover:bg-stone-200"
+                  >
+                    使用預設
+                  </button>
+                </div>
               </div>
               <textarea
                 value={inputText}
@@ -198,43 +204,19 @@ export default function ComparisonPage() {
           </div>
 
           {/* Bottom Panel - Comparison Previews */}
-          {/* Bottom Panel - Comparison Previews */}
           {hasFonts ? (
             <div className="space-y-6">
               {comparisonSlots
                 .filter((s) => s.font !== null)
                 .map((slot) => (
-                  <div
+                  <PreviewCard
                     key={slot.id}
-                    className="flex flex-col overflow-hidden rounded-2xl border border-stone-100 bg-white shadow-sm"
-                  >
-                    <div className="flex items-center gap-2 border-b border-stone-100 bg-stone-50/50 px-6 py-3">
-                      <div className="bg-primary h-3 w-3 rounded-full" />
-                      <p className="font-semibold text-stone-800">{slot.font?.name}</p>
-                    </div>
-                    <div
-                      className="flex min-h-64 flex-1 items-center justify-center overflow-auto p-6 transition-colors duration-300"
-                      style={{ backgroundColor: settings.bgColor }}
-                    >
-                      {inputText ? (
-                        <p
-                          style={{
-                            fontFamily: slot.font ? `"${slot.font.family}"` : 'sans-serif',
-                            color: settings.fontColor,
-                            fontSize: `${settings.fontSize}px`,
-                            lineHeight: 1.6,
-                            wordBreak: 'break-word',
-                            textAlign: 'center',
-                            whiteSpace: 'pre-wrap',
-                          }}
-                        >
-                          {inputText}
-                        </p>
-                      ) : (
-                        <p style={{ color: '#A89B8F', fontSize: '16px' }}>請輸入文字以預覽</p>
-                      )}
-                    </div>
-                  </div>
+                    font={slot.font}
+                    text={inputText}
+                    fontColor={settings.fontColor}
+                    bgColor={settings.bgColor}
+                    fontSize={settings.fontSize}
+                  />
                 ))}
             </div>
           ) : (
