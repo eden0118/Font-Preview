@@ -13,6 +13,9 @@ export interface FontDefinition {
     en: number; // 英文適用性
     ja: number; // 日文適用性
   };
+  // 支援的字符範圍（用於快速檢查）
+  supportedChars?: string;
+  description?: string;
 }
 
 export type TabMode = 'analysis' | 'comparison';

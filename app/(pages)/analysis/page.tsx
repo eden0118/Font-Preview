@@ -64,9 +64,20 @@ export default function AnalysisPage() {
     <div className="relative flex min-h-screen flex-col bg-stone-100">
       <PageHeader title="字型分析" />
 
+      {/* Information Banner */}
+      <div className="bg-primary/20 p-2 lg:col-span-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-center gap-1 text-sm text-blue-800">
+          <Info size={16} />
+          <p className="font-semibold">
+            專為繁體中文使用者設計：
+            上傳日文、簡體或其他字型，快速檢測其對繁體中文的支援程度。覆蓋率越高，代表缺字情況越少。
+          </p>
+        </div>
+      </div>
+
       {/* Main Content */}
       <main className="mx-auto mb-6 grid max-w-7xl flex-1 grid-cols-1 gap-6 p-6 lg:grid-cols-4">
-        {/* \Upload */}
+        {/* Upload */}
         <div className="flex flex-col gap-6 lg:col-span-1">
           {/* Upload Section */}
           <div className="card p-6">
