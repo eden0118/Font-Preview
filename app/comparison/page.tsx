@@ -21,6 +21,8 @@ export default function ComparisonPage() {
     updateBgColor,
     updateFontSize,
     resetSettings,
+    resetToDefault,
+    DEFAULT_SAMPLE_TEXT,
   } = usePreviewSettings();
   const { isDragActive, validateFile, handleDragEnter, handleDragLeave, handleDragOver } =
     useDragDrop();
@@ -152,6 +154,12 @@ export default function ComparisonPage() {
             <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm lg:col-span-3">
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-bold text-stone-800">預覽文字與設定</h3>
+                <button
+                  onClick={resetToDefault}
+                  className="hover:text-primary rounded-lg bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600 transition-colors hover:bg-stone-200"
+                >
+                  使用預設
+                </button>
               </div>
               <textarea
                 value={inputText}
@@ -195,19 +203,23 @@ export default function ComparisonPage() {
                       className="flex min-h-64 flex-1 items-center justify-center overflow-auto p-6 transition-colors duration-300"
                       style={{ backgroundColor: settings.bgColor }}
                     >
-                      <p
-                        style={{
-                          fontFamily: slot.font ? `"${slot.font.family}"` : 'sans-serif',
-                          color: settings.fontColor,
-                          fontSize: `${settings.fontSize}px`,
-                          lineHeight: 1.6,
-                          wordBreak: 'break-word',
-                          textAlign: 'center',
-                          whiteSpace: 'pre-wrap',
-                        }}
-                      >
-                        {inputText}
-                      </p>
+                      {inputText ? (
+                        <p
+                          style={{
+                            fontFamily: slot.font ? `"${slot.font.family}"` : 'sans-serif',
+                            color: settings.fontColor,
+                            fontSize: `${settings.fontSize}px`,
+                            lineHeight: 1.6,
+                            wordBreak: 'break-word',
+                            textAlign: 'center',
+                            whiteSpace: 'pre-wrap',
+                          }}
+                        >
+                          {inputText}
+                        </p>
+                      ) : (
+                        <p style={{ color: '#A89B8F', fontSize: '16px' }}>請輸入文字以預覽</p>
+                      )}
                     </div>
                   </div>
                 ))}

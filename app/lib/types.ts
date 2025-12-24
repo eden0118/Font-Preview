@@ -10,6 +10,7 @@ export interface FontDefinition {
   coverage?: {
     tc: number; // 繁體中文適用性
     sc: number; // 簡體中文適用性
+    en: number; // 英文適用性
     ja: number; // 日文適用性
   };
 }

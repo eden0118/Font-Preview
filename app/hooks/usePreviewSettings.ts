@@ -40,6 +40,10 @@ export const usePreviewSettings = () => {
     setInputText('');
   }, []);
 
+  const resetToDefault = useCallback(() => {
+    setInputText(DEFAULT_SAMPLE_TEXT);
+  }, []);
+
   return {
     settings,
     inputText,
@@ -48,6 +52,7 @@ export const usePreviewSettings = () => {
     updateFontSize,
     resetSettings,
     clearText,
+    resetToDefault,
     setInputText,
     DEFAULT_SAMPLE_TEXT,
   };

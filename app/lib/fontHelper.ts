@@ -162,6 +162,81 @@ const SC_UNIQUE = [
 // [Level 3] 全形標點符號 (重要判斷依據)
 const PUNCTUATION = ['，', '。', '、', '：', '「', '」'];
 
+// [Level 2] 英文常用字母和數字 (共52個)
+// 包含：26個小寫字母 + 26個大寫字母 + 10個數字 + 常見英文標點
+const EN_COMMON = [
+  'a',
+  'b',
+  'c',
+  'd',
+  'e',
+  'f',
+  'g',
+  'h',
+  'i',
+  'j',
+  'k',
+  'l',
+  'm',
+  'n',
+  'o',
+  'p',
+  'q',
+  'r',
+  's',
+  't',
+  'u',
+  'v',
+  'w',
+  'x',
+  'y',
+  'z',
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
+  '0',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  ' ',
+  '.',
+  ',',
+  '!',
+  '?',
+  "'",
+  '"',
+  '-',
+];
+
 // 日文假名
 const JA_KANA = ['あ', 'い', 'う', 'え', 'お', 'の', 'は', 'を', 'ん', 'が'];
 
@@ -201,8 +276,16 @@ const analyzeAdvanced = (font: any, fileName: string) => {
   const uniqueSC = getCoverage(font, SC_UNIQUE).percent;
   const kanaScore = getCoverage(font, JA_KANA).percent;
   const punctScore = getCoverage(font, PUNCTUATION).percent;
+  const englishScore = getCoverage(font, EN_COMMON).percent;
 
   // 2. 判斷邏輯
+
+  // [英文判定] - 優先級次高
+  // 條件：英文基本字母覆蓋 > 80% 即認為支持英文
+  if (englishScore > 0.8) {
+    tags.add('en');
+    descriptions.push('英文/歐語');
+  }
 
   // [日文判定]
   if (kanaScore > 0.5) {
@@ -237,9 +320,12 @@ const analyzeAdvanced = (font: any, fileName: string) => {
     descriptions.push('簡體中文');
   }
 
-  // [兜底]
+  // [兜底] 如果都不符合，檢查英文是否可用
   if (tags.size === 0) {
-    if (hasGlyph(font, 'A')) {
+    if (englishScore > 0.5) {
+      tags.add('en');
+      descriptions.push('英文/歐語');
+    } else if (hasGlyph(font, 'A')) {
       tags.add('en');
       descriptions.push('英文/歐語');
     }
@@ -248,7 +334,7 @@ const analyzeAdvanced = (font: any, fileName: string) => {
   return {
     tags: Array.from(tags),
     description: descriptions.join(' | '),
-    stats: { commonScore, uniqueTC, uniqueSC, kanaScore },
+    stats: { commonScore, uniqueTC, uniqueSC, kanaScore, englishScore },
   };
 };
 
@@ -282,6 +368,7 @@ export const analyzeFontFile = async (file: File): Promise<FontDefinition> => {
           coverage: {
             tc: Math.round(result.stats.commonScore * 100),
             sc: Math.round(result.stats.uniqueSC * 100),
+            en: Math.round(result.stats.englishScore * 100),
             ja: Math.round(result.stats.kanaScore * 100),
           },
           isCustom: true,

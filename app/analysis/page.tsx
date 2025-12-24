@@ -20,6 +20,8 @@ export default function AnalysisPage() {
     updateBgColor,
     updateFontSize,
     resetSettings,
+    resetToDefault,
+    DEFAULT_SAMPLE_TEXT,
   } = usePreviewSettings();
   const { isDragActive, validateFile, handleDragEnter, handleDragLeave, handleDragOver } =
     useDragDrop();
@@ -80,7 +82,7 @@ export default function AnalysisPage() {
                     isDragActive
                       ? 'border-primary/30 bg-primary-light'
                       : isAnalyzing
-                        ? 'border-orange-200 bg-orange-50'
+                        ? 'border-primary/50 bg-primary/5'
                         : 'hover:border-primary/30 border-stone-300 hover:bg-stone-50'
                   }`}
                 >
@@ -204,6 +206,12 @@ export default function AnalysisPage() {
             <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm lg:col-span-3">
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-bold text-stone-800">預覽文字與設定</h3>
+                <button
+                  onClick={resetToDefault}
+                  className="hover:text-primary rounded-lg bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600 transition-colors hover:bg-stone-200"
+                >
+                  使用預設
+                </button>
               </div>
               <textarea
                 value={inputText}
@@ -228,23 +236,22 @@ export default function AnalysisPage() {
             </div>
           </div>
 
-          {/* Bottom Panel - Font Analysis/Preview */}
-          <div className="space-y-6">
-            {currentFont && (
-              <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
-                <div className="mb-4 flex items-center gap-2">
-                  <div className="bg-primary h-3 w-3 rounded-full" />
-                  <p className="font-semibold text-stone-800">{currentFont.name}</p>
-                  <p className="text-xs text-stone-500">Detected: {currentFont.category}</p>
-                </div>
-              </div>
-            )}
-            <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-lg font-bold text-stone-800">預覽</h3>
-              <div
-                className="flex min-h-64 flex-1 items-center justify-center overflow-auto p-6 transition-colors duration-300"
-                style={{ backgroundColor: settings.bgColor }}
-              >
+          {/* Bottom Panel - Font Preview */}
+          <div className="rounded-2xl border border-stone-100 bg-white shadow-sm">
+            <div className="flex items-center gap-2 border-b border-stone-100 bg-stone-50/50 px-6 py-3">
+              <div className="bg-primary h-3 w-3 rounded-full" />
+              <p className="font-semibold text-stone-800">
+                {currentFont ? currentFont.name : '預設字型'}
+              </p>
+              {currentFont && (
+                <p className="text-xs text-stone-500">Detected: {currentFont.category}</p>
+              )}
+            </div>
+            <div
+              className="flex min-h-64 flex-1 items-center justify-center overflow-auto p-6 transition-colors duration-300"
+              style={{ backgroundColor: settings.bgColor }}
+            >
+              {inputText ? (
                 <p
                   style={{
                     fontFamily: currentFont ? `"${currentFont.family}"` : 'sans-serif',
@@ -258,7 +265,9 @@ export default function AnalysisPage() {
                 >
                   {inputText}
                 </p>
-              </div>
+              ) : (
+                <p style={{ color: '#A89B8F', fontSize: '16px' }}>請輸入文字以預覽</p>
+              )}
             </div>
           </div>
         </div>
