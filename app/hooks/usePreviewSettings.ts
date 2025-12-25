@@ -32,7 +32,7 @@ interface PreviewSettings {
 const DEFAULT_SETTINGS: PreviewSettings = {
   fontColor: '#292524',
   bgColor: '#FFFFFF',
-  fontSize: 32,
+  fontSize: 28,
   language: 'cn',
 };
 

@@ -65,17 +65,10 @@ export default function AnalysisPage() {
 
   return (
     <section className="relative flex min-h-screen flex-col bg-stone-100">
-      <PageHeader title="字型分析" />
-
-      {/* Information Banner */}
-      <div className="bg-primary/20 p-1 sm:p-2 lg:col-span-4">
-        <div className="mx-auto flex max-w-6xl items-start justify-center gap-2 text-xs text-blue-800 sm:text-sm">
-          <Info size={16} className="mt-0.5 flex-shrink-0" />
-          <p className="leading-relaxed font-semibold">
-            專為繁體中文使用者設計。上傳日文、簡體或其他字型，快速檢測其對繁體中文的支援程度。覆蓋率越高，代表缺字情況越少。
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="字型分析"
+        description="專為繁體中文使用者設計。上傳字型檔案，快速檢測其對繁體中文的支援程度。"
+      />
 
       {/* Main Content */}
       <main className="mx-auto my-6 grid w-full max-w-7xl flex-1 grid-cols-1 gap-4 px-4 sm:gap-6 sm:p-6 lg:grid-cols-4">
@@ -150,7 +143,16 @@ export default function AnalysisPage() {
               <div>
                 <h3 className="font-semibold text-stone-800">基本原理</h3>
                 <p className="mt-1 text-xs text-stone-600">
-                  逐字檢測字型是否包含約 8,600 個繁體中文字符，計算字型的覆蓋率。
+                  逐字檢測字型是否包含繁體中文字符，計算字型的覆蓋率。字符集來自{' '}
+                  <a
+                    href="https://justfont.com/jf7000"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-blue-600 underline hover:text-blue-800"
+                  >
+                    JF7000
+                  </a>
+                  ，包含 7,000 個繁體中文常用字。
                 </p>
               </div>
             </div>

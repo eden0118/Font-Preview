@@ -52,29 +52,33 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
           </div>
         )}
 
-        {/* Coverage Info */}
+        {/* Coverage Info - 著重繁體中文 */}
         {font.coverage && (
           <div className="border-t border-stone-200 pt-3">
-            <p className="mb-3 text-xs font-semibold text-stone-600">語言覆蓋率</p>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
-              {/* Traditional Chinese */}
-              <div>
-                <div className="mb-1 flex items-center justify-between">
-                  <span className="text-xs text-stone-600">繁體中文</span>
-                  <span
-                    className={`text-xs font-medium ${getCoverageColor(font.coverage.tc).text}`}
-                  >
-                    {font.coverage.tc}%
-                  </span>
-                </div>
-                <div className="h-2 overflow-hidden rounded-full bg-stone-200">
-                  <div
-                    className={`h-full ${getCoverageColor(font.coverage.tc).bar}`}
-                    style={{ width: `${font.coverage.tc}%` }}
-                  />
-                </div>
+            {/* 繁體中文覆蓋率 - 主要指標 */}
+            <div className="mb-4 rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-cyan-50 p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-blue-900">繁體中文覆蓋率</h3>
+                <span className="text-lg font-bold text-blue-700">{font.coverage.tc}%</span>
               </div>
+              <div className="h-3 overflow-hidden rounded-full bg-blue-200">
+                <div
+                  className={`h-full ${getCoverageColor(font.coverage.tc).bar}`}
+                  style={{ width: `${font.coverage.tc}%` }}
+                />
+              </div>
+              {font.totalCoreCharsChecked && (
+                <p className="mt-2 text-xs font-medium text-blue-700">
+                  詳細統計：
+                  {(font.totalCoreCharsChecked || 0) - (font.missingCoreOnlyChars?.length || 0)}/
+                  {font.totalCoreCharsChecked || 0} 字
+                </p>
+              )}
+            </div>
 
+            {/* 其他語言支援 - 簡體、英文 */}
+            <p className="mb-2 text-xs font-semibold text-stone-600">其他語言支援</p>
+            <div className="grid grid-cols-2 gap-2">
               {/* Simplified Chinese */}
               <div>
                 <div className="mb-1 flex items-center justify-between">
@@ -130,16 +134,7 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
               </p>
             </div>
           </div>
-        ) : (
-          // 沒有 ESSENTIAL 缺字時，只顯示覆蓋率（基於 GLYPH_BASE）
-          <div className="border-t border-stone-200 pt-3">
-            <p className="text-xs text-stone-500">
-              繁體字覆蓋率：{font.coverage?.tc}% (
-              {(font.totalCoreCharsChecked || 0) - (font.missingCoreOnlyChars?.length || 0)}/
-              {font.totalCoreCharsChecked || 0} 字)
-            </p>
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
