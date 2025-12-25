@@ -56,7 +56,7 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
         {font.coverage && (
           <div className="border-t border-stone-200 pt-3">
             {/* 繁體中文覆蓋率 - 主要指標 */}
-            <div className="mb-4 rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-cyan-50 p-3">
+            <div className="mb-4 rounded-lg border border-blue-200 bg-linear-to-r from-blue-50 to-cyan-50 p-3">
               <div className="mb-2 flex items-center justify-between">
                 <h3 className="text-sm font-bold text-blue-900">繁體中文覆蓋率</h3>
                 <span className="text-lg font-bold text-blue-700">{font.coverage.tc}%</span>
@@ -124,12 +124,12 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
             {/* 紅色警告 + 缺失的字符 */}
             <div className="rounded-lg border border-red-200 bg-red-50 p-3">
               <div className="mb-2 flex gap-2">
-                <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 text-red-800" />
+                <AlertTriangle size={16} className="mt-0.5 shrink-0 text-red-800" />
                 <p className="text-xs font-semibold text-red-800">
                   缺失基本關鍵字 {font.missingEssentialChars.length} 個：
                 </p>
               </div>
-              <p className="ml-6 font-mono text-xs break-words text-red-700">
+              <p className="ml-6 font-mono text-xs wrap-break-word text-red-700">
                 {font.missingEssentialChars.split('').join('  ')}
               </p>
             </div>

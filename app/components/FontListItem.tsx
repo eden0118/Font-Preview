@@ -17,7 +17,7 @@ export const FontListItem: React.FC<FontListItemProps> = ({ font, onRemove }) =>
         </div>
         <button
           onClick={onRemove}
-          className="text-infoText flex-shrink-0 transition-colors hover:text-red-600"
+          className="text-infoText shrink-0 transition-colors hover:text-red-600"
         >
           <X size={18} />
         </button>

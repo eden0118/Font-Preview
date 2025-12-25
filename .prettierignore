@@ -1,0 +1,42 @@
+# Prettier 配置
+.prettierrc
+.prettierignore
+
+# 依賴
+node_modules/
+.npm
+.yarn
+
+# 構建輸出
+.next/
+out/
+dist/
+build/
+
+# 快取
+.eslintcache
+.swc
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 環境變數
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 測試覆蓋
+coverage/
+
+# 日誌
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*

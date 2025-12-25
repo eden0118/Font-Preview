@@ -18,7 +18,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { analyzeFontFile, loadFontFace, removeFontFace } from '@/lib/fontHelper';
+import { useFontFileProcessing } from './useFontFileProcessing';
 import { FontDefinition } from '@/lib/types';
 
 interface ComparisonSlot {
@@ -39,54 +39,59 @@ export const useFontComparison = (initialSlots: ComparisonSlot[] = []) => {
   const [analysingId, setAnalysingId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  const processFont = useCallback(async (file: File) => {
-    setAnalysingId('main');
-    setUploadError(null);
+  const { processAndLoadFont, cleanupFont } = useFontFileProcessing();
 
-    try {
-      const fontDef = await analyzeFontFile(file);
-      const buffer = await file.arrayBuffer();
-      await loadFontFace(fontDef.family, buffer);
+  const processFont = useCallback(
+    async (file: File) => {
+      setAnalysingId('main');
+      setUploadError(null);
 
-      setComparisonSlots((prev) => {
-        const emptySlot = prev.find((item) => item.font === null);
-        if (emptySlot) {
-          return prev.map((item) => (item.id === emptySlot.id ? { ...item, font: fontDef } : item));
-        }
-        return prev;
-      });
-    } catch (err) {
-      console.error(err);
-      const errorMessage =
-        err instanceof Error ? err.message : '字型檔案解析失敗。請嘗試其他 TTF/OTF/WOFF 檔案。';
-      setUploadError(errorMessage);
-    } finally {
-      setAnalysingId(null);
-    }
-  }, []);
+      try {
+        // 使用共享 Hook 處理字型
+        const fontDef = await processAndLoadFont(file);
 
-  const removeFont = useCallback((slotId: string) => {
-    setComparisonSlots((prev) => {
-      const fontToRemove = prev.find((item) => item.id === slotId)?.font;
-      // 清理字體資源
-      if (fontToRemove) {
-        removeFontFace(fontToRemove.family);
+        setComparisonSlots((prev) => {
+          const emptySlot = prev.find((item) => item.font === null);
+          if (emptySlot) {
+            return prev.map((item) =>
+              item.id === emptySlot.id ? { ...item, font: fontDef } : item
+            );
+          }
+          return prev;
+        });
+      } catch (err) {
+        console.error(err);
+        const errorMessage =
+          err instanceof Error ? err.message : '字型檔案解析失敗。請嘗試其他 TTF/OTF/WOFF 檔案。';
+        setUploadError(errorMessage);
+      } finally {
+        setAnalysingId(null);
       }
-      return prev.map((item) => (item.id === slotId ? { ...item, font: null } : item));
-    });
-  }, []);
+    },
+    [processAndLoadFont]
+  );
+
+  const removeFont = useCallback(
+    (slotId: string) => {
+      setComparisonSlots((prev) => {
+        const fontToRemove = prev.find((item) => item.id === slotId)?.font;
+        // 清理字體資源
+        cleanupFont(fontToRemove || null);
+        return prev.map((item) => (item.id === slotId ? { ...item, font: null } : item));
+      });
+    },
+    [cleanupFont]
+  );
 
   const clearAll = useCallback(() => {
     // 清理所有字體資源
     setComparisonSlots((prev) => {
       prev.forEach((slot) => {
-        if (slot.font) {
-          removeFontFace(slot.font.family);
-        }
+        cleanupFont(slot.font);
       });
       return prev.map((item) => ({ ...item, font: null }));
     });
-  }, []);
+  }, [cleanupFont]);
 
   return {
     comparisonSlots,
