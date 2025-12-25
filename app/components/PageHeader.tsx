@@ -14,7 +14,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({ title, backHref = '/', d
       <div className="border-b border-stone-100 p-4 sm:p-6">
         <div className="mx-auto flex max-w-7xl items-baseline gap-2 sm:gap-4">
           <Link href={backHref} className="icon-btn">
-            <ArrowLeft size={20} />
+            <ArrowLeft size={24} />
           </Link>
           <div>
             <h1 className="truncate text-2xl font-bold text-stone-800 sm:text-3xl">{title}</h1>

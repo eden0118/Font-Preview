@@ -131,14 +131,14 @@ export default function AnalysisPage() {
       <div className="mx-auto w-full max-w-7xl px-6 py-8">
         <div className="rounded-lg border border-stone-200 bg-stone-50 p-6">
           <h2 className="mb-4 text-lg font-bold text-stone-800">分析方法說明</h2>
-          <div className="mb-4 flex items-start gap-2">
-            <Info size={16} className="mt-0.5 flex-shrink-0 text-blue-800" />
+          <div className="mb-4 flex items-start gap-1">
+            <Info size={16} className="flex-shrink-0 text-blue-800" />
             <p className="text-xs text-stone-600 italic">
               本工具提供快速參考判斷，結果不保證完全準確。建議用於初步篩選，正式使用前請自行測試。
             </p>
           </div>
           <div className="grid grid-cols-2 space-y-3 text-sm text-stone-700">
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <BarChart3 size={18} className="mt-0.5 flex-shrink-0 text-stone-700" />
               <div>
                 <h3 className="font-semibold text-stone-800">基本原理</h3>
@@ -157,7 +157,7 @@ export default function AnalysisPage() {
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <Scale size={18} className="mt-0.5 flex-shrink-0 text-stone-700" />
               <div>
                 <h3 className="font-semibold text-stone-800">評分方法</h3>
@@ -167,7 +167,7 @@ export default function AnalysisPage() {
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <Tag size={18} className="mt-0.5 flex-shrink-0 text-stone-700" />
               <div>
                 <h3 className="font-semibold text-stone-800">語言判定</h3>
@@ -177,7 +177,7 @@ export default function AnalysisPage() {
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <AlertTriangle size={18} className="mt-0.5 flex-shrink-0 text-stone-700" />
               <div>
                 <h3 className="font-semibold text-stone-800">缺字提示</h3>
