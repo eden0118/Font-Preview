@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Info, Upload, Trash2, Loader2, BarChart3, Scale, Tag, AlertTriangle } from 'lucide-react';
+import { Upload, Trash2, Loader2, BarChart3, Scale, Tag, AlertTriangle } from 'lucide-react';
 import { useFontAnalysis } from '../../hooks/useFontAnalysis';
 import { usePreviewSettings } from '../../hooks/usePreviewSettings';
 import { usePreviewText } from '../../hooks/usePreviewText';
@@ -13,7 +13,6 @@ import { FontInfo } from '../../components/FontInfo';
 import { PreviewCard } from '../../components/PreviewCard';
 import { UploadZone } from '../../components/UploadZone';
 import { PreviewTextPanel } from '../../components/PreviewTextPanel';
-import { getCoverageColor } from '../../lib/coverageHelpers';
 
 // 禁用預渲染（此頁面依賴客戶端交互和用戶輸入）
 export const dynamic = 'force-dynamic';
