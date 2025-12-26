@@ -100,7 +100,7 @@ export default function AnalysisPage() {
         </div>
 
         <div className="w-full lg:col-span-3">
-          {/* Upload and Preview Settings */}
+          {/* Preview Settings */}
           <PreviewTextPanel
             inputText={inputText}
             onInputChange={setInputText}
