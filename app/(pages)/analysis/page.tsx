@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Upload, Trash2, Loader2, BarChart3, Scale, Tag, AlertTriangle } from 'lucide-react';
+import { Upload, Trash2, Loader2, BarChart3, Scale, Tag, AlertTriangle, Info } from 'lucide-react';
 import { useFontAnalysis } from '../../hooks/useFontAnalysis';
 import { usePreviewSettings } from '../../hooks/usePreviewSettings';
 import { usePreviewText } from '../../hooks/usePreviewText';

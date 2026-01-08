@@ -39,7 +39,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
             ? 'border-primary/30 bg-primary-light'
             : isAnalyzing
               ? 'border-primary/50 bg-primary/5'
-              : 'hover:border-primary/30 border-stone-300 hover:bg-stone-50'
+              : 'border-stone-300 hover:border-primary/30 hover:bg-stone-50'
         }`}
       >
         <input
@@ -52,13 +52,13 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
 
         {isAnalyzing ? (
           <>
-            <Loader2 className="text-primary h-7 w-7 animate-spin sm:h-8 sm:w-8" />
+            <Loader2 className="h-7 w-7 animate-spin text-primary sm:h-8 sm:w-8" />
             <span className="text-xs text-stone-600 sm:text-sm">正在分析字型...</span>
           </>
         ) : (
           <>
-            <div className="bg-primary-light rounded-full p-2 sm:p-3">
-              <Upload className="text-primary h-5 w-5 sm:h-6 sm:w-6" />
+            <div className="rounded-full bg-primary-light p-2 sm:p-3">
+              <Upload className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
             </div>
             <div>
               <p className="text-xs font-medium text-stone-700 sm:text-sm">點擊選擇或拖拽放入</p>

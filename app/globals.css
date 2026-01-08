@@ -32,7 +32,7 @@
   }
 
   a {
-    @apply hover:text-primary cursor-pointer transition-colors;
+    @apply cursor-pointer transition-colors hover:text-primary;
   }
 
   button {
@@ -89,29 +89,29 @@
 
   /* 幽靈按鈕（純文字） */
   .ghost-btn {
-    @apply text-primaryText hover:text-primary border-primary flex items-center gap-1 px-1 py-0.5 text-xs font-medium;
+    @apply text-primaryText flex items-center gap-1 border-primary px-1 py-0.5 text-xs font-medium hover:text-primary;
   }
 
   /* 主按鈕 */
   .primary-btn {
-    @apply bg-primary hover:bg-primary/90 text-white;
+    @apply bg-primary text-white hover:bg-primary/90;
   }
 
   /* 次按鈕 */
   .secondary-btn {
-    @apply text-secondaryText hover:text-primary bg-stone-100 shadow-sm hover:bg-stone-50 hover:shadow-md;
+    @apply text-secondaryText bg-stone-100 shadow-sm hover:bg-stone-50 hover:text-primary hover:shadow-md;
   }
 
   /* 圖示按鈕 */
   .icon-btn {
-    @apply text-secondaryText hover:text-primary hover:bg-primary/10 flex cursor-pointer items-center justify-center rounded-full p-1 transition-all;
+    @apply text-secondaryText flex cursor-pointer items-center justify-center rounded-full p-1 transition-all hover:bg-primary/10 hover:text-primary;
   }
 
   /**
    * 輸入欄位
    */
   .input {
-    @apply focus:border-primary w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:outline-none;
+    @apply w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:border-primary focus:outline-none;
   }
 
   /**

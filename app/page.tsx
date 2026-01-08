@@ -8,11 +8,11 @@ import { Footer } from './components/Footer';
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-stone-50">
-      <main className="flex flex-1 items-center justify-center bg-linear-to-br from-stone-50 via-stone-100 to-stone-200 px-4 py-8 sm:p-4">
+      <main className="bg-linear-to-br flex flex-1 items-center justify-center from-stone-50 via-stone-100 to-stone-200 px-4 py-8 sm:p-4">
         <div className="w-full max-w-2xl">
           {/* Header */}
           <div className="mb-8 text-center sm:mb-12">
-            <h1 className="mb-2 text-3xl leading-tight font-bold text-stone-900 sm:text-4xl lg:text-5xl">
+            <h1 className="mb-2 text-3xl font-bold leading-tight text-stone-900 sm:text-4xl lg:text-5xl">
               FontFlow
             </h1>
             <p className="text-primaryText text-base sm:text-lg">

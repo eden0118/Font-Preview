@@ -125,28 +125,3 @@ export const trackError = (errorName: string, errorMessage: string, stack?: stri
   // 可集成錯誤追蹤服務（如 Sentry）
   // sentryClient.captureException(new Error(errorMessage), { contexts: errorLog });
 };
-
-/**
- * 清空本地分析日誌
- */
-export const clearAnalyticsLogs = () => {
-  try {
-    localStorage.removeItem('analytics_events');
-    console.log('✅ Analytics logs cleared');
-  } catch (e) {
-    console.error('Failed to clear analytics logs:', e);
-  }
-};
-
-/**
- * 導出分析日誌（用於問題反饋）
- */
-export const exportAnalyticsLogs = (): string => {
-  try {
-    const events = JSON.parse(localStorage.getItem('analytics_events') || '[]');
-    return JSON.stringify(events, null, 2);
-  } catch (e) {
-    console.error('Failed to export analytics logs:', e);
-    return '{}';
-  }
-};

@@ -27,7 +27,7 @@ export const FontListItem: React.FC<FontListItemProps> = ({ font, onRemove }) =>
           <div className="flex items-center justify-between gap-2">
             <span className="truncate text-xs text-stone-600">繁體覆蓋率</span>
             <span
-              className={`text-xs font-semibold whitespace-nowrap sm:text-sm ${getCoverageColor(font.coverage.tc).text}`}
+              className={`whitespace-nowrap text-xs font-semibold sm:text-sm ${getCoverageColor(font.coverage.tc).text}`}
             >
               {font.coverage.tc}%
             </span>

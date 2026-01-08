@@ -48,7 +48,7 @@ export const MissingCharsList: React.FC<MissingCharsListProps> = ({
           {copied ? '已複製' : '複製'}
         </button>
       </div>
-      <div className="font-mono text-xs break-words text-orange-700">
+      <div className="break-words font-mono text-xs text-orange-700">
         {displayChars.join('')}
         {isCompact && missingChars.length > 20 && '...'}
       </div>

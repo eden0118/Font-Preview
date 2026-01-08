@@ -20,7 +20,7 @@ export const Footer: React.FC = () => {
             所有處理均在本地完成，不上傳任何資料到伺服器
           </p>
           <p className="text-secondaryText text-xs">
-            © {new Date().getFullYear()} Eden Chang. All rights reserved.
+            © {new Date().getFullYear()} Eden. All rights reserved.
           </p>
         </div>
 

@@ -85,13 +85,13 @@ export const PreviewTextPanel: React.FC<PreviewTextPanelProps> = ({
           <div className="flex gap-3">
             <button
               onClick={() => onLanguageChange('cn')}
-              className={`ghost-btn ${language === 'cn' ? 'text-primary border-b font-bold' : ''}`}
+              className={`ghost-btn ${language === 'cn' ? 'border-b font-bold text-primary' : ''}`}
             >
               中文
             </button>
             <button
               onClick={() => onLanguageChange('en')}
-              className={`ghost-btn ${language === 'en' ? 'text-primary border-b font-bold' : ''}`}
+              className={`ghost-btn ${language === 'en' ? 'border-b font-bold text-primary' : ''}`}
             >
               English
             </button>
@@ -106,7 +106,7 @@ export const PreviewTextPanel: React.FC<PreviewTextPanelProps> = ({
         value={inputText}
         onChange={(e) => onInputChange(e.target.value)}
         placeholder="輸入預覽文字..."
-        className="focus:ring-primary mb-4 min-h-24 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 transition-all outline-none placeholder:text-stone-400 focus:border-transparent focus:ring-2"
+        className="mb-4 min-h-24 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-stone-700 outline-none transition-all placeholder:text-stone-400 focus:border-transparent focus:ring-2 focus:ring-primary"
       />
 
       {children}

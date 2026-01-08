@@ -40,7 +40,7 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
         {/* Supported Languages */}
         {font.coverage && (
           <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
-            <p className="text-xs whitespace-nowrap text-stone-500">支援語系</p>
+            <p className="whitespace-nowrap text-xs text-stone-500">支援語系</p>
             <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {font.coverage.tc >= 80 && <span className="lang-label">繁體中文</span>}
               {font.coverage.sc >= 80 && <span className="lang-label">簡體中文</span>}
@@ -56,7 +56,7 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
         {font.coverage && (
           <div className="border-t border-stone-200 pt-3">
             {/* 繁體中文覆蓋率 - 主要指標 */}
-            <div className="mb-4 rounded-lg border border-blue-200 bg-linear-to-r from-blue-50 to-cyan-50 p-3">
+            <div className="bg-linear-to-r mb-4 rounded-lg border border-blue-200 from-blue-50 to-cyan-50 p-3">
               <div className="mb-2 flex items-center justify-between">
                 <h3 className="text-sm font-bold text-blue-900">繁體中文覆蓋率</h3>
                 <span className="text-lg font-bold text-blue-700">{font.coverage.tc}%</span>
@@ -129,7 +129,7 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
                   缺失基本關鍵字 {font.missingEssentialChars.length} 個：
                 </p>
               </div>
-              <p className="ml-6 font-mono text-xs wrap-break-word text-red-700">
+              <p className="wrap-break-word ml-6 font-mono text-xs text-red-700">
                 {font.missingEssentialChars.split('').join('  ')}
               </p>
             </div>

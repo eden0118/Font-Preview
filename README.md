@@ -281,14 +281,12 @@ Font-Preview/
 │   │   ├── MissingCharsList.tsx      # 📋 缺字列表（新增）
 │   │   └── PreviewDisplay.tsx        # 🎨 預覽展示區（新增）
 │   ├── hooks/                        # 自訂 React Hooks (7 個)
-│   │   ├── useFontAnalysis.ts        # 字型分析邏輯（優化）
-│   │   ├── useFontComparison.ts      # 多字型比較邏輯（優化）
-│   │   ├── useFontFileProcessing.ts  # 🔄 字型檔案處理（新增）
-│   │   ├── useFontCache.ts           # ⚡ 快取機制（新增）
+│   │   ├── useFontAnalysis.ts        # 字型分析邏輯
+│   │   ├── useFontComparison.ts      # 多字型比較邏輯
+│   │   ├── useFontFileProcessing.ts  # 字型檔案處理
+│   │   ├── useFontCache.ts           # 快取機制
 │   │   ├── usePreviewSettings.ts     # 預覽設定狀態
 │   │   ├── usePreviewText.ts         # 預覽文字管理
-│   │   ├── usePreviewTextState.ts    # 📝 文字狀態（新增）
-│   │   ├── useColorSettings.ts       # 🎨 顏色設定（新增）
 │   │   └── useDragDrop.ts            # 拖放功能
 │   ├── lib/                          # 核心工具函數
 │   │   ├── fontHelper.ts             # ⭐ 字型分析引擎（核心）
@@ -746,21 +744,14 @@ const finalScore = essential缺字 > 20% ? Math.min(baseScore, 60) : baseScore
 
 **共享工具 Hooks（優化用）**
 
-- **`useFontFileProcessing`** ⭐ - 統一字型檔案處理流程（新增）
+- **`useFontFileProcessing`** ⭐ - 統一字型檔案處理流程
   - 功能：`processAndLoadFont`, `cleanupFont`, `cleanupFonts`
   - 優勢：減少代碼重複 30%+
 
-- **`useFontCache`** ⚡ - LRU 快取機制（新增）
+- **`useFontCache`** ⚡ - LRU 快取機制
   - 功能：自動快取字型分析結果
   - 效果：第二次上傳相同字型速度提升 90%+ (<100ms)
   - 配置：最多快取 20 個字型
-
-**選用分離 Hooks（將來改進用）**
-
-- **`usePreviewTextState`** 📝 - 純文字狀態管理（新增，未使用）
-- **`useColorSettings`** 🎨 - 顏色和字體大小管理（新增，未使用）
-
-> 提示：後兩個 Hook 是架構改進建議，可在將來重構頁面時使用。
 
 ````#### **3. 元件層級 (Components)**
 

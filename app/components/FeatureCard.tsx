@@ -37,7 +37,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   return (
     <Link href={href}>
       <div className="group h-full cursor-pointer rounded-2xl border border-stone-100 bg-white p-6 shadow-md transition-shadow hover:shadow-lg sm:p-8">
-        <div className="bg-primary/10 mb-3 flex h-10 w-10 items-center justify-center rounded-full sm:mb-4 sm:h-12 sm:w-12">
+        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 sm:mb-4 sm:h-12 sm:w-12">
           <Icon size={20} className="text-primary sm:h-6 sm:w-6" />
         </div>
         <h3 className="mb-2 text-lg font-bold text-stone-800 sm:text-xl">{title}</h3>

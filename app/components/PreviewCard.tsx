@@ -72,9 +72,9 @@ export const PreviewCard: React.FC<PreviewCardProps> = ({
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-stone-100 bg-white shadow-sm">
       {/* Header */}
-      <div className="bg-primary/5 flex flex-col gap-1 border-b border-stone-100 px-4 py-2 sm:flex-row sm:items-center sm:gap-2 sm:px-6 sm:py-3">
+      <div className="flex flex-col gap-1 border-b border-stone-100 bg-primary/5 px-4 py-2 sm:flex-row sm:items-center sm:gap-2 sm:px-6 sm:py-3">
         <div className="flex flex-1 items-center gap-2">
-          <div className="bg-primary h-3 w-3 shrink-0 rounded-full" />
+          <div className="h-3 w-3 shrink-0 rounded-full bg-primary" />
           <p className="truncate text-sm font-semibold text-stone-800">
             {font ? font.name : fontName || '預設字型'}
           </p>
