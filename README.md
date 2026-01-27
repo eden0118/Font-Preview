@@ -328,6 +328,7 @@ Font-Preview/
 | **UI Icons**        | Lucide React         | 0.562.0 | 輕量級 SVG 圖示庫          |
 | **Font Parsing**    | OpenType.js          | 1.3.4   | 瀏覽器端字型檔案解析       |
 | **Code Formatting** | Prettier             | 3.7.4   | Tailwind 整合格式化        |
+| **Analytics**       | Vercel Analytics     | 1.6.1   | 隱私友善的訪客統計         |
 
 ---
 
@@ -1623,7 +1624,21 @@ const x = font.name; // 獲取字型名稱
 
 ## 📄 變更日誌
 
-### 最近更新 (2025-12-24)
+### 最近更新 (2025-02)
+
+- 🚀 SEO 與架構優化
+  - 首頁與分析頁面重構為 Server Components
+  - 完善 Metadata 配置提升 SEO
+
+- ♿ 無障礙與 UX 改進
+  - 優化顏色對比度 (AA 級別)
+  - 改進檔案上傳區域的鍵盤交互 (Label 標籤)
+  - 增強按鈕的可訪問性 (ARIA Labels)
+
+- 📊 數據分析
+  - 集成 Vercel Analytics
+
+### 歷史更新 (2025-12-24)
 
 - ✨ 完成 RWD 響應式設計優化
   - 所有元件新增 sm: 和 lg: 斷點

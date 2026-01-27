@@ -2,10 +2,8 @@
 export const nextConfig = {
   output: 'standalone',
   compress: true,
-  optimizeFonts: true,
   poweredByHeader: false,
   reactStrictMode: true,
-  swcMinify: true,
 
   headers: async () => [
     {
