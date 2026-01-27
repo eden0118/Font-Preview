@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
       <div className="mx-auto flex w-full max-w-7xl flex-col items-baseline justify-between gap-3 px-6 md:flex-row">
         {/* 應用名稱 */}
         <div className="flex w-full items-center justify-between gap-3 md:justify-start">
-          <h3 className="text-lg font-bold text-stone-900">FontFlow</h3>
+          <h3 className="text-xl font-bold text-stone-900">FontFlow</h3>
           <span className="text-infoText flex items-center gap-1">
             <a
               href="https://github.com/eden0118/Font-Preview.git"

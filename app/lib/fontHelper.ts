@@ -32,13 +32,17 @@ import { GLYPH_BASE, GLYPH_CANTONESE, GLYPH_TAIWAN, GLYPH_NAMING, GLYPH_JAPAN } 
 const TIER_EN_BASIC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 /**
- * 基本關鍵字 (Essential Characters) - 35 字
- * 這些是繁體中文日常溝通最常用的字。
- * 日文字型通常會缺少其中的一些字。
- * 缺字超過 20%（即 7+ 字）會觸發懲罰機制，分數被鎖至 60% 以下。
+ * 基本關鍵字 (Essential Characters) - 100 字
+ * 這些是繁體中文日常溝通最常用的字，包含高頻助詞、代名詞、核心動詞與差異字。
+ * * 選字策略：
+ * 1. 高頻功能字 (的、了、是、不)
+ * 2. 日文缺字高風險群 (你、們、說、那、吧、嗎)
+ * 3. 繁簡日寫法差異字 (國、寫、聽、覺、邊、後、讓) -> 用於強化辨識度
+ * * 閾值設定：
+ * 缺字超過 20%（即 20+ 字）會觸發懲罰機制 (Kill Switch)。
  */
 const TIER_TC_ESSENTIAL =
-  '的一是不了人在有我他這中大來上個到說就要也你們會很那都能沒為吧嗎呢好著出對和時地要去看給還多小麼什麼之沒下天再沒想知道得真像把還讓被做用著樣只呢嗎啊啦喔把因為所以如果怎麼自己沒有可以應該已經然後讓覺得可能非常但是不是就是一起誰哪裡那裡東西現在今天明天昨天大家我們你們他們她們讓畫';
+  '的一是不了人在有我他這中大來上個到說就要也你們會很那都能沒為吧嗎呢好著出對和時地去看不給還多小麼天得做生下過家裡國可以樣後寫聽覺知道幾只想起當然些點手用於文心方前面但卻而成事物所行走頭自己誰什帶幫問題氣次邊';
 
 /**
  * 繁體中文核心字集 (Core Traditional Chinese) - 6373 字
@@ -304,19 +308,27 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
 
         // --- 2. 繁體中文評分系統 (V13 - JF7000 完整字集) ---
 
-        // ★ 新評分系統（V13）：使用 JetBrains Font v0.9 完整字集
-        // Essential（基本字 35 字）和 Core（BASE 6373 字）的比重更重（40% + 35% = 75%）
-        // Essential 和 Core 合佔 75%，其他特定用途的字佔 25%
+        // 權重配置 (Weight Configuration)
+        // Essential (100字): 40% - 這是門檻，決定字型能不能「用」
+        // Core (6373字):     35% - 這是廣度，決定字型能不能「排版」
+        // Extensions:       15% - 粵語/台灣/人名
+        // Punctuation:      10% - 標點符號
         let rawTcScore =
           statsEssential.rate * 0.4 +
           statsCoreTC.rate * 0.35 +
           ((statsCantonese.rate + statsTaiwan.rate + statsNaming.rate) / 3) * 0.15 +
           statsPunct.rate * 0.1;
 
-        // ★ 懲罰機制 (The Kill Switch)
-        // 如果「基本關鍵字」缺字太嚴重（例如日文字型常缺「你、們、於」），直接鎖死最高分
-        // 閾值設定：如果關鍵字少於 80% (35字缺7字以上)，分數壓在 60% 以下
+        // ★ 懲罰機制 (The Kill Switch) - 針對 100 字標準優化
+        // 邏輯：基本字是用來「說人話」的。如果連最常用的 100 個字都湊不齊，
+        // 代表這絕對不是一個合格的繁體中文字型 (通常是日文或簡體字型)。
+        //
+        // 閾值：80% (0.8)
+        // 計算：100字 x (1 - 0.8) = 允許缺失 20 字
+        // 如果缺字 > 20，強制將分數鎖死在 0.59 (不及格)
         if (statsEssential.rate < 0.8) {
+          // 加上 console.log 方便 debug 究竟缺了哪些重要字
+          // console.warn('Triggered Kill Switch. Missing essentials:', missingEssentialChars);
           rawTcScore = Math.min(rawTcScore, 0.59);
         }
 
