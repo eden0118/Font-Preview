@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { BarChart3, Zap } from 'lucide-react';
 import { FeatureCard } from './components/FeatureCard';

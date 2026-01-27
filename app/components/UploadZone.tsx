@@ -7,8 +7,8 @@ interface UploadZoneProps {
   uploadError?: string | null;
   onDragEnter: () => void;
   onDragLeave: () => void;
-  onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
-  onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragOver: (e: React.DragEvent<HTMLElement>) => void;
+  onDrop: (e: React.DragEvent<HTMLElement>) => void;
   onClick: () => void;
   fileInputId: string;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -28,12 +28,12 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
 }) => {
   return (
     <>
-      <div
+      <label
+        htmlFor={fileInputId}
         onDragEnter={onDragEnter}
         onDragLeave={onDragLeave}
         onDragOver={onDragOver}
         onDrop={onDrop}
-        onClick={onClick}
         className={`flex min-h-48 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center transition-all sm:min-h-52 sm:gap-3 sm:p-8 ${
           isDragActive
             ? 'border-primary/30 bg-primary-light'
@@ -66,7 +66,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
             </div>
           </>
         )}
-      </div>
+      </label>
 
       {uploadError && (
         <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-600">

@@ -18,6 +18,7 @@ export const FontListItem: React.FC<FontListItemProps> = ({ font, onRemove }) =>
         <button
           onClick={onRemove}
           className="text-infoText shrink-0 transition-colors hover:text-red-600"
+          aria-label="移除字型"
         >
           <X size={18} />
         </button>
