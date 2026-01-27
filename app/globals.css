@@ -20,7 +20,7 @@
   --color-accent: #b45309;
   --color-primaryText: #1c1917;
   --color-secondaryText: #4b4745;
-  --color-infoText: #878787;
+  --color-infoText: #595959;
 }
 
 /**
@@ -37,6 +37,11 @@
 
   button {
     @apply cursor-pointer transition-all duration-300 ease-in-out;
+  }
+
+  /* Global Focus Styles for Accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
   }
 
   /**

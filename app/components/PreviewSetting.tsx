@@ -45,10 +45,11 @@ export const PreviewSetting: React.FC<PreviewSettingProps> = ({
       {/* Font Size */}
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
-          <label className="mb-1 text-sm font-medium text-stone-600">字體大小</label>
+          <label htmlFor="font-size-input" className="mb-1 text-sm font-medium text-stone-600">字體大小</label>
           <span className={`font-mono text-sm font-bold ${colorClass}`}>{fontSize}px</span>
         </div>
         <input
+          id="font-size-input"
           type="range"
           min="12"
           max="150"
@@ -60,9 +61,10 @@ export const PreviewSetting: React.FC<PreviewSettingProps> = ({
 
       {/* Font Color */}
       <div className="flex-1 sm:flex-none">
-        <label className="mb-1 block text-sm font-medium text-stone-600">字體顏色</label>
+        <label htmlFor="font-color-input" className="mb-1 block text-sm font-medium text-stone-600">字體顏色</label>
         <div className="flex items-center gap-2">
           <input
+            id="font-color-input"
             type="color"
             value={fontColor}
             onChange={(e) => onFontColorChange(e.target.value)}
@@ -74,9 +76,10 @@ export const PreviewSetting: React.FC<PreviewSettingProps> = ({
 
       {/* Background Color */}
       <div className="flex-1 sm:flex-none">
-        <label className="mb-1 block text-sm font-medium text-stone-600">背景顏色</label>
+        <label htmlFor="bg-color-input" className="mb-1 block text-sm font-medium text-stone-600">背景顏色</label>
         <div className="flex items-center gap-2">
           <input
+            id="bg-color-input"
             type="color"
             value={bgColor}
             onChange={(e) => onBgColorChange(e.target.value)}

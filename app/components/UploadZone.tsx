@@ -45,7 +45,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
         <input
           id={fileInputId}
           type="file"
-          className="hidden"
+          className="sr-only"
           accept=".ttf,.otf,.woff,.woff2"
           onChange={onFileChange}
         />
