@@ -26,7 +26,6 @@ export default function Home() {
             <FeatureCard
               href="/analysis"
               icon={BarChart3}
-              color="primary"
               title="字型分析"
               description="上傳字型檢測繁體中文支援度，深入分析缺字字符和語言覆蓋率。"
               buttonText="開始分析"
@@ -34,7 +33,6 @@ export default function Home() {
             <FeatureCard
               href="/comparison"
               icon={Zap}
-              color="secondary"
               title="字型比較"
               description="並排測試多個字型，快速找到最適合繁體中文的字體。"
               buttonText="開始比較"
