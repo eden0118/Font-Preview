@@ -21,13 +21,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { getRandomPreviewText, PREVIEW_TEXTS_CN, PreviewLanguage } from '../lib/previewTexts';
-
-interface PreviewSettings {
-  fontColor: string;
-  bgColor: string;
-  fontSize: number;
-  language: PreviewLanguage;
-}
+import { PreviewSettings } from '../lib/types';
 
 const DEFAULT_SETTINGS: PreviewSettings = {
   fontColor: '#292524',

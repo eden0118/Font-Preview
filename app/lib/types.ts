@@ -4,9 +4,10 @@
  * 包含：
  * - FontDefinition: 字型分析結果
  * - ComparisonFont: 比較頁面的字型插槽
- * - PreviewLanguage: 預覽文字語言
  * - UI 狀態類型
  */
+
+import { PreviewLanguage } from './previewTexts';
 
 // ============================================================================
 // 字型相關類型
@@ -61,11 +62,6 @@ export interface FontDefinition {
 // ============================================================================
 // 預覽相關類型
 // ============================================================================
-
-/**
- * 預覽語言
- */
-export type PreviewLanguage = 'cn' | 'en';
 
 /**
  * 顏色設定
@@ -130,15 +126,6 @@ export interface AnalysisState {
 }
 
 // ============================================================================
-// 分頁相關類型
-// ============================================================================
-
-/**
- * 頁面模式
- */
-export type TabMode = 'analysis' | 'comparison';
-
-// ============================================================================
 // 快取相關類型
 // ============================================================================
 
@@ -157,28 +144,4 @@ export interface CacheStats {
   size: number;
   maxSize: number;
   entries: string[];
-}
-
-// ============================================================================
-// 事件相關類型
-// ============================================================================
-
-/**
- * 分析事件類型
- */
-export type AnalyticsEventType =
-  | 'font_uploaded'
-  | 'font_analyzed'
-  | 'font_comparison_started'
-  | 'preview_text_changed'
-  | 'settings_updated'
-  | 'error_occurred'
-  | 'cache_hit'
-  | 'cache_miss';
-
-/**
- * 事件詳情
- */
-export interface AnalyticsEventData {
-  [key: string]: string | number | boolean | undefined;
 }

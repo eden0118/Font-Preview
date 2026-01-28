@@ -2,6 +2,33 @@
 
 **專為繁體中文使用者打造的字型相容性檢測平台**。快速判斷日文、簡體或其他字型對繁體中文的支援程度，掌握確切的缺字清單，避免排版風險。
 
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8)](https://tailwindcss.com/)
+
+---
+
+## ✨ 主要功能
+
+### 🔍 字型分析
+
+- **深度字符檢測**：基於 JF7000 標準分析 7000+ 繁體中文字符覆蓋率
+- **精準缺字列表**：列出所有無法顯示的字符，避免排版風險
+- **多語言評分**：同時評估繁體、簡體、日文、英文支援程度
+- **實時預覽**：上傳後立即在瀏覽器中預覽字型效果
+
+### ⚖️ 字型比較
+
+- **並排對比**：同時比較多個字型的繁體中文支援度
+- **快速篩選**：一眼看出哪個字型最適合繁體排版
+- **互動預覽**：自定義預覽文字、顏色、大小
+
+### 🎨 即時預覽
+
+- **自定義文字**：輸入任意文字測試字型效果
+- **樣式調整**：調整字體大小、顏色、背景
+- **缺字標記**：自動標註無法顯示的字符
+
 ---
 
 ## 🎯 核心問題與解決方案
@@ -258,63 +285,80 @@ return Math.round(finalScore);
 ## 📁 專案結構
 
 ```
-Font-Preview/
+font-flow/
 ├── app/
 │   ├── page.tsx                      # 首頁入口
-│   ├── (pages)/
-│   │   ├── analysis/
-│   │   │   └── page.tsx              # 字型分析頁面
-│   │   └── comparison/
-│   │       └── page.tsx              # 字型比較頁面（支援3字型）
-│   ├── components/                   # 可復用 UI 元件 (9 個)
-│   │   ├── ErrorBoundary.tsx         # 💥 錯誤邊界（新增）
-│   │   ├── FontInfo.tsx              # 字型資訊卡片
-│   │   ├── PreviewCard.tsx           # 預覽卡片
-│   │   ├── PreviewTextPanel.tsx      # 文字編輯面板
-│   │   ├── PreviewSetting.tsx        # 預覽設定控制器
-│   │   ├── FontListItem.tsx          # 字型列表項
-│   │   ├── UploadZone.tsx            # 拖放上傳區域
-│   │   ├── PageHeader.tsx            # 頁面標題欄
-│   │   ├── FeatureCard.tsx           # 功能卡片（首頁）
-│   │   ├── Footer.tsx                # 底部欄位
-│   │   ├── TextCoverageStatus.tsx    # 📊 覆蓋率指標（新增）
-│   │   ├── MissingCharsList.tsx      # 📋 缺字列表（新增）
-│   │   └── PreviewDisplay.tsx        # 🎨 預覽展示區（新增）
-│   ├── hooks/                        # 自訂 React Hooks (7 個)
-│   │   ├── useFontAnalysis.ts        # 字型分析邏輯
-│   │   ├── useFontComparison.ts      # 多字型比較邏輯
-│   │   ├── useFontFileProcessing.ts  # 字型檔案處理
-│   │   ├── useFontCache.ts           # 快取機制
-│   │   ├── usePreviewSettings.ts     # 預覽設定狀態
-│   │   ├── usePreviewText.ts         # 預覽文字管理
-│   │   └── useDragDrop.ts            # 拖放功能
-│   ├── lib/                          # 核心工具函數
-│   │   ├── fontHelper.ts             # ⭐ 字型分析引擎（核心）
-│   │   ├── types.ts                  # TypeScript 類型定義（增強）
-│   │   ├── previewTexts.ts           # 預設預覽文本
-│   │   ├── coverageHelpers.ts        # 覆蓋率顏色計算
-│   │   └── analytics.ts              # 📊 事件追蹤（新增）
-│   ├── config/                       # ⚙️ 配置文件（新增）
-│   │   └── constants.ts              # 全局常數定義
-│   ├── globals.css                   # 全局樣式（增強）
-│   ├── globals.css.d.ts              # CSS 類型定義（新增）
 │   ├── layout.tsx                    # 根佈局
-│   └── not-found.tsx                 # 404 頁面
+│   ├── not-found.tsx                 # 404 頁面
+│   ├── globals.css                   # 全局樣式（Tailwind V4）
+│   ├── globals.css.d.ts              # CSS 類型定義
+│   │
+│   ├── (pages)/                      # 功能頁面群組
+│   │   ├── analysis/
+│   │   │   ├── page.tsx              # 字型分析頁面
+│   │   │   ├── layout.tsx            # 分析頁面佈局
+│   │   │   └── AnalysisClient.tsx    # 客戶端互動邏輯
+│   │   └── comparison/
+│   │       ├── page.tsx              # 字型比較頁面
+│   │       ├── layout.tsx            # 比較頁面佈局
+│   │       └── ComparisonClient.tsx  # 客戶端互動邏輯
+│   │
+│   ├── components/                   # 可復用 UI 元件
+│   │   ├── ErrorBoundary.tsx         # 💥 錯誤邊界
+│   │   ├── FeatureCard.tsx           # 功能卡片（支援雙色主題）
+│   │   ├── FontInfo.tsx              # 字型資訊卡片
+│   │   ├── FontListItem.tsx          # 字型列表項
+│   │   ├── Footer.tsx                # 底部欄位
+│   │   ├── MissingCharsList.tsx      # 📋 缺字列表
+│   │   ├── PageHeader.tsx            # 頁面標題欄
+│   │   ├── PreviewCard.tsx           # 預覽卡片
+│   │   ├── PreviewDisplay.tsx        # 🎨 預覽展示區
+│   │   ├── PreviewSetting.tsx        # 預覽設定控制器
+│   │   ├── PreviewTextPanel.tsx      # 文字編輯面板
+│   │   ├── TextCoverageStatus.tsx    # 📊 覆蓋率指標
+│   │   └── UploadZone.tsx            # 拖放上傳區域
+│   │
+│   ├── hooks/                        # 自訂 React Hooks
+│   │   ├── useDragDrop.ts            # 拖放功能
+│   │   ├── useFontAnalysis.ts        # 字型分析邏輯（快取整合）
+│   │   ├── useFontCache.ts           # 快取機制（LRU）
+│   │   ├── useFontComparison.ts      # 多字型比較邏輯
+│   │   ├── useFontFileProcessing.ts  # 字型檔案處理（共享）
+│   │   ├── usePreviewSettings.ts     # 預覽設定狀態
+│   │   └── usePreviewText.ts         # 預覽文字管理
+│   │
+│   ├── lib/                          # 核心工具函數
+│   │   ├── analytics.ts              # 📊 事件追蹤與性能監控
+│   │   ├── coverageHelpers.ts        # 覆蓋率顏色計算
+│   │   ├── fontHelper.ts             # ⭐ 字型分析引擎（核心算法）
+│   │   ├── glyphLists.ts             # 字符集定義（JF7000）
+│   │   ├── previewTexts.ts           # 預設預覽文本
+│   │   └── types.ts                  # TypeScript 類型定義
+│   │
+│   └── config/                       # ⚙️ 配置文件
+│       └── constants.ts              # 全局常數定義
+│
 ├── types/
 │   └── opentype.d.ts                 # OpenType.js 類型定義
+│
 ├── package.json                      # 依賴和腳本配置
-├── next.config.js                    # Next.js 配置（優化）
+├── next.config.js                    # Next.js 配置
 ├── tsconfig.json                     # TypeScript 配置（嚴格模式）
-├── tailwind.config.js                # Tailwind CSS 配置（優化）
-├── .prettierrc                        # 🎨 Prettier 配置（新增）
-├── .prettierignore                   # 🎨 Prettier 忽略清單（新增）
+├── tailwind.config.js                # Tailwind CSS V4 配置
+├── postcss.config.js                 # PostCSS 配置
 ├── vercel.json                       # Vercel 部署配置
-├── CODING_STANDARDS.md               # 📚 開發規範（新增）
-├── OPTIMIZATION_REPORT.md            # 📊 優化報告（新增）
-└── REFACTORING_NOTES.md              # 📝 重構記錄
+└── README.md                         # 專案文檔
 ```
 
-> **📈 最新優化（2025年12月）**：架構重構完成，新增快取機制、錯誤邊界、事件追蹤等功能。詳見 [OPTIMIZATION_REPORT.md](OPTIMIZATION_REPORT.md)。
+### 📊 程式碼統計
+
+| 類別     | 數量 | 說明                       |
+| -------- | ---- | -------------------------- |
+| 頁面     | 3    | 首頁、分析頁、比較頁       |
+| 元件     | 13   | 可復用 UI 元件             |
+| Hooks    | 7    | 自訂狀態管理邏輯           |
+| 工具函數 | 6    | 核心分析引擎與輔助函數     |
+| 類型定義 | ~15  | 完整的 TypeScript 類型系統 |
 
 ---
 
