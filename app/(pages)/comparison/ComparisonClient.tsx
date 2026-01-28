@@ -74,14 +74,15 @@ export default function ComparisonClient() {
       <main className="mx-auto my-6 max-w-7xl flex-1 px-4 sm:p-6">
         {/* Top Section - Upload and Preview Settings */}
         <div className="mb-4 grid grid-cols-1 gap-4 sm:mb-6 sm:gap-6 lg:grid-cols-4">
-          {/* Left Panel - Upload */}
+          {/* Left Panel*/}
           <div className="rounded-2xl border border-stone-100 bg-white p-4 shadow-sm sm:p-6 lg:col-span-1">
+            {/* Upload title */}
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Upload className="h-5 w-5 text-primary" />
-                <h2 className="text-lg font-bold text-stone-800">上傳字體</h2>
+                <Upload className="text-primary h-5 w-5" />
+                <h2 className="text-primaryText text-lg font-bold">上傳字體</h2>
               </div>
-              <div className="text-sm font-medium text-stone-600">
+              <div className="text-secondaryText text-sm font-medium">
                 {comparisonSlots.filter((s) => s.font).length} / 3
               </div>
             </div>

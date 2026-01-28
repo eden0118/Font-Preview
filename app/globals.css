@@ -32,7 +32,7 @@
   }
 
   a {
-    @apply cursor-pointer transition-colors hover:text-primary;
+    @apply hover:text-primary cursor-pointer transition-colors;
   }
 
   button {
@@ -41,7 +41,7 @@
 
   /* Global Focus Styles for Accessibility */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-primary;
+    @apply outline-primary outline-2 outline-offset-2;
   }
 
   /**
@@ -84,7 +84,7 @@
 
   /* 基礎按鈕 */
   .btn {
-    @apply flex cursor-pointer items-center justify-center gap-1 rounded-lg px-6 py-2.5 text-sm font-medium transition-colors;
+    @apply flex cursor-pointer items-center justify-center gap-1 rounded px-6 py-2.5 text-sm font-medium shadow-sm transition-colors hover:shadow;
   }
 
   /* 小型按鈕 */
@@ -94,29 +94,29 @@
 
   /* 幽靈按鈕（純文字） */
   .ghost-btn {
-    @apply text-primaryText flex items-center gap-1 border-primary px-1 py-0.5 text-xs font-medium hover:text-primary;
+    @apply text-primaryText border-primary hover:text-primary flex items-center gap-1 px-1 py-0.5 text-xs font-medium;
   }
 
   /* 主按鈕 */
   .primary-btn {
-    @apply bg-primary text-white hover:bg-primary/90;
+    @apply bg-primary hover:bg-primary/90 text-white;
   }
 
   /* 次按鈕 */
   .secondary-btn {
-    @apply text-secondaryText bg-stone-100 shadow-sm hover:bg-stone-50 hover:text-primary hover:shadow-md;
+    @apply text-secondaryText hover:text-primary hover:border-primary border border-stone-200 bg-stone-100 hover:bg-stone-50;
   }
 
   /* 圖示按鈕 */
   .icon-btn {
-    @apply text-secondaryText flex cursor-pointer items-center justify-center rounded-full p-1 transition-all hover:bg-primary/10 hover:text-primary;
+    @apply text-secondaryText hover:bg-primary/10 hover:text-primary flex cursor-pointer items-center justify-center rounded-full p-1 transition-all;
   }
 
   /**
    * 輸入欄位
    */
   .input {
-    @apply w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:border-primary focus:outline-none;
+    @apply focus:border-primary w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:outline-none;
   }
 
   /**
