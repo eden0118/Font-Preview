@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Sitemaps
+Sitemap: https://fontflow.vercel.app/sitemap.xml
+
+# Crawl delay (stay friendly)
+Crawl-delay: 1

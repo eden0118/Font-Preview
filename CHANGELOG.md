@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **SEO 優化套件 (Comprehensive SEO Enhancement)**
+  - 新增 `public/sitemap.xml` — 搜尋引擎索引地圖
+  - 新增 `public/robots.txt` — 爬蟲訪問策略配置
+  - 新增 `app/components/StructuredData.tsx` — JSON-LD 結構化資料
+  - 擴展 Root Metadata（增加 60+ 長尾關鍵字）
+  - 增強 Open Graph 設置（加入預覽圖、canonical URL）
+  - 加強 robots 配置（Google Bot 最佳化）
+  - 分析頁面 Metadata 擴展（長尾關鍵字優化）
+  - 比較頁面 Metadata 擴展（長尾關鍵字優化）
+
+### Changed
+
+- 更新 `app/layout.tsx`
+  - 引入 `StructuredData` 元件
+  - 加入 sitemap.xml 連結宣告
+  - 擴展頁面標題與描述
+  - 新增 60+ SEO 關鍵字
+  - 補充 Open Graph 圖片與 canonical URL
+  - 增強 robots 配置以提升 Google 索引品質
+
+- 更新分析頁面 Metadata (`app/(pages)/analysis/layout.tsx`)
+  - 擴展標題與描述（加入功能詞）
+  - 增加 11 個長尾關鍵字
+
+- 更新比較頁面 Metadata (`app/(pages)/comparison/layout.tsx`)
+  - 擴展標題與描述（加入功能詞）
+  - 增加 9 個長尾關鍵字
+
+### Documentation
+
+- 更新 README.md
+  - 新增「Sitemap 與 Robots 配置」章節
+  - 新增「結構化資料」章節
+  - 新增「Open Graph 社交分享」章節
+  - 新增「關鍵字優化」章節
+  - 新增「SEO 檢查清單」章節
+
 ## [1.0.0] - 2026-03-10
 
 ### Added
