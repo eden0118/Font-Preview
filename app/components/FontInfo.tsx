@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, ChevronDown } from 'lucide-react';
 import { FontDefinition } from '@/lib/types';
 import { getCoverageColor } from '@/lib/coverageHelpers';
 
@@ -26,6 +26,7 @@ interface FontInfoProps {
  * 字型資訊卡片元件
  */
 export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
+  const [showMissingCoreChars, setShowMissingCoreChars] = React.useState(false);
   return (
     <div className="card p-4 sm:p-6">
       <h3 className="mb-3 font-bold text-stone-800">{font.name}</h3>
@@ -142,15 +143,26 @@ export const FontInfo: React.FC<FontInfoProps> = ({ font }) => {
             className={`border-t border-stone-200 pt-3 ${font.missingEssentialChars ? 'mt-3' : ''}`}
           >
             <div className="rounded-lg border border-orange-200 bg-orange-50 p-3">
-              <div className="mb-2 flex gap-2">
-                <AlertTriangle size={16} className="mt-0.5 shrink-0 text-orange-800" />
+              <button
+                onClick={() => setShowMissingCoreChars(!showMissingCoreChars)}
+                className="mb-2 flex w-full items-center gap-2 text-left hover:opacity-70"
+              >
+                <ChevronDown
+                  size={16}
+                  className={`mt-0.5 shrink-0 text-orange-800 transition-transform ${
+                    showMissingCoreChars ? 'rotate-180' : ''
+                  }`}
+                />
+                <AlertTriangle size={16} className="shrink-0 text-orange-800" />
                 <p className="text-xs font-semibold text-orange-800">
-                  缺失常用字 {font.missingCoreOnlyChars.length} 個：
+                  缺失常用字 {font.missingCoreOnlyChars.length} 個
                 </p>
-              </div>
-              <p className="ml-6 font-mono text-xs wrap-break-word text-orange-700">
-                {font.missingCoreOnlyChars.split('').join('  ')}
-              </p>
+              </button>
+              {showMissingCoreChars && (
+                <p className="ml-6 font-mono text-xs wrap-break-word text-orange-700">
+                  {font.missingCoreOnlyChars.split('').join('  ')}
+                </p>
+              )}
             </div>
           </div>
         ) : null}

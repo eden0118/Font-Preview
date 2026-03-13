@@ -32,17 +32,18 @@ import { GLYPH_BASE, GLYPH_CANTONESE, GLYPH_TAIWAN, GLYPH_NAMING, GLYPH_JAPAN } 
 const TIER_EN_BASIC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 /**
- * 基本關鍵字 (Essential Characters) - 100 字
+ * 基本關鍵字 (Essential Characters) - 150 字
  * 這些是繁體中文日常溝通最常用的字，包含高頻助詞、代名詞、核心動詞與差異字。
  * * 選字策略：
  * 1. 高頻功能字 (的、了、是、不)
  * 2. 日文缺字高風險群 (你、們、說、那、吧、嗎)
  * 3. 繁簡日寫法差異字 (國、寫、聽、覺、邊、後、讓) -> 用於強化辨識度
+ * 4. 常用名詞與動詞 (內、靜、裡、深、開、特、作、能、力、意等)
  * * 閾值設定：
- * 缺字超過 20%（即 20+ 字）會觸發懲罰機制 (Kill Switch)。
+ * 缺字超過 30%（即 45+ 字）會觸發懲罰機制 (Kill Switch)。
  */
 const TIER_TC_ESSENTIAL =
-  '的一是不了人在有我他這中大來上個到說就要也你們會很那都能沒為吧嗎呢好著出對和時地去看不給還多小麼天得做生下過家裡國可以樣後寫聽覺知道幾只想起當然些點手用於文心方前面但卻而成事物所行走頭自己誰什帶幫問題氣次邊';
+  '的一是不了人在有我他這中大來上個到說就要也你們會很那都能沒為吧嗎呢好著出對和時地去看不給還多小麼天得做生下過家裡國可以樣後寫聽覺知道幾只想起當然些點手用於文心方前面但卻而成事物所行走頭自己誰什帶幫問題氣次邊內靜深間開特作近等種法力意身心本才找去能少定利再月長水';
 
 /**
  * 繁體中文核心字集 (Core Traditional Chinese) - 6373 字
@@ -424,6 +425,9 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         let missingCoreOnlyCount = 0;
         const coreCharSet = new Set(TIER_CORE_TC.split(''));
 
+        // ★ 新增：收集所有支援的字符（不只是繁體）
+        const supportedCharsArray: string[] = [];
+
         for (const char of ALL_TC_CHARS_SET) {
           if (!hasGlyph(font, char)) {
             missingChars.push(char);
@@ -439,6 +443,9 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
               missingCoreOnlyChars.push(char);
               missingCoreOnlyCount++; // ★ 只計算 CORE 缺字
             }
+          } else {
+            // ★ 新增：收集所有支援的字符
+            supportedCharsArray.push(char);
           }
         }
 
@@ -463,6 +470,7 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
           glyphCount: font.glyphs.length,
           isCustom: true,
           description: descriptions.join(' | '),
+          supportedChars: supportedCharsArray.join(''), // ★ 新增：所有支援的字符
           missingTCChars: missingChars.join(''), // 全部缺字（用於內部統計）
           missingEssentialChars: missingEssentialChars.join(''), // ★ 新增：只顯示 ESSENTIAL 缺字的具體字符
           missingCoreOnlyChars: missingCoreOnlyChars.join(''), // 核心層級的缺字（用於警告判定）

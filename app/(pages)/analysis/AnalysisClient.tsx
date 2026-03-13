@@ -110,6 +110,11 @@ export default function AnalysisClient() {
             onBgColorChange={updateBgColor}
             onReset={resetSettings}
             onResetDefault={resetToDefault}
+            hasGlyphFunc={
+              currentFont?.supportedChars
+                ? (char: string) => currentFont.supportedChars!.includes(char)
+                : undefined
+            }
           >
             {/* Preview Card */}
             <PreviewCard
