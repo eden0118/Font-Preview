@@ -1,7 +1,17 @@
 'use client';
 
 import React from 'react';
-import { Upload, Trash2, Loader2, BarChart3, Scale, Tag, AlertTriangle, Info } from 'lucide-react';
+import {
+  Upload,
+  Trash2,
+  Loader2,
+  BarChart3,
+  Scale,
+  Tag,
+  AlertTriangle,
+  Info,
+  ChevronDown,
+} from 'lucide-react';
 import { useFontAnalysis } from '../../hooks/useFontAnalysis';
 import { usePreviewSettings } from '../../hooks/usePreviewSettings';
 import { usePreviewText } from '../../hooks/usePreviewText';
@@ -15,6 +25,7 @@ import { UploadZone } from '../../components/UploadZone';
 import { PreviewTextPanel } from '../../components/PreviewTextPanel';
 
 export default function AnalysisClient() {
+  const [showMethodology, setShowMethodology] = React.useState(false);
   const { currentFont, isAnalyzing, uploadError, processFont, clearFont } = useFontAnalysis();
   const {
     settings,
@@ -131,61 +142,77 @@ export default function AnalysisClient() {
       {/* Analysis Logic Explanation */}
       <div className="mx-auto w-full max-w-7xl px-6 py-8">
         <div className="space-y-3 rounded-lg border border-stone-200 bg-stone-50 p-6">
-          <h2 className="text-lg font-bold text-stone-800">分析方法說明</h2>
-          <div className="flex items-start gap-1 text-slate-500 italic">
-            <Info size={16} className="shrink-0" />
-            <p className="text-xs">本工具提供快速參考判斷，結果不保證完全準確。</p>
-          </div>
-          <div className="grid grid-cols-1 gap-4 text-sm text-stone-700 md:grid-cols-2 md:text-sm">
-            <div className="flex gap-1.5">
-              <BarChart3 size={18} className="mt-0.5 shrink-0 text-stone-700" />
-              <div>
-                <h3 className="font-semibold text-stone-800">基本原理</h3>
-                <p className="mt-1 text-stone-600">
-                  逐字檢測字型是否包含繁體中文字符，計算字型的覆蓋率。字符集來自{' '}
-                  <a
-                    href="https://justfont.com/jf7000"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-blue-600 underline hover:text-blue-800"
-                  >
-                    JF7000
-                  </a>
-                  ，包含 7,000 個繁體中文常用字。
-                </p>
-              </div>
-            </div>
+          <button
+            onClick={() => setShowMethodology(!showMethodology)}
+            className="flex w-full items-center gap-2 text-left hover:opacity-70"
+          >
+            <ChevronDown
+              size={20}
+              className={`shrink-0 text-stone-700 transition-transform ${
+                showMethodology ? 'rotate-180' : ''
+              }`}
+            />
+            <h2 className="text-lg font-bold text-stone-800">分析方法說明</h2>
+          </button>
 
-            <div className="flex gap-1.5">
-              <Scale size={18} className="mt-0.5 shrink-0 text-stone-700" />
-              <div>
-                <h3 className="font-semibold text-stone-800">評分方法</h3>
-                <p className="mt-1 text-stone-600">
-                  優先檢查日常常用字、核心字集、特殊用途字、標點符號等層級，按比例計算綜合評分。
-                </p>
+          {showMethodology && (
+            <>
+              <div className="flex items-start gap-1 text-slate-500 italic">
+                <Info size={16} className="shrink-0" />
+                <p className="text-xs">本工具提供快速參考判斷，結果不保證完全準確。</p>
               </div>
-            </div>
+              <div className="grid grid-cols-1 gap-4 text-sm text-stone-700 md:grid-cols-2 md:text-sm">
+                <div className="flex gap-1.5">
+                  <BarChart3 size={18} className="mt-0.5 shrink-0 text-stone-700" />
+                  <div>
+                    <h3 className="font-semibold text-stone-800">基本原理</h3>
+                    <p className="mt-1 text-stone-600">
+                      逐字檢測字型是否包含繁體中文字符，計算字型的覆蓋率。字符集來自{' '}
+                      <a
+                        href="https://justfont.com/jf7000"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-blue-600 underline hover:text-blue-800"
+                      >
+                        JF7000
+                      </a>
+                      ，包含 7,000 個繁體中文常用字。
+                    </p>
+                  </div>
+                </div>
 
-            <div className="flex gap-1.5">
-              <Tag size={18} className="mt-0.5 shrink-0 text-stone-700" />
-              <div>
-                <h3 className="font-semibold text-stone-800">語言判定</h3>
-                <p className="mt-1 text-stone-600">
-                  根據各語言字符的支援程度進行標籤判定（繁體、日文、簡體等），供快速參考。
-                </p>
-              </div>
-            </div>
+                <div className="flex gap-1.5">
+                  <Scale size={18} className="mt-0.5 shrink-0 text-stone-700" />
+                  <div>
+                    <h3 className="font-semibold text-stone-800">評分方法</h3>
+                    <p className="mt-1 text-stone-600">
+                      優先檢查日常常用字、核心字集、特殊用途字、標點符號等層級，按比例計算綜合評分。
+                    </p>
+                  </div>
+                </div>
 
-            <div className="flex gap-1.5">
-              <AlertTriangle size={18} className="mt-0.5 shrink-0 text-stone-700" />
-              <div>
-                <h3 className="font-semibold text-stone-800">缺字提示</h3>
-                <p className="mt-1 text-stone-600">
-                  檢測預覽文字中的缺字情況，幫助快速了解字型相容性。實際排版效果因應用而異。
-                </p>
+                <div className="flex gap-1.5">
+                  <Tag size={18} className="mt-0.5 shrink-0 text-stone-700" />
+                  <div>
+                    <h3 className="font-semibold text-stone-800">語言判定</h3>
+                    <p className="mt-1 text-stone-600">
+                      根據各語言字符的支援程度進行標籤判定（繁體、日文、簡體等），供快速參考。
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-1.5">
+                  <AlertTriangle size={18} className="mt-0.5 shrink-0 text-stone-700" />
+                  <div>
+                    <h3 className="font-semibold text-stone-800">缺字提示</h3>
+                    <p className="mt-1 text-stone-600">
+                      檢測預覽文字中的缺字情況，幫助快速了解字型相容性。實際排版效果因應用而異。
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </div>
 

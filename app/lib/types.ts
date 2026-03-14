@@ -26,6 +26,8 @@ export interface CoverageInfo {
   sc: number; // 簡體中文適用性
   en: number; // 英文適用性
   ja: number; // 日文適用性
+  punctuationFull?: number; // 全形標點符號覆蓋率
+  punctuationHalf?: number; // 半形標點符號覆蓋率
 }
 
 /**
@@ -53,6 +55,8 @@ export interface FontDefinition {
   missingEssentialChars?: string;
   missingCoreOnlyChars?: string;
   missingCoreTCChars?: string;
+  missingPunctuationFull?: string; // 缺失的全形標點符號
+  missingPunctuationHalf?: string; // 缺失的半形標點符號
 
   // 統計信息
   totalTCCharsChecked?: number;

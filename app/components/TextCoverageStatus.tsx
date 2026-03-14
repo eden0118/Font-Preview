@@ -79,7 +79,7 @@ export const TextCoverageStatus: React.FC<TextCoverageStatusProps> = ({ font, te
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
           <div className="text-xs text-red-700">
             <p className="font-medium">預覽文字缺字：{missing.length} 個</p>
-            <p className="mt-1 break-words">
+            <p className="mt-1 wrap-break-word">
               {missing.slice(0, 10).join('')}
               {missing.length > 10 ? '...' : ''}
             </p>

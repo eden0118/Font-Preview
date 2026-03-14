@@ -15,7 +15,15 @@
 
 import { parse } from 'opentype.js';
 import { FontDefinition } from './types';
-import { GLYPH_BASE, GLYPH_CANTONESE, GLYPH_TAIWAN, GLYPH_NAMING, GLYPH_JAPAN } from './glyphLists';
+import {
+  GLYPH_BASE,
+  GLYPH_CANTONESE,
+  GLYPH_TAIWAN,
+  GLYPH_NAMING,
+  GLYPH_JAPAN,
+  GLYPH_PUNCTUATION_FULL,
+  GLYPH_PUNCTUATION_HALF,
+} from './glyphLists';
 
 // ============================================================================
 // 1. 字符集定義 (Character Set Definitions)
@@ -62,8 +70,9 @@ const TIER_CANTONESE = GLYPH_CANTONESE;
 const TIER_TAIWAN = GLYPH_TAIWAN;
 const TIER_NAMING = GLYPH_NAMING;
 
-// [Tier Punctuation] 標點符號
-const TIER_PUNCTUATION = '，。、：；？！「」『』（）—…';
+// [Tier Punctuation] 標點符號 - 分為全形和半形
+const TIER_PUNCTUATION_FULL = GLYPH_PUNCTUATION_FULL;
+const TIER_PUNCTUATION_HALF = GLYPH_PUNCTUATION_HALF;
 
 /**
  * 日文平假名與片假名 (Japanese Kana)
@@ -140,7 +149,8 @@ const TIER_NAMING_SET = new Set(TIER_NAMING.split(''));
 // English 字符集
 const EN_CHARS_SET = new Set(TIER_EN_BASIC.split(''));
 const SC_CHARS_SET = new Set(TIER_SC_UNIQUE.split(''));
-const PUNCT_CHARS_SET = new Set(TIER_PUNCTUATION.split(''));
+const PUNCT_FULL_CHARS_SET = new Set(TIER_PUNCTUATION_FULL.split(''));
+const PUNCT_HALF_CHARS_SET = new Set(TIER_PUNCTUATION_HALF.split(''));
 const JA_KANA_SET = new Set(TIER_JA_KANA.split(''));
 const JA_KANJI_SET = new Set(TIER_JA_KANJI.split(''));
 
@@ -298,7 +308,8 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         const statsCantonese = checkBlock(font, TIER_CANTONESE);
         const statsTaiwan = checkBlock(font, TIER_TAIWAN);
         const statsNaming = checkBlock(font, TIER_NAMING);
-        const statsPunct = checkBlock(font, TIER_PUNCTUATION);
+        const statsPunctFull = checkBlock(font, TIER_PUNCTUATION_FULL); // 全形標點
+        const statsPunctHalf = checkBlock(font, TIER_PUNCTUATION_HALF); // 半形標點
         const statsJaKana = checkBlock(font, TIER_JA_KANA);
         const statsJaKanji = checkBlock(font, TIER_JA_KANJI); // ★ 日文漢字覆蓋率（才是真的日文支援度）
         const statsUniqueSC = checkBlock(font, TIER_SC_UNIQUE);
@@ -313,12 +324,12 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         // Essential (100字): 40% - 這是門檻，決定字型能不能「用」
         // Core (6373字):     35% - 這是廣度，決定字型能不能「排版」
         // Extensions:       15% - 粵語/台灣/人名
-        // Punctuation:      10% - 標點符號
+        // Punctuation:      10% - 標點符號（全形為主）
         let rawTcScore =
           statsEssential.rate * 0.4 +
           statsCoreTC.rate * 0.35 +
           ((statsCantonese.rate + statsTaiwan.rate + statsNaming.rate) / 3) * 0.15 +
-          statsPunct.rate * 0.1;
+          statsPunctFull.rate * 0.1; // 使用全形標點作為主要指標
 
         // ★ 懲罰機制 (The Kill Switch) - 針對 100 字標準優化
         // 邏輯：基本字是用來「說人話」的。如果連最常用的 100 個字都湊不齊，
@@ -372,7 +383,7 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
             // 由於字集擴大，降低標準到：> 70% = 優質，> 50% = 可用
             if (tcScore > 0.7) {
               tags.add('tc');
-              if (statsPunct.rate < 0.8) descriptions.push('繁體中文 (缺標點)');
+              if (statsPunctFull.rate < 0.8) descriptions.push('繁體中文 (缺全形標點)');
               else descriptions.push('繁體中文');
             } else if (tcScore > 0.5) {
               // 分數 0.5~0.7 之間，屬於「通用但缺字」
@@ -456,6 +467,40 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
         const actualTCCoverage = coreCharCount > 0 ? coreCharsCovered / coreCharCount : 0;
         const adjustedTcScore = Math.round(actualTCCoverage * 100);
 
+        // --- 4.5. 收集缺失的標點符號 ---
+        const missingPunctuationFull: string[] = [];
+        const missingPunctuationHalf: string[] = [];
+
+        // 使用 Set 去重，避免重複計算
+        const punctFullCharsSet = new Set(TIER_PUNCTUATION_FULL.split(''));
+        const punctHalfCharsSet = new Set(TIER_PUNCTUATION_HALF.split(''));
+
+        // 檢測全形標點
+        for (const char of punctFullCharsSet) {
+          if (!hasGlyph(font, char)) {
+            missingPunctuationFull.push(char);
+          } else {
+            supportedCharsArray.push(char); // 將支援的標點符號加入 supportedChars
+          }
+        }
+
+        // 檢測半形標點
+        for (const char of punctHalfCharsSet) {
+          if (!hasGlyph(font, char)) {
+            missingPunctuationHalf.push(char);
+          } else {
+            supportedCharsArray.push(char); // 將支援的標點符號加入 supportedChars
+          }
+        }
+
+        // --- 4.6. 收集支援的英文字母和數字 ---
+        const enCharsSet = new Set(TIER_EN_BASIC.split(''));
+        for (const char of enCharsSet) {
+          if (hasGlyph(font, char)) {
+            supportedCharsArray.push(char);
+          }
+        }
+
         // --- 5. 輸出 ---
         const fontDef: FontDefinition = {
           name: fontName,
@@ -466,6 +511,8 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
             tc: adjustedTcScore, // ★ 改為基於實際缺字計算
             sc: Math.round(statsUniqueSC.rate * 100),
             ja: Math.round(statsJaKanji.rate * 100), // ★ 改為日文漢字覆蓋率（才是真正的日文支援度）
+            punctuationFull: Math.round(statsPunctFull.rate * 100), // 全形標點符號覆蓋率
+            punctuationHalf: Math.round(statsPunctHalf.rate * 100), // 半形標點符號覆蓋率
           },
           glyphCount: font.glyphs.length,
           isCustom: true,
@@ -475,6 +522,8 @@ export const analyzeFontFile = (file: File): Promise<FontDefinition> =>
           missingEssentialChars: missingEssentialChars.join(''), // ★ 新增：只顯示 ESSENTIAL 缺字的具體字符
           missingCoreOnlyChars: missingCoreOnlyChars.join(''), // 核心層級的缺字（用於警告判定）
           missingCoreTCChars: missingCoreChars.join(''), // 用於警告判定的核心缺字
+          missingPunctuationFull: missingPunctuationFull.join(''), // 缺失的全形標點符號
+          missingPunctuationHalf: missingPunctuationHalf.join(''), // 缺失的半形標點符號
           totalTCCharsChecked, // 檢查的繁體字總數（包含所有 TIER）
           totalCoreCharsChecked: coreCharCount, // ★ GLYPH_BASE 字符數（用於覆蓋率分母）
         };

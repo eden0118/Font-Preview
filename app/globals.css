@@ -119,10 +119,9 @@
     @apply focus:border-primary w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:outline-none;
   }
 
-  /**
-   * 語言標籤
-   * 用於 FontInfo 中顯示支援的語言
-   */
+  /* FontInfo 內使用 ===== */
+
+  /* 語言標籤 */
   .lang-label {
     @apply inline-block rounded bg-stone-200/50 px-2 py-0.5 text-xs font-medium text-stone-700;
   }
