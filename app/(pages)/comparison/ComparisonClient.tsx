@@ -6,13 +6,13 @@ import { useFontComparison } from '../../hooks/useFontComparison';
 import { usePreviewSettings } from '../../hooks/usePreviewSettings';
 import { usePreviewText } from '../../hooks/usePreviewText';
 import { useDragDrop } from '../../hooks/useDragDrop';
-import { PageHeader } from '../../components/PageHeader';
-import { PreviewSetting } from '../../components/PreviewSetting';
-import { Footer } from '../../components/Footer';
-import { PreviewCard } from '../../components/PreviewCard';
-import { FontListItem } from '../../components/FontListItem';
-import { UploadZone } from '../../components/UploadZone';
-import { PreviewTextPanel } from '../../components/PreviewTextPanel';
+import { PageHeader } from '../../components/Layout/PageHeader';
+import { PreviewSetting } from '../../components/Preview/PreviewSetting';
+import { Footer } from '../../components/Layout/Footer';
+import { PreviewCard } from '../../components/Preview/PreviewCard';
+import { FontListItem } from '../../components/Shared/FontListItem';
+import { UploadZone } from '../../components/Shared/UploadZone';
+import { PreviewTextPanel } from '../../components/Preview/PreviewTextPanel';
 
 export default function ComparisonClient() {
   const { comparisonSlots, analysingId, uploadError, processFont, removeFont } =

@@ -282,6 +282,54 @@ lib/fontHelper.ts (核心)
     └─ calculateScore() — 評分計算
 ```
 
+### 元件結構 (Component Architecture)
+
+元件按功能域分類，提升可維護性與代碼重用：
+
+**Preview/ 資料夾 (8 個檔案)**：
+
+- `PreviewCard.tsx` — 預覽卡片容器 (90 行)
+- `PreviewCardHeader.tsx` — 卡片標題區 (56 行)
+- `PreviewCardContent.tsx` — 卡片內容區 (55 行)
+- `PreviewDisplay.tsx` — 純展示元件 (44 行)
+- `PreviewSetting.tsx` — 設定容器 (64 行)
+- `PreviewTextPanel.tsx` — 文字輸入面板 (129 行)
+- `FontSizeSlider.tsx` — 字號滑桿控制 (46 行)
+- `PreviewColorPicker.tsx` — 顏色選擇器 (64 行)
+
+**FontInfo/ 資料夾 (3 個檔案)**：
+
+- `FontInfo.tsx` — 字型資訊容器 (58 行)
+- `FontCoverageChart.tsx` — 覆蓋率進度條 (81 行)
+- `FontMissingChars.tsx` — 缺字字符管理 (72 行)
+
+**Shared/ 資料夾 (5 個檔案)**：
+
+- `CharacterWarning.tsx` — 統一警告元件 (94 行，支援 3 層級：error/warning/note)
+- `MissingCharsList.tsx` — 缺字簡潔清單 (57 行)
+- `FontListItem.tsx` — 字型列表項 (40 行)
+- `TextCoverageStatus.tsx` — 文字覆蓋率狀態 (91 行)
+- `UploadZone.tsx` — 拖放上傳區 (78 行)
+
+**Layout/ 資料夾 (4 個檔案)**：
+
+- `PageHeader.tsx` — 頁面標題區 (29 行)
+- `Footer.tsx` — 頁尾（含更新日期） (55 行)
+- `ErrorBoundary.tsx` — 錯誤邊界處理 (112 行)
+- `StructuredData.tsx` — JSON-LD 結構化資料 (39 行)
+
+**根目錄**：
+
+- `FeatureCard.tsx` — 首頁功能卡片 (67 行)
+- `index.ts` — 統一導出入口
+
+**設計原則**：
+
+- DRY (Don't Repeat Yourself) — 邏輯抽象為 Hooks 和工具函數
+- 單責原則 — 每個元件職責明確
+- 可組合性 — 元件支援靈活組合與嵌套
+- 型別安全 — 嚴格 TypeScript 模式下開發
+
 ---
 
 ## 📝 預設預覽文本

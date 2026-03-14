@@ -16,13 +16,13 @@ import { useFontAnalysis } from '../../hooks/useFontAnalysis';
 import { usePreviewSettings } from '../../hooks/usePreviewSettings';
 import { usePreviewText } from '../../hooks/usePreviewText';
 import { useDragDrop } from '../../hooks/useDragDrop';
-import { PageHeader } from '../../components/PageHeader';
-import { PreviewSetting } from '../../components/PreviewSetting';
-import { Footer } from '../../components/Footer';
-import { FontInfo } from '../../components/FontInfo';
-import { PreviewCard } from '../../components/PreviewCard';
-import { UploadZone } from '../../components/UploadZone';
-import { PreviewTextPanel } from '../../components/PreviewTextPanel';
+import { PageHeader } from '../../components/Layout/PageHeader';
+import { PreviewSetting } from '../../components/Preview/PreviewSetting';
+import { Footer } from '../../components/Layout/Footer';
+import { FontInfo } from '../../components/FontInfo/FontInfo';
+import { PreviewCard } from '../../components/Preview/PreviewCard';
+import { UploadZone } from '../../components/Shared/UploadZone';
+import { PreviewTextPanel } from '../../components/Preview/PreviewTextPanel';
 
 export default function AnalysisClient() {
   const [showMethodology, setShowMethodology] = React.useState(false);

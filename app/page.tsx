@@ -1,7 +1,7 @@
 import React from 'react';
 import { BarChart3, Zap } from 'lucide-react';
 import { FeatureCard } from './components/FeatureCard';
-import { Footer } from './components/Footer';
+import { Footer } from './components/Layout/Footer';
 
 export default function Home() {
   return (

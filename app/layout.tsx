@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/react';
-import { StructuredData } from './components/StructuredData';
+import { StructuredData } from './components/Layout/StructuredData';
 import './globals.css';
 
 export const metadata: Metadata = {

@@ -39,7 +39,7 @@ export const Footer: React.FC = () => {
             </span>
           </div>
 
-          <div className="text-infoText opacity-60">Last updated: 2026.03.10</div>
+          <div className="text-infoText opacity-60">Last updated: 2026.03.14</div>
         </div>
 
         {/* 版權與隱私說明 */}

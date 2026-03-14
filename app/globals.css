@@ -2,37 +2,32 @@
  * 全局樣式和 Tailwind CSS 設定
  *
  * 結構：
- * - @theme: 設定全域顏色變數
  * - @layer base: 基礎 HTML 元素樣式
  * - @layer components: 可復用的元件樣式
  *
  * 設計系統：
  * - 主色 (primary): #0c52ea - 藍色
- * - 輔助色 (accent): #f5a524 - 橙色
- * - 文字色: primaryText (#1c1917), secondaryText (#4b4745), infoText (#878787)
+ * - 輔助色 (accent): #b45309 - 橙色
  * - 背景: stone-50 (淺灰)
  */
 
 @import 'tailwindcss';
-
-@theme {
-  --color-primary: #0c52ea;
-  --color-accent: #b45309;
-  --color-primaryText: #1c1917;
-  --color-secondaryText: #4b4745;
-  --color-infoText: #595959;
-}
 
 /**
  * Base Layer - 基礎 HTML 元素的預設樣式
  */
 @layer base {
   body {
-    @apply text-primaryText bg-stone-50;
+    @apply bg-stone-50;
+    color: #1c1917;
   }
 
   a {
-    @apply hover:text-primary cursor-pointer transition-colors;
+    @apply cursor-pointer transition-colors;
+  }
+
+  a:hover {
+    color: #0c52ea;
   }
 
   button {
@@ -41,7 +36,8 @@
 
   /* Global Focus Styles for Accessibility */
   :focus-visible {
-    @apply outline-primary outline-2 outline-offset-2;
+    @apply outline-offset-2;
+    outline: 2px solid #0c52ea;
   }
 
   /**
@@ -94,29 +90,59 @@
 
   /* 幽靈按鈕（純文字） */
   .ghost-btn {
-    @apply text-primaryText border-primary hover:text-primary flex items-center gap-1 px-1 py-0.5 text-xs font-medium;
+    @apply flex items-center gap-1 px-1 py-0.5 text-xs font-medium;
+    color: #1c1917;
+    border-color: #0c52ea;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .ghost-btn:hover {
+    color: #0c52ea;
   }
 
   /* 主按鈕 */
   .primary-btn {
-    @apply bg-primary hover:bg-primary/90 text-white;
+    @apply text-white transition-colors;
+    background-color: #0c52ea;
+  }
+
+  .primary-btn:hover {
+    background-color: rgba(12, 82, 234, 0.9);
   }
 
   /* 次按鈕 */
   .secondary-btn {
-    @apply text-secondaryText hover:text-primary hover:border-primary border border-stone-200 bg-stone-100 hover:bg-stone-50;
+    @apply border border-stone-200 bg-stone-100 transition-colors;
+    color: #4b4745;
+  }
+
+  .secondary-btn:hover {
+    color: #0c52ea;
+    border-color: #0c52ea;
+    @apply bg-stone-50;
   }
 
   /* 圖示按鈕 */
   .icon-btn {
-    @apply text-secondaryText hover:bg-primary/10 hover:text-primary flex cursor-pointer items-center justify-center rounded-full p-1 transition-all;
+    @apply flex cursor-pointer items-center justify-center rounded-full p-1 transition-all;
+    color: #4b4745;
+  }
+
+  .icon-btn:hover {
+    color: #0c52ea;
+    background-color: rgba(12, 82, 234, 0.1);
   }
 
   /**
    * 輸入欄位
    */
   .input {
-    @apply focus:border-primary w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm transition-all focus:outline-none;
+    @apply w-full rounded-xl border bg-black/50 px-4 py-3 text-sm transition-all focus:outline-none;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .input:focus {
+    border-color: #0c52ea;
   }
 
   /* FontInfo 內使用 ===== */
@@ -124,5 +150,18 @@
   /* 語言標籤 */
   .lang-label {
     @apply inline-block rounded bg-stone-200/50 px-2 py-0.5 text-xs font-medium text-stone-700;
+  }
+
+  /* 通用文字顏色類 */
+  .text-primaryText {
+    color: #1c1917;
+  }
+
+  .text-secondaryText {
+    color: #4b4745;
+  }
+
+  .text-infoText {
+    color: #595959;
   }
 }

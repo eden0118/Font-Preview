@@ -9,6 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **元件架構重構 (Component Architecture Refactoring)**
+  - 將 FontInfo 元件拆分為 3 個子元件（FontInfo: 58 行、FontCoverageChart: 81 行、FontMissingChars: 72 行）
+  - 創建通用 CharacterWarning 元件（94 行），支援三層警告級別（error/warning/note）
+  - 將 PreviewCard 分層為 PreviewCardHeader（56 行）和 PreviewCardContent（55 行）
+  - 將 PreviewSetting 拆分為 FontSizeSlider（46 行）和 PreviewColorPicker（64 行）
+  - 重組 components 資料夾結構，按功能域分類：Preview/、FontInfo/、Shared/、Layout/
+
+### Changed
+
+- **元件資料夾優化**
+  - 建立 Preview/ 資料夾（8 個檔案，包含預覽相關元件）
+  - 建立 FontInfo/ 資料夾（3 個檔案，包含字型資訊相關元件）
+  - 建立 Shared/ 資料夾（5 個檔案，包含通用元件如 CharacterWarning、UploadZone 等）
+  - 建立 Layout/ 資料夾（4 個檔案，包含佈局元件如 PageHeader、Footer、ErrorBoundary）
+  - 更新所有導入路徑以反映新的資料夾結構
+
+- **CSS 相容性修復 (Tailwind v4 Compatibility)**
+  - 移除 @theme 自訂顏色定義（不支援 Tailwind v4）
+  - 將自訂顏色參考（primaryText、secondaryText、infoText）轉換為直接十六進制值
+  - 轉換 @apply hover: 語法為 CSS :hover 虛擬選擇器
+
+- **UI 微調**
+  - 將 ChevronDown 箭頭移至警告色塊內部，改善視覺層次
+  - 將外層邊框樣式（border-t、pt-3、mt-3）整合至 CharacterWarning 元件
+  - 簡化 FontMissingChars 元件結構，移除重複的包裝層
+
+### Added
+
 - **缺字檢測系統改進 (Missing Character Detection Enhancement)**
   - 擴展基本關鍵字從 100 字至 150 字（新增內、靜、深、間、開、特、作、近等常用字）
   - 實現支援字符收集機制（`supportedChars`）用於實時預覽缺字檢測
